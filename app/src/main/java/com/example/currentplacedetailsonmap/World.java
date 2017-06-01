@@ -27,15 +27,15 @@ public class World {
         return allowed;
     }
 
-    public boolean createSettlement(Vector2f geoCoord) {
+    public Settlement createSettlement(String name, Vector2f geoCoord) {
         if (canCreateSettlement(geoCoord)) {
-            Settlement settlement = new Settlement(geoCoord, convertToGameCoord(geoCoord), 50, 50);
+            Settlement settlement = new Settlement(name, geoCoord, convertToGameCoord(geoCoord), 50, 50);
             settlement.initializeSettlement(generateTiles(50, 50));
             settlements.add(settlement);
-            return true;
+            return settlement;
         }
         else
-            return false;
+            return null;
     }
 
     public Vector2f convertToGameCoord(Vector2f geoCoord) {
@@ -48,6 +48,7 @@ public class World {
         int sufficientWidth = (int)Math.pow(2, (int)Math.ceil(Math.log(larger)/Math.log(2)));
         double[][] temp = DiamondSquare.makeTable(3, 3, 3, 3, sufficientWidth + 1);
         DiamondSquare ds = new DiamondSquare(temp);
+        ds.seed(System.currentTimeMillis());
         return convertToIntArray(ds.generate(new double[]{0, 0, sufficientWidth, 2, 0.4}), width, height);
     }
 

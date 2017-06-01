@@ -1,6 +1,7 @@
 package com.example.currentplacedetailsonmap;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -38,14 +39,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
  */
 public class MapsActivityCurrentPlace extends AppCompatActivity
         implements OnMapReadyCallback,
+                GoogleMap.OnMarkerClickListener,
                 GoogleApiClient.ConnectionCallbacks,
                 GoogleApiClient.OnConnectionFailedListener {
 
@@ -83,6 +87,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
     private World world;
 
+    private Map<Marker, Settlement> settlementIndicesByMarker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +117,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         geocoder = new Geocoder(this, Locale.getDefault());
 
         world = new World();
+        settlementIndicesByMarker = new HashMap<>();
     }
 
     /**
@@ -190,16 +197,19 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
     public boolean newSettlementButton(View v) {
         getDeviceLocation();
-        LatLng convertedLoc = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-        boolean success = world.createSettlement(new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
 
-        if (success) {
+        LatLng convertedLoc = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+        String name = "Settlement " + (world.settlements.size() + 1);
+        Settlement settlement = world.createSettlement(name, new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
+
+        if (settlement != null) {
             // Add a marker for the selected place, with an info window
             // showing information about that place.
-            mMap.addMarker(new MarkerOptions()
-                    .title("Settlement")
+            Marker marker = mMap.addMarker(new MarkerOptions()
+                    .title(name)
                     .position(convertedLoc)
                     .snippet(""));
+            settlementIndicesByMarker.put(marker, settlement);
         }
 
 
@@ -245,6 +255,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
+
+        mMap.setOnMarkerClickListener(this);
     }
 
     /**
@@ -272,6 +284,9 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         if (mLocationPermissionGranted) {
             mLastKnownLocation = LocationServices.FusedLocationApi
                     .getLastLocation(mGoogleApiClient);
+            if (world.geoHome == null) {
+                world.geoHome = new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+            }
         }
 
         // Set the map's camera position to the current location of the device.
@@ -468,4 +483,19 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         return null;
     }
 
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+        Settlement settlement = settlementIndicesByMarker.get(marker);
+
+        System.err.println("Marker click");
+
+        Intent i = new Intent();
+        Bundle b = new Bundle();
+        b.putSerializable("settlementData", settlement);
+        i.putExtras(b);
+        i.setClass(this, SettlementDetailsActivity.class);
+        startActivity(i);
+
+        return false;
+    }
 }

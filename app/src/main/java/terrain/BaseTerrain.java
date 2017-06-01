@@ -8,7 +8,7 @@ public abstract class BaseTerrain {
 
 	public double[][] terrain;
 	public Random random;
-	
+
 	public void seed(long seed)
 	{
 		random = null;

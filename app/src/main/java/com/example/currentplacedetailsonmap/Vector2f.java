@@ -1,10 +1,12 @@
 package com.example.currentplacedetailsonmap;
 
+import java.io.Serializable;
+
 /**
  * Created by Dante on 6/29/2016.
  * Some helper classes to conveniently wrap two and three floats
  */
-public class Vector2f {
+public class Vector2f implements Serializable {
     public float x,y;
     public Vector2f(float a, float b) {x = a; y = b;}
     public Vector2f(double a, double b) {x = (float) a; y = (float) b;}
