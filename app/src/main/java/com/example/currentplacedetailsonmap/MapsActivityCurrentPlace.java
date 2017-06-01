@@ -81,6 +81,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
     private Geocoder geocoder;
 
+    private World world;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +110,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         geocoder = new Geocoder(this, Locale.getDefault());
 
+        world = new World();
     }
 
     /**
@@ -185,6 +188,24 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         return false;
     }
 
+    public boolean newSettlementButton(View v) {
+        getDeviceLocation();
+        LatLng convertedLoc = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+        boolean success = world.createSettlement(new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
+
+        if (success) {
+            // Add a marker for the selected place, with an info window
+            // showing information about that place.
+            mMap.addMarker(new MarkerOptions()
+                    .title("Settlement")
+                    .position(convertedLoc)
+                    .snippet(""));
+        }
+
+
+        return false;
+    }
+
     /**
      * Manipulates the map when it's available.
      * This callback is triggered when the map is ready to be used.
@@ -259,7 +280,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         } else if (mLastKnownLocation != null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(mLastKnownLocation.getLatitude(),
-                            mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                            mLastKnownLocation.getLongitude()), mMap.getCameraPosition().zoom));
         } else {
             Log.d(TAG, "Current location is null. Using defaults.");
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
@@ -355,12 +376,6 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                         if (mLikelyPlaceAttributions[which] != null) {
                             markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
                         }
-                        // Add a marker for the selected place, with an info window
-                        // showing information about that place.
-                        mMap.addMarker(new MarkerOptions()
-                                .title(mLikelyPlaceNames[which])
-                                .position(markerLatLng)
-                                .snippet(markerSnippet));
 
                         // Position the map's camera at the location of the marker.
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
