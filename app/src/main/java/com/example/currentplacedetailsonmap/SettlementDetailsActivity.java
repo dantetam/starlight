@@ -1,5 +1,6 @@
 package com.example.currentplacedetailsonmap;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -64,11 +65,21 @@ public class SettlementDetailsActivity extends AppCompatActivity {
     }
 
     public void openPeopleMenuButton(View v) {
-
+        Intent i = new Intent();
+        Bundle b = new Bundle();
+        b.putSerializable("settlementData", settlement);
+        i.putExtras(b);
+        i.setClass(this, SettlementPeopleActivity.class);
+        startActivity(i);
     }
 
     public void openBuildingsMenuButton(View v) {
-
+        Intent i = new Intent();
+        Bundle b = new Bundle();
+        b.putSerializable("settlementData", settlement);
+        i.putExtras(b);
+        i.setClass(this, SettlementBuildingsActivity.class);
+        startActivity(i);
     }
 
 }
