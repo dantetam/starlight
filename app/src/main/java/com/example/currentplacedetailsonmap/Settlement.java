@@ -4,6 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Dante on 5/18/2017.
@@ -13,14 +16,26 @@ public class Settlement implements Serializable { //implements Parcelable {
     public Vector2f realGeoCoord, gameCoord;
     public Tile[][] tiles;
     public int numPeople;
-    public String name;
 
-    public Settlement(String name, Vector2f realGeoCoord, Vector2f gameCoord, int r, int c) {
+    public int gold;
+    public ArrayList<Item> items;
+
+    public String name;
+    public Date foundDate;
+    public String formattedDate;
+
+    public Settlement(String name, Date foundDate, Vector2f realGeoCoord, Vector2f gameCoord, int r, int c) {
         this.name = name;
+        this.foundDate = foundDate;
         this.realGeoCoord = realGeoCoord;
         this.gameCoord = gameCoord;
         tiles = new Tile[r][c];
         numPeople = 10;
+        SimpleDateFormat df = new SimpleDateFormat("MM dd yyyy");
+        formattedDate = df.format(foundDate);
+
+        gold = 50;
+        items = new ArrayList<>();
     }
 
     public void initializeSettlement(int[][] resources) {

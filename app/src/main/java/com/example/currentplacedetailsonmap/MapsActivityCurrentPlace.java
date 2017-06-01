@@ -38,7 +38,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -198,9 +200,11 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     public boolean newSettlementButton(View v) {
         getDeviceLocation();
 
+        Calendar c = Calendar.getInstance();
+
         LatLng convertedLoc = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
         String name = "Settlement " + (world.settlements.size() + 1);
-        Settlement settlement = world.createSettlement(name, new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
+        Settlement settlement = world.createSettlement(name, c.getTime(), new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
 
         if (settlement != null) {
             // Add a marker for the selected place, with an info window
@@ -438,15 +442,15 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }
     }
 
-    protected List<String> findAddress(Location location) {
+    protected ArrayList<String> findAddress(float lat, float lon) {
         String errorMessage = "";
 
         List<Address> addresses = null;
 
         try {
             addresses = geocoder.getFromLocation(
-                    location.getLatitude(),
-                    location.getLongitude(),
+                    lat,
+                    lon,
                     // In this sample, get just a single address.
                     1);
         } catch (IOException ioException) {
@@ -457,9 +461,9 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             // Catch invalid latitude or longitude values.
             errorMessage = "Invalid lat/lon";
             Log.e(TAG, errorMessage + ". " +
-                    "Latitude = " + location.getLatitude() +
-                    ", Longitude = " +
-                    location.getLongitude(), illegalArgumentException);
+                    "Latitude = " + lat +
+                    ", Longitude = " + lon,
+                    illegalArgumentException);
         }
 
         // Handle case where no address was found.
@@ -482,16 +486,21 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }
         return null;
     }
+    protected List<String> findAddress(Location location) {
+        return findAddress((float) location.getLatitude(), (float) location.getLongitude());
+    }
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
         Settlement settlement = settlementIndicesByMarker.get(marker);
 
-        System.err.println("Marker click");
-
         Intent i = new Intent();
         Bundle b = new Bundle();
         b.putSerializable("settlementData", settlement);
+        ArrayList<String> addrList = findAddress(settlement.realGeoCoord.x, settlement.realGeoCoord.y);
+        if (addrList != null) {
+            b.putSerializable("settlementAddress", addrList);
+        }
         i.putExtras(b);
         i.setClass(this, SettlementDetailsActivity.class);
         startActivity(i);

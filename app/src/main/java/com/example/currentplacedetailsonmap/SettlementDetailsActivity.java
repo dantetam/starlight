@@ -4,10 +4,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class SettlementDetailsActivity extends AppCompatActivity {
 
     private Settlement settlement;
+    private ArrayList<String> address;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,8 +20,25 @@ public class SettlementDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settlement_details);
 
         Bundle b = this.getIntent().getExtras();
-        if (b != null)
+        if (b != null) {
             settlement = (Settlement) b.getSerializable("settlementData");
+            address = (ArrayList<String>) b.getSerializable("settlementAddress");
+
+            ((TextView) findViewById(R.id.settlementName)).setText(settlement.name);
+            ((TextView) findViewById(R.id.settlementFoundDate)).setText("Founded " + settlement.formattedDate);
+            ((TextView) findViewById(R.id.settlementPopulation)).setText("Population " + settlement.numPeople);
+
+            if (address != null) {
+                String addrString = "";
+                for (String stringy: address) {
+                    addrString += stringy + ", ";
+                }
+                if (!addrString.isEmpty()) {
+                    addrString = addrString.substring(0, addrString.length() - 2);
+                }
+                ((TextView) findViewById(R.id.settlementAddress)).setText(addrString);
+            }
+        }
     }
 
     @Override
@@ -40,4 +62,13 @@ public class SettlementDetailsActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void openPeopleMenuButton(View v) {
+
+    }
+
+    public void openBuildingsMenuButton(View v) {
+
+    }
+
 }

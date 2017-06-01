@@ -1,6 +1,7 @@
 package com.example.currentplacedetailsonmap;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import terrain.DiamondSquare;
@@ -27,9 +28,9 @@ public class World {
         return allowed;
     }
 
-    public Settlement createSettlement(String name, Vector2f geoCoord) {
+    public Settlement createSettlement(String name, Date foundDate, Vector2f geoCoord) {
         if (canCreateSettlement(geoCoord)) {
-            Settlement settlement = new Settlement(name, geoCoord, convertToGameCoord(geoCoord), 50, 50);
+            Settlement settlement = new Settlement(name, foundDate, geoCoord, convertToGameCoord(geoCoord), 50, 50);
             settlement.initializeSettlement(generateTiles(50, 50));
             settlements.add(settlement);
             return settlement;
