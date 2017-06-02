@@ -1,5 +1,10 @@
 package com.example.currentplacedetailsonmap;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,15 +17,26 @@ public class SettlementBuildingsActivity extends AppCompatActivity {
 
     private Settlement settlement;
 
+    private Drawable mCustomImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settlement_buildings);
 
-        Bundle b = this.getIntent().getExtras();
-        if (b != null) {
-            settlement = (Settlement) b.getSerializable("settlementData");
+        Bundle bundle = this.getIntent().getExtras();
+        if (bundle != null) {
+            settlement = (Settlement) bundle.getSerializable("settlementData");
         }
+
+        mCustomImage = this.getResources().getDrawable(R.drawable.forest_texture);
+    }
+
+    protected void onDraw(Canvas canvas) {
+        Rect imageBounds = canvas.getClipBounds();  // Adjust this for where you want it
+
+        mCustomImage.setBounds(imageBounds);
+        mCustomImage.draw(canvas);
     }
 
     @Override

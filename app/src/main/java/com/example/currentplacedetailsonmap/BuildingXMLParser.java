@@ -32,11 +32,11 @@ public class BuildingXMLParser {
 
     //TODO: Impl. this class.
 
-    public static void parseResourceTree(ConstructionTree tree, Context context, int resourceId) {
+    public static void parseBuildingTree(ConstructionTree tree, Context context, int resourceId) {
         final InputStream inputStream = context.getResources().openRawResource(
                 resourceId);
         try {
-            parseResourceTree(tree, inputStream);
+            parseBuildingTree(tree, inputStream);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -44,7 +44,7 @@ public class BuildingXMLParser {
         }
     }
 
-    public static void parseResourceTree(ConstructionTree tree, InputStream inputStream)
+    public static void parseBuildingTree(ConstructionTree tree, InputStream inputStream)
             throws XmlPullParserException, IOException {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(false);
@@ -59,7 +59,7 @@ public class BuildingXMLParser {
                 //System.out.println("Start document");
             } else if (eventType == XmlPullParser.START_TAG) {
                 //System.out.println("Start tag " + xpp.getName());
-                if (xpp.getName().equals("resource")) {
+                if (xpp.getName().equals("impr")) {
                     int id = Integer.parseInt(xpp.getAttributeValue(null, "id"));
                     String buildingName = xpp.getAttributeValue(null, "name");
                     int housingNum = xpp.getAttributeValue(null, "id") != null ?
@@ -74,6 +74,8 @@ public class BuildingXMLParser {
                     Building building = new Building(id, buildingName);
 
                     tree.insertBuilding(building);
+
+                    System.err.println("Passed in " + id + ", " + buildingName);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
 

@@ -4,7 +4,7 @@
     <impr id="0" name="Nexus" resourcelimit="-1" cost="" housing="10" desc="The center of this settlement.">
 
     </impr>
-    <impr id="1" name="Tent" resourcelimit="10" cost="10 Wood" housing="2" desc="A small pitched up tent.">
+    <impr id="10" name="Tent" resourcelimit="10" cost="10 Wood" housing="2" desc="A small pitched up tent.">
 
     </impr>
     <impr id="20" name="Lumberyard" resourcelimit="50" cost="10 Wood" resourceneeded="Wood" production="1 Wood" desc="A station for collecting firewood and logs.">

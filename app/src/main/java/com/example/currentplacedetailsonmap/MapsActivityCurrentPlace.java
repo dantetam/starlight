@@ -122,6 +122,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         world = new World();
         constructionTree = new ConstructionTree();
+        BuildingXMLParser.parseBuildingTree(constructionTree, this, R.raw.building_tree);
+        ItemXmlParser.parseResourceTree(constructionTree, this, R.raw.resource_tree);
         settlementIndicesByMarker = new HashMap<>();
     }
 
@@ -209,7 +211,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         String name = "Settlement " + (world.settlements.size() + 1);
         Settlement settlement = world.createSettlement(name, c.getTime(), new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
 
-        Building nexus = constructionTree.getBuildingByName("Nexus");
+        Building nexus = constructionTree.copyBuilding("Nexus");
         settlement.tiles[settlement.rows / 2][settlement.cols / 2].addBuilding(nexus);
         nexus.items.add(constructionTree.copyItem("Wood", 100));
         nexus.items.add(constructionTree.copyItem("Iron", 25));
