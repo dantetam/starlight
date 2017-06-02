@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Dante on 5/18/2017.
@@ -16,7 +17,7 @@ public class Settlement implements Serializable { //implements Parcelable {
     public Vector2f realGeoCoord, gameCoord;
     public Tile[][] tiles;
     public final int rows, cols;
-    public int numPeople;
+    public ArrayList<Person> people;
 
     public int gold;
 
@@ -31,7 +32,7 @@ public class Settlement implements Serializable { //implements Parcelable {
         this.gameCoord = gameCoord;
         rows = r; cols = c;
         tiles = new Tile[r][c];
-        numPeople = 10;
+        people = new ArrayList<>();
         SimpleDateFormat df = new SimpleDateFormat("MM dd yyyy");
         formattedDate = df.format(foundDate);
 

@@ -1,42 +1,43 @@
 package com.example.currentplacedetailsonmap;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class SettlementBuildingsActivity extends AppCompatActivity {
 
-    private Settlement settlement;
+    public Settlement settlement;
 
     private Drawable mCustomImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settlement_buildings);
 
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null) {
             settlement = (Settlement) bundle.getSerializable("settlementData");
         }
 
+        setContentView(R.layout.activity_settlement_buildings);
+
         mCustomImage = this.getResources().getDrawable(R.drawable.forest_texture);
-    }
-
-    protected void onDraw(Canvas canvas) {
-        Rect imageBounds = canvas.getClipBounds();  // Adjust this for where you want it
-
-        mCustomImage.setBounds(imageBounds);
-        mCustomImage.draw(canvas);
     }
 
     @Override
@@ -60,4 +61,5 @@ public class SettlementBuildingsActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

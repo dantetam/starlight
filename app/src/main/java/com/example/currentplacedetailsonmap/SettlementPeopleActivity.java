@@ -12,12 +12,13 @@ public class SettlementPeopleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settlement_people);
 
         Bundle b = this.getIntent().getExtras();
         if (b != null) {
             settlement = (Settlement) b.getSerializable("settlementData");
         }
+
+        setContentView(R.layout.activity_settlement_people);
     }
 
     @Override

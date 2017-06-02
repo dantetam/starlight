@@ -27,7 +27,7 @@ public class SettlementDetailsActivity extends AppCompatActivity {
 
             ((TextView) findViewById(R.id.settlementName)).setText(settlement.name);
             ((TextView) findViewById(R.id.settlementFoundDate)).setText("Founded " + settlement.formattedDate);
-            ((TextView) findViewById(R.id.settlementPopulation)).setText("Population " + settlement.numPeople);
+            ((TextView) findViewById(R.id.settlementPopulation)).setText("Population " + settlement.people.size());
 
             if (address != null) {
                 String addrString = "";
