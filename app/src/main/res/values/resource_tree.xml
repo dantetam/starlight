@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resourceroot>
+    <resource id="0" name="Wood" maxhealth="50" marketvalue="0.5">
+
+    </resource>
+    <resource id="1" name="Iron" maxhealth="-1" marketvalue="1.5">
+
+    </resource>
+    <resource id="2" name="Food" maxhealth="30" marketvalue="0.5">
+
+    </resource>
+</resourceroot>

@@ -4,13 +4,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class SettlementBuildingsActivity extends AppCompatActivity {
+
+    private Settlement settlement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settlement_buildings);
+
+        Bundle b = this.getIntent().getExtras();
+        if (b != null) {
+            settlement = (Settlement) b.getSerializable("settlementData");
+        }
     }
 
     @Override

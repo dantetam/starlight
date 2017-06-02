@@ -91,6 +91,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
     private Map<Marker, Settlement> settlementIndicesByMarker;
 
+    private ConstructionTree constructionTree;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +121,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         geocoder = new Geocoder(this, Locale.getDefault());
 
         world = new World();
+        constructionTree = new ConstructionTree();
         settlementIndicesByMarker = new HashMap<>();
     }
 
@@ -205,6 +208,12 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         LatLng convertedLoc = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
         String name = "Settlement " + (world.settlements.size() + 1);
         Settlement settlement = world.createSettlement(name, c.getTime(), new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
+
+        Building nexus = constructionTree.getBuildingByName("Nexus");
+        settlement.tiles[settlement.rows / 2][settlement.cols / 2].addBuilding(nexus);
+        nexus.items.add(constructionTree.copyItem("Wood", 100));
+        nexus.items.add(constructionTree.copyItem("Iron", 25));
+        nexus.items.add(constructionTree.copyItem("Food", 50));
 
         if (settlement != null) {
             // Add a marker for the selected place, with an info window

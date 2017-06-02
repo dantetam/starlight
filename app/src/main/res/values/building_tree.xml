@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<imprroot>
+    <impr id="0" name="Nexus" resourcelimit="-1" cost="" housing="10" desc="The center of this settlement.">
+
+    </impr>
+    <impr id="1" name="Tent" resourcelimit="10" cost="10 Wood" housing="2" desc="A small pitched up tent.">
+
+    </impr>
+    <impr id="20" name="Lumberyard" resourcelimit="50" cost="10 Wood" resourceneeded="Wood" production="1 Wood" desc="A station for collecting firewood and logs.">
+
+    </impr>
+    <impr id="30" name="Mine" resourcelimit="50" cost="15 Wood" resourceneeded="Metal" production="1 Metal" desc="A small network of shafts and caves for minerals.">
+
+    </impr>
+    <impr id="40" name="Farm" resourcelimit="50" cost="10 Wood" production="1 Food" desc="A small farmhouse built for harvesting the soil.">
+
+    </impr>
+</imprroot>

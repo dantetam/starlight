@@ -5,15 +5,24 @@ package com.example.currentplacedetailsonmap;
  */
 public class Item {
 
-    public int itemType;
+    public int id;
+    public int quantity;
     public String name;
     public int health, maxHealth;
 
-    public Item(int type, String name, int maxHealth) {
-        this.itemType = type;
+    public Item(int id, String name, int maxHealth) {
+        this.id = id;
         this.name = name;
         this.maxHealth = maxHealth;
         this.health = maxHealth;
+    }
+
+    public Item(Item item, int quantity) {
+        this(item.id, item.name, item.maxHealth);
+        if (quantity == 0) {
+            throw new IllegalArgumentException("Cannot create a item of zero quantity");
+        }
+        this.quantity = quantity;
     }
 
 }

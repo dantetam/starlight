@@ -30,8 +30,8 @@ public class World {
 
     public Settlement createSettlement(String name, Date foundDate, Vector2f geoCoord) {
         if (canCreateSettlement(geoCoord)) {
-            Settlement settlement = new Settlement(name, foundDate, geoCoord, convertToGameCoord(geoCoord), 50, 50);
-            settlement.initializeSettlement(generateTiles(50, 50));
+            Settlement settlement = new Settlement(name, foundDate, geoCoord, convertToGameCoord(geoCoord), 20, 20);
+            settlement.initializeSettlement(generateTiles(20, 20));
             settlements.add(settlement);
             return settlement;
         }

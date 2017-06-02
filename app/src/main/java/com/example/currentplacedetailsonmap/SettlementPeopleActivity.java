@@ -7,10 +7,17 @@ import android.view.MenuItem;
 
 public class SettlementPeopleActivity extends AppCompatActivity {
 
+    private Settlement settlement;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settlement_people);
+
+        Bundle b = this.getIntent().getExtras();
+        if (b != null) {
+            settlement = (Settlement) b.getSerializable("settlementData");
+        }
     }
 
     @Override

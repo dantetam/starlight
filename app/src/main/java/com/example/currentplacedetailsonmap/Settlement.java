@@ -15,10 +15,10 @@ public class Settlement implements Serializable { //implements Parcelable {
 
     public Vector2f realGeoCoord, gameCoord;
     public Tile[][] tiles;
+    public final int rows, cols;
     public int numPeople;
 
     public int gold;
-    public ArrayList<Item> items;
 
     public String name;
     public Date foundDate;
@@ -29,13 +29,13 @@ public class Settlement implements Serializable { //implements Parcelable {
         this.foundDate = foundDate;
         this.realGeoCoord = realGeoCoord;
         this.gameCoord = gameCoord;
+        rows = r; cols = c;
         tiles = new Tile[r][c];
         numPeople = 10;
         SimpleDateFormat df = new SimpleDateFormat("MM dd yyyy");
         formattedDate = df.format(foundDate);
 
         gold = 50;
-        items = new ArrayList<>();
     }
 
     public void initializeSettlement(int[][] resources) {
