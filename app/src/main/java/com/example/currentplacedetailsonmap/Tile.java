@@ -12,12 +12,12 @@ public class Tile implements Serializable {
     public int tileType;
     public int row, col;
     private Building building;
-    public List<Item> resources;
+    public Inventory resources;
 
     public Tile(int r, int c) {
         row = r;
         col = c;
-        resources = new ArrayList<>();
+        resources = new Inventory();
     }
 
     public void addBuilding(Building newBuilding) {

@@ -227,9 +227,13 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             settlement.getTile(settlement.rows / 2, settlement.cols / 2).addBuilding(nexus);
             Building tent = constructionTree.copyBuilding("Tent");
             settlement.getTile(settlement.rows / 2 + 1, settlement.cols / 2).addBuilding(tent);
-            nexus.items.add(constructionTree.copyItem("Wood", 100));
-            nexus.items.add(constructionTree.copyItem("Iron", 25));
-            nexus.items.add(constructionTree.copyItem("Food", 50));
+            nexus.items.addItem(constructionTree.copyItem("Wood", 100));
+            nexus.items.addItem(constructionTree.copyItem("Iron", 25));
+            nexus.items.addItem(constructionTree.copyItem("Food", 50));
+
+            for (int i = 0; i < 10; i++) {
+                settlement.people.add(new Person("Person " + (i + 1)));
+            }
         }
         else {
 

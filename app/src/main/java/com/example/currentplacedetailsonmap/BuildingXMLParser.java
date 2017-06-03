@@ -64,8 +64,8 @@ public class BuildingXMLParser {
                 if (xpp.getName().equals("impr")) {
                     int id = Integer.parseInt(xpp.getAttributeValue(null, "id"));
                     String buildingName = xpp.getAttributeValue(null, "name");
-                    int housingNum = xpp.getAttributeValue(null, "id") != null ?
-                            Integer.parseInt(xpp.getAttributeValue(null, "id")) : 0;
+                    int housingNum = xpp.getAttributeValue(null, "housing") != null ?
+                            Integer.parseInt(xpp.getAttributeValue(null, "housing")) : 0;
                     String descString = xpp.getAttributeValue(null, "desc");
 
                     String resourceNeeded = xpp.getAttributeValue(null, "resourceneeded");

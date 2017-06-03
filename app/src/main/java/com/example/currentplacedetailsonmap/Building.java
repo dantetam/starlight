@@ -1,5 +1,7 @@
 package com.example.currentplacedetailsonmap;
 
+import android.speech.RecognizerIntent;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +19,14 @@ public class Building implements Serializable {
 
     public int housingNum;
 
-    public List<Item> items;
+    public Inventory items;
     public int resourceLimit;
 
     private List<Recipe> cost;
     private List<Recipe> productions;
+
+    private int maxRecipesEnabled = 1;
+    private List<Integer> activeRecipes;
 
     public Building(int id, String name, String desc, int resourceLimit, int housingNum, String resourceNeeded) {
         this.id = id;
@@ -30,16 +35,17 @@ public class Building implements Serializable {
         this.resourceLimit = resourceLimit;
         this.housingNum = housingNum;
         this.resourceNeeded = resourceNeeded;
-        items = new ArrayList<>();
+        items = new Inventory();
         cost = new ArrayList<>();
         productions = new ArrayList<>();
     }
 
     public Building(Building building) {
         this(building.id, building.name, building.desc, building.resourceLimit, building.housingNum, building.resourceNeeded);
-        items = new ArrayList<>(building.items);
+        items = new Inventory();
         cost = new ArrayList<>(building.cost);
         productions = new ArrayList<>(building.productions);
+        activeRecipes = new ArrayList<>();
     }
 
     public void addBuildingCost(Recipe recipe) {
@@ -74,20 +80,26 @@ public class Building implements Serializable {
 
     private static final int ITEMS_TO_LIST = 10;
     public String getItemsString() {
-        if (items.size() == 0) {
-            return "Empty";
-        }
-        String result = "";
-        int numItems = Math.min(items.size(), ITEMS_TO_LIST);
-        for (int i = 0; i < numItems; i++) {
-            result += items.get(i).toString() + ", ";
-        }
-        return result.substring(0, result.length() - 2);
+        return items.toString();
     }
 
     //TODO: Remember to account for the special "Resource" which simply refers to the resource within the tile
     public void produce() {
+        for (Recipe recipe: productions) {
 
+        }
+    }
+
+    public void activateRecipe(int index) {
+        if (!activeRecipes.contains(index) && activeRecipes.size() < maxRecipesEnabled) {
+            activeRecipes.add(index);
+        }
+    }
+
+    public void deactivateRecipe(int index) {
+        if (activeRecipes.contains(index)) {
+            activeRecipes.remove(index);
+        }
     }
 
 }

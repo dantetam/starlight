@@ -11,6 +11,7 @@ public class Item implements Serializable {
     public int quantity;
     public String name;
     public int health, maxHealth;
+    public String quality;
 
     public Item(int id, String name, int maxHealth) {
         this.id = id;
