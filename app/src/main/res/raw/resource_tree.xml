@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resourceroot>
+    <resource id="9999" name="Resource" maxhealth="-1" marketvalue="0">
+
+    </resource>
     <resource id="0" name="Wood" maxhealth="50" marketvalue="0.5">
 
     </resource>

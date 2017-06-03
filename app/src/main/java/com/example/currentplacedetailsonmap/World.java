@@ -1,5 +1,7 @@
 package com.example.currentplacedetailsonmap;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +14,7 @@ import terrain.DiamondSquare;
 public class World {
 
     public List<Settlement> settlements;
-    public static float MIN_SETTLEMENT_GEO_DIST;
+    public static float MIN_SETTLEMENT_GEO_DIST = 500; //In meters
 
     public static Vector2f geoHome;
 
@@ -23,7 +25,9 @@ public class World {
     private boolean canCreateSettlement(Vector2f geoCoord) {
         boolean allowed = true;
         for (Settlement settlement : settlements) {
-            allowed = allowed && settlement.realGeoCoord.dist(geoCoord) >= MIN_SETTLEMENT_GEO_DIST;
+            LatLng newCoord = new LatLng(geoCoord.x, geoCoord.y);
+            LatLng settlementCoord = new LatLng(settlement.realGeoCoord.x, settlement.realGeoCoord.y);
+            allowed = allowed && (GeoUtil.calculateDistance(newCoord, settlementCoord) >= MIN_SETTLEMENT_GEO_DIST);
         }
         return allowed;
     }

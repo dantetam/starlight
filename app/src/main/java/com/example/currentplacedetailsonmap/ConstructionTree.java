@@ -52,7 +52,11 @@ public class ConstructionTree {
     }
 
     public Item copyItem(String name, int quantity) {
-        return new Item(getItemByName(name), quantity);
+        Item original = getItemByName(name);
+        if (original == null) {
+            throw new IllegalArgumentException("In the stored item data, could not find item of name: " + name);
+        }
+        return new Item(original, quantity);
     }
 
 }

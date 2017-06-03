@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.TextView;
 
 import java.util.logging.Handler;
 
@@ -18,7 +19,7 @@ import java.util.logging.Handler;
  */
 class MySurfaceView extends SurfaceView {
 
-    private Context context;
+    private SettlementBuildingsActivity context;
 
     private Settlement settlement;
     private Tile hoverTile;
@@ -30,7 +31,7 @@ class MySurfaceView extends SurfaceView {
 
     public MySurfaceView(Context context, AttributeSet attr) {
         super(context);
-        this.context = context;
+        this.context = ((SettlementBuildingsActivity) context);
         this.settlement = ((SettlementBuildingsActivity) context).settlement;
         centerX = settlement.rows / 2.0f;
         centerY = settlement.cols / 2.0f;
@@ -166,6 +167,7 @@ class MySurfaceView extends SurfaceView {
                 break;
             case MotionEvent.ACTION_UP:
                 System.err.println(x + " " + y);
+                showTileDetails(tile);
                 hoverTile = null;
                 touched = false;
                 break;
@@ -180,6 +182,35 @@ class MySurfaceView extends SurfaceView {
                 break;
         }
         return true; //processed
+    }
+
+    private void showTileDetails(Tile tile) {
+        ((TextView) context.findViewById(R.id.buildingLocation)).setVisibility(VISIBLE);
+        ((TextView) context.findViewById(R.id.buildingLocation)).setText(tile.row + " " + tile.col);
+
+        ((TextView) context.findViewById(R.id.buildingName)).setVisibility(GONE);
+        ((TextView) context.findViewById(R.id.buildingDesc)).setVisibility(GONE);
+        ((TextView) context.findViewById(R.id.buildingProduction)).setVisibility(GONE);
+        ((TextView) context.findViewById(R.id.buildingHousingNum)).setVisibility(GONE);
+        ((TextView) context.findViewById(R.id.buildingItemsList)).setVisibility(GONE);
+
+        Building building = tile.getBuilding();
+        if (building != null) {
+            ((TextView) context.findViewById(R.id.buildingName)).setVisibility(VISIBLE);
+            ((TextView) context.findViewById(R.id.buildingDesc)).setVisibility(VISIBLE);
+            ((TextView) context.findViewById(R.id.buildingItemsList)).setVisibility(VISIBLE);
+            ((TextView) context.findViewById(R.id.buildingHousingNum)).setVisibility(VISIBLE);
+            ((TextView) context.findViewById(R.id.buildingProduction)).setVisibility(VISIBLE);
+
+            ((TextView) context.findViewById(R.id.buildingName)).setText(building.name);
+            ((TextView) context.findViewById(R.id.buildingDesc)).setText(building.desc);
+            //if (!building.getProductionRecipeString().equals("Nothing")) {
+
+            ((TextView) context.findViewById(R.id.buildingProduction)).setText("Produces: " + building.getProductionRecipeString());
+            //}
+            ((TextView) context.findViewById(R.id.buildingHousingNum)).setText("Houses " + building.housingNum + " people");
+            ((TextView) context.findViewById(R.id.buildingItemsList)).setText("Stored: " + building.getItemsString());
+        }
     }
 
 }

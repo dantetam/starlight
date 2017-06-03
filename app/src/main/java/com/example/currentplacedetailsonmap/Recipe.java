@@ -1,12 +1,13 @@
 package com.example.currentplacedetailsonmap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Dante on 6/2/2017.
  */
-public class Recipe {
+public class Recipe implements Serializable {
 
     public List<Item> input;
     public List<Item> output;
@@ -36,21 +37,23 @@ public class Recipe {
     }
 
     public String toString() {
-        String inputString, outputString;
+        String inputString = "", outputString = "";
         for (Item item: input) {
-
+            inputString += item.toString() + " ";
         }
         for (Item item: output) {
-            
+            outputString += item.toString() + " ";
         }
+        inputString = inputString.trim();
+        outputString = outputString.trim();
         if (input.size() == 0) {
-
+            return outputString;
         }
         else if (output.size() == 0) {
-
+            return inputString;
         }
         else {
-            String output = " > ";
+            return inputString + " > " + outputString;
         }
     }
 

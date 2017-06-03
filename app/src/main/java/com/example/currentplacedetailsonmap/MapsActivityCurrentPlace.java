@@ -213,12 +213,6 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         String name = "Settlement " + (world.settlements.size() + 1);
         Settlement settlement = world.createSettlement(name, c.getTime(), new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
 
-        Building nexus = constructionTree.copyBuilding("Nexus");
-        settlement.getTile(settlement.rows / 2, settlement.cols / 2).addBuilding(nexus);
-        nexus.items.add(constructionTree.copyItem("Wood", 100));
-        nexus.items.add(constructionTree.copyItem("Iron", 25));
-        nexus.items.add(constructionTree.copyItem("Food", 50));
-
         if (settlement != null) {
             // Add a marker for the selected place, with an info window
             // showing information about that place.
@@ -227,8 +221,19 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                     .position(convertedLoc)
                     .snippet(""));
             settlementIndicesByMarker.put(marker, settlement);
-        }
 
+            //Initialize some first buildings
+            Building nexus = constructionTree.copyBuilding("Nexus");
+            settlement.getTile(settlement.rows / 2, settlement.cols / 2).addBuilding(nexus);
+            Building tent = constructionTree.copyBuilding("Tent");
+            settlement.getTile(settlement.rows / 2 + 1, settlement.cols / 2).addBuilding(tent);
+            nexus.items.add(constructionTree.copyItem("Wood", 100));
+            nexus.items.add(constructionTree.copyItem("Iron", 25));
+            nexus.items.add(constructionTree.copyItem("Food", 50));
+        }
+        else {
+
+        }
 
         return false;
     }
