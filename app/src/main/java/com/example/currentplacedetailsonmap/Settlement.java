@@ -15,7 +15,7 @@ import java.util.List;
 public class Settlement implements Serializable { //implements Parcelable {
 
     public Vector2f realGeoCoord, gameCoord;
-    public Tile[][] tiles;
+    private Tile[][] tiles;
     public final int rows, cols;
     public ArrayList<Person> people;
 
@@ -49,6 +49,17 @@ public class Settlement implements Serializable { //implements Parcelable {
                 tiles[r][c].tileType = resources[r][c];
             }
         }
+    }
+
+    public boolean inBounds(int r, int c) {
+        return r >= 0 && r < rows && c >= 0 && c < cols;
+    }
+
+    public Tile getTile(int r, int c) {
+        if (inBounds(r,c)) {
+            return tiles[r][c];
+        }
+        return null;
     }
 
     /*@Override

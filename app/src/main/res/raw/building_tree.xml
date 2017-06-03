@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!--
+Special keywords:
+    Groups:
+        Metal (Iron)
+    Production:
+        Resource, the current resource the building is on top of
+    Notation:
+        > indicates a recipe i.e. 1 Iron > 1 Iron Sword
+
+Commas indicate ands i.e. "1 Wood, 1 Metal" -> 1 Wood and 1 Metal
+Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
+-->
+
 <imprroot>
     <impr id="0" name="Nexus" resourcelimit="-1" cost="" housing="10" desc="The center of this settlement.">
 
@@ -10,10 +23,13 @@
     <impr id="20" name="Lumberyard" resourcelimit="50" cost="10 Wood" resourceneeded="Wood" production="1 Wood" desc="A station for collecting firewood and logs.">
 
     </impr>
-    <impr id="30" name="Mine" resourcelimit="50" cost="15 Wood" resourceneeded="Metal" production="1 Metal" desc="A small network of shafts and caves for minerals.">
+    <impr id="30" name="Mine" resourcelimit="50" cost="15 Wood" resourceneeded="Metal" production="1 Resource" desc="A small network of shafts and caves for minerals.">
 
     </impr>
     <impr id="40" name="Farm" resourcelimit="50" cost="10 Wood" production="1 Food" desc="A small farmhouse built for harvesting the soil.">
+
+    </impr>
+    <impr id="50" name="Blacksmith" resourcelimit="50" cost="15 Wood, 10 Iron" production="5 Iron > 1 Iron Sword; 5 Iron > 1 Iron Shield" desc="A house containing an anvil, small forge, and tools.">
 
     </impr>
 </imprroot>

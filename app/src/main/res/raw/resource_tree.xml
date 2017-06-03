@@ -10,4 +10,11 @@
     <resource id="2" name="Food" maxhealth="30" marketvalue="0.5">
 
     </resource>
+    
+    <resource id="20" name="Iron Sword" maxhealth="50" marketvalue="8">
+
+    </resource>
+    <resource id="30" name="Iron Shield" maxhealth="50" marketvalue="8">
+
+    </resource>
 </resourceroot>

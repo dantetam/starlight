@@ -27,4 +27,8 @@ public class Item implements Serializable {
         this.quantity = quantity;
     }
 
+    public String toString() {
+        return quantity + " " + name;
+    }
+
 }

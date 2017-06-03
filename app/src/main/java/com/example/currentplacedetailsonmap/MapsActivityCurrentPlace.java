@@ -121,9 +121,11 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         geocoder = new Geocoder(this, Locale.getDefault());
 
         world = new World();
+
         constructionTree = new ConstructionTree();
-        BuildingXMLParser.parseBuildingTree(constructionTree, this, R.raw.building_tree);
         ItemXmlParser.parseResourceTree(constructionTree, this, R.raw.resource_tree);
+        BuildingXMLParser.parseBuildingTree(constructionTree, this, R.raw.building_tree);
+
         settlementIndicesByMarker = new HashMap<>();
     }
 
@@ -212,7 +214,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         Settlement settlement = world.createSettlement(name, c.getTime(), new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
 
         Building nexus = constructionTree.copyBuilding("Nexus");
-        settlement.tiles[settlement.rows / 2][settlement.cols / 2].addBuilding(nexus);
+        settlement.getTile(settlement.rows / 2, settlement.cols / 2).addBuilding(nexus);
         nexus.items.add(constructionTree.copyItem("Wood", 100));
         nexus.items.add(constructionTree.copyItem("Iron", 25));
         nexus.items.add(constructionTree.copyItem("Food", 50));

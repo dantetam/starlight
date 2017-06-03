@@ -22,6 +22,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Given an InputStream representation of a feed, it returns a List of entries,
@@ -71,7 +73,32 @@ public class BuildingXMLParser {
                     String costString = xpp.getAttributeValue(null, "cost");
                     String productionString = xpp.getAttributeValue(null, "production");
 
-                    Building building = new Building(id, buildingName);
+                    Building building = new Building(id, buildingName, descString, resourceHoldLimit, housingNum, resourceNeeded);
+
+                    if (costString != null && !costString.isEmpty()) {
+                        String[] recipes = costString.split(";");
+                        for (String recipeString: recipes) {
+                            List<Item> costInput = convertItemsStringToItems(tree, recipeString);
+                            building.addBuildingCost(Recipe.newRecipeOnlyInput(costInput));
+                        }
+                    }
+                    if (productionString != null && !productionString.isEmpty()) {
+                        String[] recipes = productionString.split(";");
+                        for (String recipeString: recipes) {
+                            if (recipeString.contains(">")) {
+                                String[] tokens = recipeString.split(">");
+                                String input = tokens[0];
+                                String output = tokens[1];
+                                List<Item> costInput = convertItemsStringToItems(tree, input);
+                                List<Item> productionOutput = convertItemsStringToItems(tree, output);
+                                building.addProductionRecipe(new Recipe(costInput, productionOutput));
+                            }
+                            else {
+                                List<Item> productionOutput = convertItemsStringToItems(tree, recipeString);
+                                building.addProductionRecipe(Recipe.newRecipeOnlyOutput(productionOutput));
+                            }
+                        }
+                    }
 
                     tree.insertBuilding(building);
 
@@ -84,6 +111,22 @@ public class BuildingXMLParser {
             }
             eventType = xpp.next();
         }
+    }
+
+    /*
+    Note that for this method to work, the items have to be parsed in before the buildings
+     */
+    public static List<Item> convertItemsStringToItems(ConstructionTree tree, String string) {
+        List<Item> result = new ArrayList<>();
+        String[] tokens = string.split(",");
+        for (String token: tokens) {
+            String[] split = token.trim().split(" ");
+            int quantity = Integer.parseInt(split[0]);
+            String itemName = split[1];
+            Item item = tree.copyItem(itemName, quantity);
+            result.add(item);
+        }
+        return result;
     }
 
 }
