@@ -79,7 +79,7 @@ public class BuildingXMLParser {
                         String[] recipes = costString.split(";");
                         for (String recipeString: recipes) {
                             List<Item> costInput = convertItemsStringToItems(tree, recipeString);
-                            building.addBuildingCost(Recipe.newRecipeOnlyInput(costInput));
+                            building.addBuildingCost(Recipe.newRecipeOnlyInput(new Inventory(costInput)));
                         }
                     }
                     if (productionString != null && !productionString.isEmpty()) {
@@ -91,11 +91,14 @@ public class BuildingXMLParser {
                                 String output = tokens[1];
                                 List<Item> costInput = convertItemsStringToItems(tree, input);
                                 List<Item> productionOutput = convertItemsStringToItems(tree, output);
-                                building.addProductionRecipe(new Recipe(costInput, productionOutput));
+                                building.addProductionRecipe(new Recipe(
+                                        new Inventory(costInput),
+                                        new Inventory(productionOutput)
+                                ));
                             }
                             else {
                                 List<Item> productionOutput = convertItemsStringToItems(tree, recipeString);
-                                building.addProductionRecipe(Recipe.newRecipeOnlyOutput(productionOutput));
+                                building.addProductionRecipe(Recipe.newRecipeOnlyOutput(new Inventory(productionOutput)));
                             }
                         }
                     }

@@ -15,6 +15,10 @@ public class Inventory implements Serializable {
         items = new ArrayList<>();
     }
 
+    public Inventory(List<Item> items) {
+        this.items = items;
+    }
+
     public static Inventory copyInventory(Inventory other) {
         Inventory clone = new Inventory();
         for (Item item: other.items) {
@@ -99,9 +103,9 @@ public class Inventory implements Serializable {
     }
 
     public boolean hasInventory(Inventory other) {
-        Inventory temp = Inventory.copyInventory(other);
+        Inventory temp = Inventory.copyInventory(this);
         for (Item otherItem: other.items) {
-            if (hasItem(otherItem)) {
+            if (temp.hasItem(otherItem)) {
                 temp.removeItem(otherItem);
             }
             else {
@@ -115,6 +119,20 @@ public class Inventory implements Serializable {
         for (Item item: other.items) {
             removeItem(item);
         }
+    }
+
+    public boolean findAndRemoveInventory(Inventory other) {
+        if (!hasInventory(other)) {
+            return false;
+        }
+        else {
+            removeInventory(other);
+            return true;
+        }
+    }
+
+    public int size() {
+        return items.size();
     }
 
     /*public void subtractInventory(Inventory other) {

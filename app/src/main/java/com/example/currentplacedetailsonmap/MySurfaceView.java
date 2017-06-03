@@ -10,6 +10,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.logging.Handler;
@@ -158,7 +160,6 @@ class MySurfaceView extends SurfaceView {
         int action = event.getAction();
         switch(action){
             case MotionEvent.ACTION_DOWN:
-                System.err.println(x + " " + y);
                 hoverTile = tile;
                 touched = true;
                 break;
@@ -166,7 +167,6 @@ class MySurfaceView extends SurfaceView {
                 touched = true;
                 break;
             case MotionEvent.ACTION_UP:
-                System.err.println(x + " " + y);
                 showTileDetails(tile);
                 hoverTile = null;
                 touched = false;
@@ -184,7 +184,7 @@ class MySurfaceView extends SurfaceView {
         return true; //processed
     }
 
-    private void showTileDetails(Tile tile) {
+    private void showTileDetails(final Tile tile) {
         ((TextView) context.findViewById(R.id.buildingLocation)).setVisibility(VISIBLE);
         ((TextView) context.findViewById(R.id.buildingLocation)).setText(tile.row + " " + tile.col);
 
@@ -193,6 +193,7 @@ class MySurfaceView extends SurfaceView {
         ((TextView) context.findViewById(R.id.buildingProduction)).setVisibility(GONE);
         ((TextView) context.findViewById(R.id.buildingHousingNum)).setVisibility(GONE);
         ((TextView) context.findViewById(R.id.buildingItemsList)).setVisibility(GONE);
+        ((Button) context.findViewById(R.id.btnProduceTest)).setVisibility(GONE);
 
         Building building = tile.getBuilding();
         if (building != null) {
@@ -201,6 +202,7 @@ class MySurfaceView extends SurfaceView {
             ((TextView) context.findViewById(R.id.buildingItemsList)).setVisibility(VISIBLE);
             ((TextView) context.findViewById(R.id.buildingHousingNum)).setVisibility(VISIBLE);
             ((TextView) context.findViewById(R.id.buildingProduction)).setVisibility(VISIBLE);
+            ((Button) context.findViewById(R.id.btnProduceTest)).setVisibility(VISIBLE);
 
             ((TextView) context.findViewById(R.id.buildingName)).setText(building.name);
             ((TextView) context.findViewById(R.id.buildingDesc)).setText(building.desc);
@@ -210,6 +212,15 @@ class MySurfaceView extends SurfaceView {
             //}
             ((TextView) context.findViewById(R.id.buildingHousingNum)).setText("Houses " + building.housingNum + " people");
             ((TextView) context.findViewById(R.id.buildingItemsList)).setText("Stored: " + building.getItemsString());
+
+            ((Button) context.findViewById(R.id.btnProduceTest)).setOnClickListener(null);
+            ((Button) context.findViewById(R.id.btnProduceTest)).setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tile.getBuilding().produce();
+                    showTileDetails(tile);
+                }
+            });
         }
     }
 

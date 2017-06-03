@@ -95,6 +95,26 @@
             android:background="@android:color/white"
             android:visibility="gone"
             android:elevation="10dp"/>
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="Production Test"
+            android:id="@+id/btnProduceTest"
+            android:layout_toEndOf="@+id/textView"
+            android:layout_toRightOf="@+id/textView"
+            android:layout_below="@+id/textView"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerHorizontal="true"
+            android:background="#ffff1a7c"
+            android:textColor="#ffffffff"
+            android:visibility="gone"
+            android:elevation="10dp"/>
     </LinearLayout>
 
 </RelativeLayout>

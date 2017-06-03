@@ -14,7 +14,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
 -->
 
 <imprroot>
-    <impr id="0" name="Nexus" resourcelimit="-1" cost="" housing="10" desc="The center of this settlement.">
+    <impr id="0" name="Nexus" resourcelimit="-1" cost="" production="1 Wood > 1 Food" housing="10" desc="The center of this settlement.">
 
     </impr>
     <impr id="10" name="Tent" resourcelimit="10" cost="10 Wood" housing="2" desc="A small pitched up tent.">

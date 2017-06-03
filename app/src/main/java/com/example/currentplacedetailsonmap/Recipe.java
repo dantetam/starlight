@@ -9,39 +9,39 @@ import java.util.List;
  */
 public class Recipe implements Serializable {
 
-    public List<Item> input;
-    public List<Item> output;
+    public Inventory input;
+    public Inventory output;
 
     public Recipe() {
-        input = new ArrayList<>();
-        output = new ArrayList<>();
+        input = new Inventory();
+        output = new Inventory();
     }
 
-    public static Recipe newRecipeOnlyInput(List<Item> input) {
+    public static Recipe newRecipeOnlyInput(Inventory input) {
         Recipe recipe = new Recipe();
         recipe.input = input;
-        recipe.output = new ArrayList<>();
+        recipe.output = new Inventory();
         return recipe;
     }
 
-    public static Recipe newRecipeOnlyOutput(List<Item> output) {
+    public static Recipe newRecipeOnlyOutput(Inventory output) {
         Recipe recipe = new Recipe();
-        recipe.input = new ArrayList<>();
+        recipe.input = new Inventory();
         recipe.output = output;
         return recipe;
     }
 
-    public Recipe(List<Item> input, List<Item> output) {
+    public Recipe(Inventory input, Inventory output) {
         this.input = input;
         this.output = output;
     }
 
     public String toString() {
         String inputString = "", outputString = "";
-        for (Item item: input) {
+        for (Item item: input.getItems()) {
             inputString += item.toString() + " ";
         }
-        for (Item item: output) {
+        for (Item item: output.getItems()) {
             outputString += item.toString() + " ";
         }
         inputString = inputString.trim();

@@ -46,6 +46,7 @@ public class Building implements Serializable {
         cost = new ArrayList<>(building.cost);
         productions = new ArrayList<>(building.productions);
         activeRecipes = new ArrayList<>();
+        activeRecipes.add(0);
     }
 
     public void addBuildingCost(Recipe recipe) {
@@ -85,8 +86,18 @@ public class Building implements Serializable {
 
     //TODO: Remember to account for the special "Resource" which simply refers to the resource within the tile
     public void produce() {
-        for (Recipe recipe: productions) {
-
+        if (productions.size() == 0) return;
+        List<Integer> successfulRecipes = new ArrayList<>();
+        for (int recipeIndex: activeRecipes) {
+            Recipe recipe = productions.get(recipeIndex);
+            if (this.items.hasInventory(recipe.input)) {
+                this.items.removeInventory(recipe.input);
+                successfulRecipes.add(recipeIndex);
+            }
+        }
+        for (int recipeIndex: successfulRecipes) {
+            Recipe recipe = productions.get(recipeIndex);
+            this.items.addInventory(recipe.output);
         }
     }
 
