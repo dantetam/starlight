@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -60,6 +61,9 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     private static final String TAG = MapsActivityCurrentPlace.class.getSimpleName();
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
+
+    private StarlightSurfaceView surfaceView;
+    //private boolean renderingSettlement = false;
 
     // The entry point to Google Play services, used by the Places API and Fused Location Provider.
     private GoogleApiClient mGoogleApiClient;
@@ -138,9 +142,9 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         distTravelled = new VariableListener<Float>(0.0f) {
             @Override
             public void callback() {
-                /*TextView display = ((TextView) findViewById(R.id.mapDistDisplay));;
+                TextView display = ((TextView) findViewById(R.id.mapDistDisplay));;
                 if (display != null)
-                    display.setText("Omnigold: " + gold);*/
+                    display.setText(String.format("Distance Travelled: %.2f m", distTravelled.value()));
             }
         };
 
@@ -551,7 +555,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     public boolean onMarkerClick(final Marker marker) {
         Settlement settlement = settlementIndicesByMarker.get(marker);
 
-        Intent i = new Intent();
+        /*Intent i = new Intent();
         Bundle b = new Bundle();
         b.putSerializable("settlementData", settlement);
         ArrayList<String> addrList = findAddress(settlement.realGeoCoord.x, settlement.realGeoCoord.y);
@@ -560,7 +564,16 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }
         i.putExtras(b);
         i.setClass(this, SettlementDetailsActivity.class);
-        startActivity(i);
+        startActivity(i);*/
+
+        setContentView(R.layout.activity_settlement_live);
+
+        surfaceView = (StarlightSurfaceView) ((ViewGroup) findViewById(R.id.buildingLocation).getParent()).getChildAt(0);
+
+        surfaceView.setSettlement(settlement);
+        surfaceView.setVisibility(View.VISIBLE);
+
+        surfaceView.drawSettlement();
 
         return false;
     }
@@ -582,7 +595,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         prevLocation = mLastKnownLocation;
     }
 
-    private int mInterval = 3000; // 5 seconds by default, can be changed later
+    private int mInterval = 1000; // 5 seconds by default, can be changed later
     private Handler mHandler;
 
     @Override
@@ -598,8 +611,11 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 //this function can change value of mInterval.
                 world.updateWorld();
                 updateDistance();
-                ((TextView) findViewById(R.id.mapDistDisplay)).setText(String.format("Distance Travelled: %.2f m", distTravelled.value()));
-                ((TextView) findViewById(R.id.mapGoldDisplay)).setText("Omnigold: " + gold.value());
+                //((TextView) findViewById(R.id.mapDistDisplay)).setText(String.format("Distance Travelled: %.2f m", distTravelled.value()));
+                //((TextView) findViewById(R.id.mapGoldDisplay)).setText("Omnigold: " + gold.value());
+                if (surfaceView != null) {
+                    surfaceView.drawSettlement();
+                }
             } finally {
                 mHandler.postDelayed(mStatusChecker, mInterval);
             }

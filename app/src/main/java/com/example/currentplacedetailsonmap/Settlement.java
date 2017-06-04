@@ -76,7 +76,6 @@ public class Settlement implements Serializable { //implements Parcelable {
         }
         person.tile = dest;
         dest.people.add(person);
-        System.err.println("Moving person to " + dest.toString());
     }
 
 }

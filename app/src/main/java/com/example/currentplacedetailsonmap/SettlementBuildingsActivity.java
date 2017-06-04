@@ -42,10 +42,10 @@ public class SettlementBuildingsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_settlement_buildings);
 
-        surfaceView = (StarlightSurfaceView) ((RelativeLayout) findViewById(R.id.gameLayout)).getChildAt(0);
+        //surfaceView = (StarlightSurfaceView) ((RelativeLayout) findViewById(R.id.gameLayout)).getChildAt(0);
 
-        mHandler = new Handler();
-        startRepeatingTask();
+        //mHandler = new Handler();
+        //startRepeatingTask();
     }
 
     @Override
@@ -70,7 +70,7 @@ public class SettlementBuildingsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private int mInterval = 3000; // 5 seconds by default, can be changed later
+    /*private int mInterval = 3000; // 5 seconds by default, can be changed later
     private Handler mHandler;
 
     @Override
@@ -101,6 +101,6 @@ public class SettlementBuildingsActivity extends AppCompatActivity {
 
     private void stopRepeatingTask() {
         mHandler.removeCallbacks(mStatusChecker);
-    }
+    }*/
 
 }

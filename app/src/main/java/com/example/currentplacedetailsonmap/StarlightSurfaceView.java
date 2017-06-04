@@ -21,11 +21,11 @@ import java.util.logging.Handler;
  */
 class StarlightSurfaceView extends SurfaceView {
 
-    private SettlementBuildingsActivity context;
+    private MapsActivityCurrentPlace context;
 
     private Canvas canvas;
 
-    private Settlement settlement;
+    private Settlement activeSettlement;
     private Tile hoverTile;
 
     private SurfaceHolder surfaceHolder;
@@ -35,10 +35,7 @@ class StarlightSurfaceView extends SurfaceView {
 
     public StarlightSurfaceView(Context context, AttributeSet attr) {
         super(context);
-        this.context = ((SettlementBuildingsActivity) context);
-        this.settlement = ((SettlementBuildingsActivity) context).settlement;
-        centerX = settlement.rows / 2.0f;
-        centerY = settlement.cols / 2.0f;
+        this.context = ((MapsActivityCurrentPlace) context);
         width = 3;
         init();
     }
@@ -69,11 +66,21 @@ class StarlightSurfaceView extends SurfaceView {
         });
     }
 
+    public void setSettlement(Settlement settlement) {
+        activeSettlement = settlement;
+        centerX = activeSettlement.rows / 2.0f;
+        centerY = activeSettlement.cols / 2.0f;
+    }
+
     public void drawSettlement() {
         if (canvas != null)
             drawSettlement(canvas);
     }
     protected void drawSettlement(Canvas canvas) {
+        if (activeSettlement == null) {
+            return;
+        }
+
         canvas.drawColor(Color.BLACK);
 
         float widthX = width;
@@ -95,7 +102,7 @@ class StarlightSurfaceView extends SurfaceView {
 
         for (int r = startX; r <= endX; r++) {
             for (int c = startY; c <= endY; c++) {
-                Tile tile = settlement.getTile(r,c);
+                Tile tile = activeSettlement.getTile(r,c);
                 if (tile == null) {
                     continue;
                 }
@@ -171,8 +178,8 @@ class StarlightSurfaceView extends SurfaceView {
         int y = (int) Math.floor(touchedY / screenWidthY + startY);
 
         Tile tile = null;
-        if (settlement.inBounds(x,y)) {
-            tile = settlement.getTile(x,y);
+        if (activeSettlement.inBounds(x,y)) {
+            tile = activeSettlement.getTile(x,y);
         }
 
         int action = event.getAction();
