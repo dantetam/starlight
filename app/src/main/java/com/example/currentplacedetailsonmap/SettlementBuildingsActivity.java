@@ -8,15 +8,20 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Xml;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
 
@@ -24,7 +29,7 @@ public class SettlementBuildingsActivity extends AppCompatActivity {
 
     public Settlement settlement;
 
-    private Drawable mCustomImage;
+    private StarlightSurfaceView surfaceView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +42,10 @@ public class SettlementBuildingsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_settlement_buildings);
 
-        mCustomImage = this.getResources().getDrawable(R.drawable.forest_texture);
+        surfaceView = (StarlightSurfaceView) ((RelativeLayout) findViewById(R.id.gameLayout)).getChildAt(0);
+
+        mHandler = new Handler();
+        startRepeatingTask();
     }
 
     @Override
@@ -60,6 +68,39 @@ public class SettlementBuildingsActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private int mInterval = 3000; // 5 seconds by default, can be changed later
+    private Handler mHandler;
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopRepeatingTask();
+    }
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                if (surfaceView != null) {
+                    surfaceView.drawSettlement();
+                }
+                else {
+                    surfaceView = (StarlightSurfaceView) ((RelativeLayout) findViewById(R.id.gameLayout)).getChildAt(0);
+                }
+            } finally {
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
+
+    private void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    private void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
     }
 
 }

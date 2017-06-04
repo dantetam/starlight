@@ -258,11 +258,20 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             nexus.items.addItem(constructionTree.copyItem("Food", 50));
 
             for (int i = 0; i < 10; i++) {
-                settlement.people.add(new Person("Person " + (i + 1)));
+                Person person = new Person("Person " + (i + 1));
+                settlement.people.add(person);
+                Tile randomTile = settlement.randomTile();
+                settlement.movePerson(person, randomTile);
             }
         }
         else {
 
+        }
+
+        if (mLastKnownLocation != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(mLastKnownLocation.getLatitude(),
+                            mLastKnownLocation.getLongitude()), mMap.getCameraPosition().zoom));
         }
 
         return false;
@@ -565,7 +574,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         if (prevLocation != null && mLastKnownLocation != null) {
             float distanceToLast = mLastKnownLocation.distanceTo(prevLocation);
             // if less than 10 metres, do not record
-            if (distanceToLast < 1.00) {
+            if (distanceToLast < 4.00) {
 
             } else
                 distTravelled.set(distTravelled.value() + distanceToLast);
@@ -587,10 +596,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         public void run() {
             try {
                 //this function can change value of mInterval.
-                //System.err.println("Time pass");
+                world.updateWorld();
                 updateDistance();
-                ((TextView) findViewById(R.id.mapDistDisplay)).setText(String.format("Distance Travelled: %.2f m", distTravelled));
-                ((TextView) findViewById(R.id.mapGoldDisplay)).setText("Omnigold: " + gold);
+                ((TextView) findViewById(R.id.mapDistDisplay)).setText(String.format("Distance Travelled: %.2f m", distTravelled.value()));
+                ((TextView) findViewById(R.id.mapGoldDisplay)).setText("Omnigold: " + gold.value());
             } finally {
                 mHandler.postDelayed(mStatusChecker, mInterval);
             }

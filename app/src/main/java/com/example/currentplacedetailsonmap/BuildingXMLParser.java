@@ -72,8 +72,9 @@ public class BuildingXMLParser {
                     int resourceHoldLimit = Integer.parseInt(xpp.getAttributeValue(null, "resourcelimit"));
                     String costString = xpp.getAttributeValue(null, "cost");
                     String productionString = xpp.getAttributeValue(null, "production");
+                    String jobType = xpp.getAttributeValue(null, "jobtype");
 
-                    Building building = new Building(id, buildingName, descString, resourceHoldLimit, housingNum, resourceNeeded);
+                    Building building = new Building(id, buildingName, descString, resourceHoldLimit, housingNum, resourceNeeded, jobType);
 
                     if (costString != null && !costString.isEmpty()) {
                         String[] recipes = costString.split(";");

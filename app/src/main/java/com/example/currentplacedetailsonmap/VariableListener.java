@@ -22,4 +22,8 @@ public abstract class VariableListener<T> {
 
     public abstract void callback();
 
+    public String toString() {
+        return data.toString();
+    }
+
 }

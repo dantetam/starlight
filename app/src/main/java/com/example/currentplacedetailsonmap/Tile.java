@@ -13,11 +13,13 @@ public class Tile implements Serializable {
     public int row, col;
     private Building building;
     public Inventory resources;
+    public List<Person> people;
 
     public Tile(int r, int c) {
         row = r;
         col = c;
         resources = new Inventory();
+        people = new ArrayList<>();
     }
 
     public void addBuilding(Building newBuilding) {
@@ -26,6 +28,10 @@ public class Tile implements Serializable {
 
     public Building getBuilding() {
         return building;
+    }
+
+    public String toString() {
+        return "(" + row + ", " + col + ")";
     }
 
 }

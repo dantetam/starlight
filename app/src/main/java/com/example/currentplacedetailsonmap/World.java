@@ -5,6 +5,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import terrain.DiamondSquare;
 
@@ -20,6 +21,32 @@ public class World {
 
     public World() {
         settlements = new ArrayList<Settlement>();
+    }
+
+    public void updateWorld() {
+        //Some test queued tasks
+
+        for (Settlement settlement: settlements) {
+            for (Person person : settlement.people) {
+                if (person.queueTasks.size() == 0) {
+                    Tile randDest = settlement.randomTile();
+                    Task task = new MoveTask(1, person, settlement, randDest);
+                    person.queueTasks.add(task);
+                }
+            }
+        }
+
+        for (Settlement settlement: settlements) {
+            for (Person person: settlement.people) {
+                if (person.queueTasks.size() > 0) {
+                    Task task = person.queueTasks.get(0);
+                    task.tick();
+                    if (task.ticksLeft < 0) {
+                        person.queueTasks.remove(0);
+                    }
+                }
+            }
+        }
     }
 
     private boolean canCreateSettlement(Vector2f geoCoord) {

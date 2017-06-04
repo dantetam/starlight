@@ -25,23 +25,26 @@ public class Building implements Serializable {
     private List<Recipe> cost;
     private List<Recipe> productions;
 
+    private String jobType;
+
     private int maxRecipesEnabled = 1;
     private List<Integer> activeRecipes;
 
-    public Building(int id, String name, String desc, int resourceLimit, int housingNum, String resourceNeeded) {
+    public Building(int id, String name, String desc, int resourceLimit, int housingNum, String resourceNeeded, String jobType) {
         this.id = id;
         this.name = name;
         this.desc = desc;
         this.resourceLimit = resourceLimit;
         this.housingNum = housingNum;
         this.resourceNeeded = resourceNeeded;
+        this.jobType = jobType;
         items = new Inventory();
         cost = new ArrayList<>();
         productions = new ArrayList<>();
     }
 
     public Building(Building building) {
-        this(building.id, building.name, building.desc, building.resourceLimit, building.housingNum, building.resourceNeeded);
+        this(building.id, building.name, building.desc, building.resourceLimit, building.housingNum, building.resourceNeeded, building.jobType);
         items = new Inventory();
         cost = new ArrayList<>(building.cost);
         productions = new ArrayList<>(building.productions);

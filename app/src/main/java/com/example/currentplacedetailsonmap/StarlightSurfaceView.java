@@ -19,9 +19,11 @@ import java.util.logging.Handler;
 /**
  * Created by Dante on 6/2/2017.
  */
-class MySurfaceView extends SurfaceView {
+class StarlightSurfaceView extends SurfaceView {
 
     private SettlementBuildingsActivity context;
+
+    private Canvas canvas;
 
     private Settlement settlement;
     private Tile hoverTile;
@@ -31,7 +33,7 @@ class MySurfaceView extends SurfaceView {
     private float centerX, centerY;
     private float width;
 
-    public MySurfaceView(Context context, AttributeSet attr) {
+    public StarlightSurfaceView(Context context, AttributeSet attr) {
         super(context);
         this.context = ((SettlementBuildingsActivity) context);
         this.settlement = ((SettlementBuildingsActivity) context).settlement;
@@ -47,7 +49,7 @@ class MySurfaceView extends SurfaceView {
 
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                Canvas canvas = holder.lockCanvas(null);
+                canvas = holder.lockCanvas(null);
                 drawSettlement(canvas);
                 holder.unlockCanvasAndPost(canvas);
             }
@@ -67,6 +69,10 @@ class MySurfaceView extends SurfaceView {
         });
     }
 
+    public void drawSettlement() {
+        if (canvas != null)
+            drawSettlement(canvas);
+    }
     protected void drawSettlement(Canvas canvas) {
         canvas.drawColor(Color.BLACK);
 
@@ -127,6 +133,18 @@ class MySurfaceView extends SurfaceView {
                             null
                     );
                 }
+
+                if (tile.people.size() > 0) {
+                    bmpIcon = BitmapManager.getBitmapFromName("person", context, R.drawable.person);
+                    canvas.drawBitmap(bmpIcon, null, new Rect(
+                                    (int) ((displayR + 0) * renderWidth),
+                                    (int) ((displayC + 0.5) * renderHeight),
+                                    (int) ((displayR + 0.5) * renderWidth),
+                                    (int) ((displayC + 1) * renderHeight)
+                            ),
+                            null
+                    );
+                }
             }
         }
     }
@@ -158,7 +176,7 @@ class MySurfaceView extends SurfaceView {
         }
 
         int action = event.getAction();
-        switch(action){
+        switch (action) {
             case MotionEvent.ACTION_DOWN:
                 hoverTile = tile;
                 touched = true;

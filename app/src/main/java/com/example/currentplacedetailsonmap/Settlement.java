@@ -1,5 +1,6 @@
 package com.example.currentplacedetailsonmap;
 
+import android.opengl.Matrix;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -62,29 +63,20 @@ public class Settlement implements Serializable { //implements Parcelable {
         return null;
     }
 
-    /*@Override
-    public int describeContents() {
-        return 0;
+    public Tile randomTile() {
+        int randomR = (int) (Math.random() * this.rows);
+        int randomC = (int) (Math.random() * this.cols);
+        return getTile(randomR, randomC);
     }
 
-    @Override
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeInt(mData);
+    public void movePerson(Person person, Tile dest) {
+        if (person.tile != null) {
+            person.tile.people.remove(person);
+            person.tile = null;
+        }
+        person.tile = dest;
+        dest.people.add(person);
+        System.err.println("Moving person to " + dest.toString());
     }
-
-    public static final Parcelable.Creator<MyParcelable> CREATOR
-            = new Parcelable.Creator<MyParcelable>() {
-        public MyParcelable createFromParcel(Parcel in) {
-            return new MyParcelable(in);
-        }
-
-        public MyParcelable[] newArray(int size) {
-            return new MyParcelable[size];
-        }
-    };
-
-    private MyParcelable(Parcel in) {
-        mData = in.readInt();
-    }*/
 
 }
