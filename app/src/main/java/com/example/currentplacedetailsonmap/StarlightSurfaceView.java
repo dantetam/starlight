@@ -46,9 +46,9 @@ class StarlightSurfaceView extends SurfaceView {
 
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                canvas = holder.lockCanvas(null);
+                /*canvas = holder.lockCanvas(null);
                 drawSettlement(canvas);
-                holder.unlockCanvasAndPost(canvas);
+                holder.unlockCanvasAndPost(canvas);*/
             }
 
             @Override
@@ -73,8 +73,11 @@ class StarlightSurfaceView extends SurfaceView {
     }
 
     public void drawSettlement() {
-        if (canvas != null)
+        canvas = surfaceHolder.lockCanvas();
+        if (canvas != null) {
             drawSettlement(canvas);
+            surfaceHolder.unlockCanvasAndPost(canvas);
+        }
     }
     protected void drawSettlement(Canvas canvas) {
         if (activeSettlement == null) {
@@ -142,6 +145,7 @@ class StarlightSurfaceView extends SurfaceView {
                 }
 
                 if (tile.people.size() > 0) {
+                    System.err.println("Found person at " + tile.toString());
                     bmpIcon = BitmapManager.getBitmapFromName("person", context, R.drawable.person);
                     canvas.drawBitmap(bmpIcon, null, new Rect(
                                     (int) ((displayR + 0) * renderWidth),

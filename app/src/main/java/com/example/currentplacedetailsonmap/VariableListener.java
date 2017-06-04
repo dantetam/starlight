@@ -8,7 +8,7 @@ public abstract class VariableListener<T> {
     protected T data;
 
     public VariableListener(T initialValue) {
-        set(initialValue);
+        data = initialValue;
     }
 
     public T value() {

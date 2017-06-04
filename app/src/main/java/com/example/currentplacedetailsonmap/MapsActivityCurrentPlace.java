@@ -134,7 +134,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             @Override
             public void callback() {
                 TextView display = ((TextView) findViewById(R.id.mapGoldDisplay));;
-                if (display != null)
+                if (display != null && this.value() != null)
                     display.setText("Omnigold: " + gold);
             }
         };
@@ -143,7 +143,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             @Override
             public void callback() {
                 TextView display = ((TextView) findViewById(R.id.mapDistDisplay));;
-                if (display != null)
+                if (display != null && this.value() != null)
                     display.setText(String.format("Distance Travelled: %.2f m", distTravelled.value()));
             }
         };
@@ -156,6 +156,9 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         mHandler = new Handler();
         startRepeatingTask();
+
+        gold.set(100);
+        distTravelled.set(0.0f);
     }
 
     /**
@@ -568,7 +571,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         setContentView(R.layout.activity_settlement_live);
 
-        surfaceView = (StarlightSurfaceView) ((ViewGroup) findViewById(R.id.buildingLocation).getParent()).getChildAt(0);
+        surfaceView = (StarlightSurfaceView) ((ViewGroup) findViewById(R.id.tileDetailsLayout).getParent()).getChildAt(0);
 
         surfaceView.setSettlement(settlement);
         surfaceView.setVisibility(View.VISIBLE);
@@ -595,7 +598,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         prevLocation = mLastKnownLocation;
     }
 
-    private int mInterval = 1000; // 5 seconds by default, can be changed later
+    private int mInterval = 30; // 5 seconds by default, can be changed later
     private Handler mHandler;
 
     @Override
