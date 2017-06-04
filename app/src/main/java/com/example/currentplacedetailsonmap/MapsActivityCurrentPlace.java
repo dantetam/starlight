@@ -7,6 +7,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -41,6 +42,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -88,6 +90,9 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     private Geocoder geocoder;
 
     private World world;
+    private VariableListener<Integer> gold;
+
+    private VariableListener<Float> distTravelled;
 
     private Map<Marker, Settlement> settlementIndicesByMarker;
 
@@ -121,12 +126,32 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         geocoder = new Geocoder(this, Locale.getDefault());
 
         world = new World();
+        gold = new VariableListener<Integer>(100) {
+            @Override
+            public void callback() {
+                TextView display = ((TextView) findViewById(R.id.mapGoldDisplay));;
+                if (display != null)
+                    display.setText("Omnigold: " + gold);
+            }
+        };
+
+        distTravelled = new VariableListener<Float>(0.0f) {
+            @Override
+            public void callback() {
+                /*TextView display = ((TextView) findViewById(R.id.mapDistDisplay));;
+                if (display != null)
+                    display.setText("Omnigold: " + gold);*/
+            }
+        };
 
         constructionTree = new ConstructionTree();
         ItemXmlParser.parseResourceTree(constructionTree, this, R.raw.resource_tree);
         BuildingXMLParser.parseBuildingTree(constructionTree, this, R.raw.building_tree);
 
         settlementIndicesByMarker = new HashMap<>();
+
+        mHandler = new Handler();
+        startRepeatingTask();
     }
 
     /**
@@ -213,7 +238,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         String name = "Settlement " + (world.settlements.size() + 1);
         Settlement settlement = world.createSettlement(name, c.getTime(), new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
 
-        if (settlement != null) {
+        if (settlement != null && gold.value() >= 35) {
+            gold.set(gold.value() - 35);
             // Add a marker for the selected place, with an info window
             // showing information about that place.
             Marker marker = mMap.addMarker(new MarkerOptions()
@@ -310,13 +336,13 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         if (mLocationPermissionGranted) {
             mLastKnownLocation = LocationServices.FusedLocationApi
                     .getLastLocation(mGoogleApiClient);
-            if (world.geoHome == null) {
+            if (world.geoHome == null && mLastKnownLocation != null) {
                 world.geoHome = new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
             }
         }
 
         // Set the map's camera position to the current location of the device.
-        if (mCameraPosition != null) {
+        /*if (mCameraPosition != null) {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
         } else if (mLastKnownLocation != null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
@@ -326,7 +352,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             Log.d(TAG, "Current location is null. Using defaults.");
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        }
+        }*/
     }
 
     /**
@@ -529,4 +555,54 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         return false;
     }
+
+    private Location prevLocation;
+    private void updateDistance() {
+        if (mMap == null) {
+            return;
+        }
+        getDeviceLocation();
+        if (prevLocation != null && mLastKnownLocation != null) {
+            float distanceToLast = mLastKnownLocation.distanceTo(prevLocation);
+            // if less than 10 metres, do not record
+            if (distanceToLast < 1.00) {
+
+            } else
+                distTravelled.set(distTravelled.value() + distanceToLast);
+        }
+        prevLocation = mLastKnownLocation;
+    }
+
+    private int mInterval = 3000; // 5 seconds by default, can be changed later
+    private Handler mHandler;
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopRepeatingTask();
+    }
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                //this function can change value of mInterval.
+                //System.err.println("Time pass");
+                updateDistance();
+                ((TextView) findViewById(R.id.mapDistDisplay)).setText(String.format("Distance Travelled: %.2f m", distTravelled));
+                ((TextView) findViewById(R.id.mapGoldDisplay)).setText("Omnigold: " + gold);
+            } finally {
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
+
+    private void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    private void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
+    }
+
 }
