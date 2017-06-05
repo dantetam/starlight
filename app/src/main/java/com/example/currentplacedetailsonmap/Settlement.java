@@ -1,14 +1,14 @@
 package com.example.currentplacedetailsonmap;
 
-import android.opengl.Matrix;
-import android.os.Parcel;
-import android.os.Parcelable;
+import com.example.currentplacedetailsonmap.jobs.Job;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Dante on 5/18/2017.
@@ -26,6 +26,8 @@ public class Settlement implements Serializable { //implements Parcelable {
     public Date foundDate;
     public String formattedDate;
 
+    public Map<String, List<Job>> availableJobsBySkill;
+
     public Settlement(String name, Date foundDate, Vector2f realGeoCoord, Vector2f gameCoord, int r, int c) {
         this.name = name;
         this.foundDate = foundDate;
@@ -36,7 +38,7 @@ public class Settlement implements Serializable { //implements Parcelable {
         people = new ArrayList<>();
         SimpleDateFormat df = new SimpleDateFormat("MM dd yyyy");
         formattedDate = df.format(foundDate);
-
+        availableJobsBySkill = new HashMap<>();
         gold = 50;
     }
 

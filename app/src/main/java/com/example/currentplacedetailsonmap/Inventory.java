@@ -6,6 +6,15 @@ import java.util.List;
 
 /**
  * Created by Dante on 6/3/2017.
+ *
+ * A custom class which encapsulates a list of actions,
+ * it has special methods for additions, deletions, etc.
+ *
+ * Test cases:
+ *
+ * Adding items together of same id
+ * Adding items of different health
+ * Removing inventories of items
  */
 public class Inventory implements Serializable {
 

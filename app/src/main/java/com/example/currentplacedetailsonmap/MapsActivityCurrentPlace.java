@@ -1,14 +1,12 @@
 package com.example.currentplacedetailsonmap;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -22,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.example.currentplacedetailsonmap.jobs.Job;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -40,10 +39,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -265,10 +262,14 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             nexus.items.addItem(constructionTree.copyItem("Food", 50));
 
             for (int i = 0; i < 10; i++) {
-                Person person = new Person("Person " + (i + 1));
+                Person person = new Person("Person " + (i + 1), constructionTree.skills);
                 settlement.people.add(person);
                 Tile randomTile = settlement.randomTile();
                 settlement.movePerson(person, randomTile);
+            }
+
+            for (String skill: constructionTree.skills) {
+                settlement.availableJobsBySkill.put(skill, new ArrayList<Job>());
             }
         }
         else {

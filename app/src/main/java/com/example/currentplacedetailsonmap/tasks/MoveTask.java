@@ -1,4 +1,8 @@
-package com.example.currentplacedetailsonmap;
+package com.example.currentplacedetailsonmap.tasks;
+
+import com.example.currentplacedetailsonmap.Person;
+import com.example.currentplacedetailsonmap.Settlement;
+import com.example.currentplacedetailsonmap.Tile;
 
 import java.io.Serializable;
 

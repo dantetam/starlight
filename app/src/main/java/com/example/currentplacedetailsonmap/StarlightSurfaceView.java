@@ -145,7 +145,6 @@ class StarlightSurfaceView extends SurfaceView {
                 }
 
                 if (tile.people.size() > 0) {
-                    System.err.println("Found person at " + tile.toString());
                     bmpIcon = BitmapManager.getBitmapFromName("person", context, R.drawable.person);
                     canvas.drawBitmap(bmpIcon, null, new Rect(
                                     (int) ((displayR + 0) * renderWidth),

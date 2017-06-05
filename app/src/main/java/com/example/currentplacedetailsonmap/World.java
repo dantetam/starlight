@@ -1,11 +1,14 @@
 package com.example.currentplacedetailsonmap;
 
+import com.example.currentplacedetailsonmap.jobs.Job;
+import com.example.currentplacedetailsonmap.tasks.MoveTask;
+import com.example.currentplacedetailsonmap.tasks.Task;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import terrain.DiamondSquare;
 
@@ -24,13 +27,56 @@ public class World {
     }
 
     public void updateWorld() {
-        //Some test queued tasks
+        //Look for jobs
+        for (Settlement settlement: settlements) {
+            for (Person person : settlement.people) {
+                if (person.currentJob == null) {
+                    //Look for a job within the settlement based on priority
+                    //Go through skills sorted by highest priority first,
+                    //looking for available jobs within the respective settlements
+                    Map<String, Integer> sortedSkillsDescending = MapUtil.sortByValueDescending(person.skillPriorities);
+                    for (Map.Entry<String, Integer> entry: sortedSkillsDescending.entrySet()) {
+                        String skillName = entry.getKey();
+                        if (settlement.availableJobsBySkill.get(skillName).size() > 0) {
+                            Job assignedJob = settlement.availableJobsBySkill.get(skillName).get(0);
+                            person.currentJob = assignedJob;
+                            assignedJob.reservedPerson = person;
 
+                            settlement.availableJobsBySkill.get(skillName).remove(0);
+                        }
+                    }
+                }
+
+                //The person may or may not have been assigned a job
+                if (person.currentJob != null) {
+                    if (person.currentJob.doneCondition()) {
+                        person.currentJob.reservedPerson = null;
+                        person.currentJob = null;
+                    }
+                    else {
+                        if (person.queueTasks.size() == 0) {
+                            List<Task> newTasks = person.currentJob.createTasks();
+                            for (Task newTask: newTasks) {
+                                person.queueTasks.add(newTask);
+                            }
+                        }
+                        else {
+                            //Do nothing, the job is still going open.
+                            //Later, process the person's queue of tasks,
+                            //which may or may not be associated with the job.
+                            //Note that a job does not override in progress/queued tasks
+                        }
+                    }
+                }
+            }
+        }
+
+        //Some test queued tasks
         for (Settlement settlement: settlements) {
             for (Person person : settlement.people) {
                 if (person.queueTasks.size() == 0) {
                     Tile randDest = settlement.randomTile();
-                    Task task = new MoveTask(1, person, settlement, randDest);
+                    Task task = new MoveTask(10, person, settlement, randDest);
                     person.queueTasks.add(task);
                 }
             }

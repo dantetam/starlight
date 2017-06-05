@@ -1,8 +1,13 @@
 package com.example.currentplacedetailsonmap;
 
+import com.example.currentplacedetailsonmap.jobs.Job;
+import com.example.currentplacedetailsonmap.tasks.Task;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Dante on 6/1/2017.
@@ -13,11 +18,24 @@ public class Person implements Serializable {
     public Inventory items;
     public Tile tile;
     public List<Task> queueTasks;
+    public Job currentJob;
+    public Map<String, Integer> skills;
+    public Map<String, Integer> skillPriorities;
+    public static int MAX_PRIORITY = 1, MIN_PRIORITY = 4, NO_PRIORITY = 5;
 
-    public Person(String name) {
+    public Person(String name, List<String> possibleSkills) {
         this.name = name;
         this.items = new Inventory();
         queueTasks = new ArrayList<>();
+        skills = new HashMap<>();
+        skillPriorities = new HashMap<>();
+
+        for (String skill: possibleSkills) {
+            int initialLevel = (int) (Math.random() * 12);
+            skills.put(skill, initialLevel);
+            int initialPriority = (int) (Math.random() * 5) + 1;
+            skillPriorities.put(skill, initialPriority);
+        }
     }
 
     public String getItemsString() {

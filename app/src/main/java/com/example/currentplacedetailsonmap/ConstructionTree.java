@@ -1,10 +1,16 @@
 package com.example.currentplacedetailsonmap;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Dante on 6/1/2017.
+ *
+ * This class is unique for every user and stores a possible set of items and buildings and skills
+ * TODO: Items should be standardized across one class
+ * This means that different people could have different types of buildings and such.
  */
 public class ConstructionTree {
 
@@ -14,11 +20,14 @@ public class ConstructionTree {
     private Map<String, Item> itemsByName;
     private Map<String, Building> buildingsByName;
 
+    public List<String> skills;
+
     public ConstructionTree() {
         itemsById = new HashMap<>();
         buildingsById = new HashMap<>();
         itemsByName = new HashMap<>();
         buildingsByName = new HashMap<>();
+        skills = new ArrayList<>();
     }
 
     public void insertBuilding(Building building) {

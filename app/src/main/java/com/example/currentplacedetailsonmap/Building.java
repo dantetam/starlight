@@ -5,6 +5,7 @@ import android.speech.RecognizerIntent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Dante on 6/1/2017.
@@ -30,7 +31,9 @@ public class Building implements Serializable {
     private int maxRecipesEnabled = 1;
     private List<Integer> activeRecipes;
 
-    public Building(int id, String name, String desc, int resourceLimit, int housingNum, String resourceNeeded, String jobType) {
+    public int buildTime;
+
+    public Building(int id, String name, String desc, int resourceLimit, int housingNum, String resourceNeeded, String jobType, int buildTime) {
         this.id = id;
         this.name = name;
         this.desc = desc;
@@ -38,13 +41,14 @@ public class Building implements Serializable {
         this.housingNum = housingNum;
         this.resourceNeeded = resourceNeeded;
         this.jobType = jobType;
+        this.buildTime = buildTime;
         items = new Inventory();
         cost = new ArrayList<>();
         productions = new ArrayList<>();
     }
 
     public Building(Building building) {
-        this(building.id, building.name, building.desc, building.resourceLimit, building.housingNum, building.resourceNeeded, building.jobType);
+        this(building.id, building.name, building.desc, building.resourceLimit, building.housingNum, building.resourceNeeded, building.jobType, building.buildTime);
         items = new Inventory();
         cost = new ArrayList<>(building.cost);
         productions = new ArrayList<>(building.productions);
@@ -114,6 +118,14 @@ public class Building implements Serializable {
         if (activeRecipes.contains(index)) {
             activeRecipes.remove(index);
         }
+    }
+
+    public boolean equals(Object other) {
+        if (!(other instanceof Building)) {
+            return false;
+        }
+        Building building = (Building) other;
+        return this.id == building.id;
     }
 
 }

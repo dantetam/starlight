@@ -73,8 +73,13 @@ public class BuildingXMLParser {
                     String costString = xpp.getAttributeValue(null, "cost");
                     String productionString = xpp.getAttributeValue(null, "production");
                     String jobType = xpp.getAttributeValue(null, "jobtype");
+                    int buildTime = Integer.parseInt(xpp.getAttributeValue(null, "buildtime"));
 
-                    Building building = new Building(id, buildingName, descString, resourceHoldLimit, housingNum, resourceNeeded, jobType);
+                    if (!tree.skills.contains(jobType)) {
+                        tree.skills.add(jobType);
+                    }
+
+                    Building building = new Building(id, buildingName, descString, resourceHoldLimit, housingNum, resourceNeeded, jobType, buildTime);
 
                     if (costString != null && !costString.isEmpty()) {
                         String[] recipes = costString.split(";");
@@ -115,6 +120,10 @@ public class BuildingXMLParser {
             }
             eventType = xpp.next();
         }
+
+        tree.skills.add("Construction");
+        tree.skills.add("Transporting");
+        tree.skills.add("Shooting");
     }
 
     /*
