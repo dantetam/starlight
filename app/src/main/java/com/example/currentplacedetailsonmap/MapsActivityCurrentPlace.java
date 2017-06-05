@@ -17,9 +17,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.currentplacedetailsonmap.jobs.ConstructionJob;
 import com.example.currentplacedetailsonmap.jobs.Job;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -41,6 +44,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -91,6 +95,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     private Geocoder geocoder;
 
     private World world;
+    private Settlement currentSettlement;
     private VariableListener<Integer> gold;
 
     private VariableListener<Float> distTravelled;
@@ -283,6 +288,35 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }
 
         return false;
+    }
+
+    public void newConstructionBuildingList(View v) {
+        final LinearLayout constructionList = (LinearLayout) findViewById(R.id.constructionBuildingList);
+        constructionList.setVisibility(View.VISIBLE);
+        constructionList.removeAllViews();
+
+        Collection<Building> buildings = constructionTree.getAllBuildings();
+        for (final Building building: buildings) {
+            Button button = new Button(this);
+            constructionList.addView(button);
+
+            button.setText(building.name);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (surfaceView != null && surfaceView.getHoverTile() != null) {
+                        String jobType = "Construction";
+
+                        Job constructionJob = new ConstructionJob(surfaceView.getActiveSettlement(), constructionTree.copyBuilding(building.name), surfaceView.getHoverTile());
+
+                        currentSettlement.availableJobsBySkill.get(jobType).add(constructionJob);
+                    }
+                    constructionList.setVisibility(View.GONE);
+                    constructionList.removeAllViews();
+                }
+            });
+        }
+
     }
 
     /**
@@ -558,6 +592,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     @Override
     public boolean onMarkerClick(final Marker marker) {
         Settlement settlement = settlementIndicesByMarker.get(marker);
+        currentSettlement = settlement;
 
         /*Intent i = new Intent();
         Bundle b = new Bundle();
@@ -599,7 +634,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         prevLocation = mLastKnownLocation;
     }
 
-    private int mInterval = 30; // 5 seconds by default, can be changed later
+    private int mInterval = 30; // in milliseconds, 5 seconds by default, can be changed later
     private Handler mHandler;
 
     @Override

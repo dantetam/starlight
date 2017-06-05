@@ -11,10 +11,11 @@ import java.io.Serializable;
  */
 public abstract class Task implements Serializable {
 
-    public int ticksLeft;
+    public int ticksLeft, originalTicksLeft;
 
     public Task(int ticksLeft) {
         this.ticksLeft = ticksLeft;
+        this.originalTicksLeft = ticksLeft;
     }
 
     public void tick() {

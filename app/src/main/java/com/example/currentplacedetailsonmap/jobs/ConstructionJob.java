@@ -19,8 +19,8 @@ public class ConstructionJob extends Job {
     public Building building;
     public Tile tile;
 
-    public ConstructionJob(Settlement settlement, Person reservedPerson, Building building, Tile tile) {
-        super(settlement, reservedPerson);
+    public ConstructionJob(Settlement settlement, Building building, Tile tile) {
+        super(settlement);
         this.building = building;
         this.tile = tile;
     }

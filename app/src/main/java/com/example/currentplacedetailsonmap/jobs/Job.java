@@ -19,9 +19,9 @@ public abstract class Job implements Serializable {
     public Person reservedPerson;
     public abstract String type();
 
-    public Job(Settlement settlement, Person reservedPerson) {
+    public Job(Settlement settlement) {
         this.settlement = settlement;
-        this.reservedPerson = reservedPerson;
+        reservedPerson = null;
     }
 
     public abstract List<Task> createTasks();

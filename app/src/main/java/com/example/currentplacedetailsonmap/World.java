@@ -72,7 +72,7 @@ public class World {
         }
 
         //Some test queued tasks
-        for (Settlement settlement: settlements) {
+        /*for (Settlement settlement: settlements) {
             for (Person person : settlement.people) {
                 if (person.queueTasks.size() == 0) {
                     Tile randDest = settlement.randomTile();
@@ -80,7 +80,7 @@ public class World {
                     person.queueTasks.add(task);
                 }
             }
-        }
+        }*/
 
         for (Settlement settlement: settlements) {
             for (Person person: settlement.people) {

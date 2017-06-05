@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -14,6 +15,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.currentplacedetailsonmap.jobs.ConstructionJob;
+import com.example.currentplacedetailsonmap.jobs.Job;
+import com.example.currentplacedetailsonmap.tasks.Task;
+
+import java.util.Set;
 import java.util.logging.Handler;
 
 /**
@@ -36,7 +42,7 @@ class StarlightSurfaceView extends SurfaceView {
     public StarlightSurfaceView(Context context, AttributeSet attr) {
         super(context);
         this.context = ((MapsActivityCurrentPlace) context);
-        width = 3;
+        width = 7;
         init();
     }
 
@@ -83,6 +89,12 @@ class StarlightSurfaceView extends SurfaceView {
         if (activeSettlement == null) {
             return;
         }
+
+        Paint whitePaint = new Paint();
+        Paint bluePaint = new Paint();
+
+        whitePaint.setColor(Color.WHITE);
+        bluePaint.setColor(Color.BLUE);
 
         canvas.drawColor(Color.BLACK);
 
@@ -154,6 +166,49 @@ class StarlightSurfaceView extends SurfaceView {
                             ),
                             null
                     );
+
+                    Person person = tile.people.get(0);
+
+                    if (person.queueTasks.size() > 0) {
+                        Task firstTask = person.queueTasks.get(0);
+                        float percentageCompleted = 1.0f - (float) firstTask.ticksLeft / (float) firstTask.originalTicksLeft;
+                        canvas.drawRect(
+                                (int) ((displayR + 0) * renderWidth),
+                                (int) ((displayC + 0.8) * renderHeight),
+                                (int) ((displayR + 0.5) * renderWidth),
+                                (int) ((displayC + 1) * renderHeight),
+                                whitePaint
+                        );
+                        canvas.drawRect(
+                                (int) ((displayR + 0) * renderWidth),
+                                (int) ((displayC + 0.8) * renderHeight),
+                                (int) ((displayR + percentageCompleted*0.5) * renderWidth),
+                                (int) ((displayC + 1) * renderHeight),
+                                bluePaint
+                        );
+                    }
+                }
+            }
+        }
+
+        //Render construction jobs by seeing if they're within bounds
+        for (Job job: activeSettlement.availableJobsBySkill.get("Construction")) {
+            if (job instanceof ConstructionJob) {
+                ConstructionJob consJob = (ConstructionJob) job;
+                if (consJob.tile.row >= startX && consJob.tile.row <= endX && consJob.tile.col >= startY && consJob.tile.col <= endY) {
+                    int displayR = consJob.tile.row - startX;
+                    int displayC = consJob.tile.col - startY;
+
+                    Bitmap bmpIcon = BitmapManager.getBitmapFromName("building_in_progress_icon", context, R.drawable.building_in_progress_icon);
+
+                    canvas.drawBitmap(bmpIcon, null, new Rect(
+                                    (int) (displayR*renderWidth),
+                                    (int) (displayC*renderHeight),
+                                    (int) ((displayR + 1) * renderWidth),
+                                    (int) ((displayC + 1) * renderHeight)
+                            ),
+                            null
+                    );
                 }
             }
         }
@@ -196,7 +251,7 @@ class StarlightSurfaceView extends SurfaceView {
                 break;
             case MotionEvent.ACTION_UP:
                 showTileDetails(tile);
-                hoverTile = null;
+                hoverTile = tile;
                 touched = false;
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -250,6 +305,14 @@ class StarlightSurfaceView extends SurfaceView {
                 }
             });
         }
+    }
+
+    public Tile getHoverTile() {
+        return hoverTile;
+    }
+
+    public Settlement getActiveSettlement() {
+        return activeSettlement;
     }
 
 }

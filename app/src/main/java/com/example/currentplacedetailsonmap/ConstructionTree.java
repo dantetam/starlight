@@ -1,6 +1,7 @@
 package com.example.currentplacedetailsonmap;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,10 @@ public class ConstructionTree {
             throw new IllegalArgumentException("In the stored item data, could not find item of name: " + name);
         }
         return new Item(original, quantity);
+    }
+
+    public Collection<Building> getAllBuildings() {
+        return buildingsById.values();
     }
 
 }
