@@ -43,7 +43,7 @@ public class Settlement implements Serializable { //implements Parcelable {
         gold = 50;
     }
 
-    public void initializeSettlement(int[][] resources) {
+    public void initializeSettlementTileTypes(int[][] resources) {
         if (resources.length != tiles.length || tiles.length == 0) {
             throw new IllegalArgumentException("Resources array not aligned with world or world is of size 0");
         }
@@ -51,6 +51,30 @@ public class Settlement implements Serializable { //implements Parcelable {
             for (int c = 0; c < tiles[0].length; c++) {
                 tiles[r][c] = new Tile(r,c);
                 tiles[r][c].tileType = resources[r][c];
+            }
+        }
+    }
+
+    public void initializeSettlementTileResources(int[][] resourcesData, List<Item> possibleResources) {
+        if (resourcesData.length != tiles.length || tiles.length == 0) {
+            throw new IllegalArgumentException("Resources array not aligned with world or world is of size 0");
+        }
+        if (possibleResources.size() == 0) {
+            return;
+        }
+        for (int r = 0; r < tiles.length; r++) {
+            for (int c = 0; c < tiles[0].length; c++) {
+                if (resourcesData[r][c] >= 0) {
+                    int index;
+                    if (resourcesData[r][c] >= possibleResources.size()) {
+                        index = (int) (Math.random() * possibleResources.size());
+                    }
+                    else {
+                        index = resourcesData[r][c];
+                    }
+                    Item initResource = possibleResources.get(index);
+                    tiles[r][c].resources.addItem(new Item(initResource, initResource.quantity));
+                }
             }
         }
     }
