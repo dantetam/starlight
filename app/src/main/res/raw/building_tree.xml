@@ -14,22 +14,76 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
 -->
 
 <imprroot>
-    <impr id="0" name="Nexus" resourcelimit="-1" cost="" housing="10" jobtype="Governing" buildtime="-1" desc="The center of this settlement.">
-
+    <impr 
+    id="0" 
+    name="Nexus" 
+    resourcelimit="-1" 
+    cost="" housing="10" 
+    jobtype="Governing" 
+    buildtime="-1" 
+    desc="The center of this settlement.">
     </impr>
-    <impr id="10" name="Tent" resourcelimit="10" cost="10 Wood" housing="2" buildtime="300" desc="A small pitched up tent.">
-
+    
+    <impr 
+    id="10" 
+    name="Tent" 
+    resourcelimit="10" 
+    cost="10 Wood" 
+    housing="2" 
+    buildtime="300" 
+    desc="A small pitched up tent.">
     </impr>
-    <impr id="20" name="Lumberyard" resourcelimit="50" cost="10 Wood" resourceneeded="Wood" production="1 Wood" jobtype="Plant Cutting" buildtime="900" desc="A station for collecting firewood and logs.">
-
+    
+    <impr 
+    id="20" 
+    name="Lumberyard" 
+    resourcelimit="50" 
+    cost="10 Wood" 
+    resourceneeded="Wood" 
+    production="1 Wood" 
+    jobtype="Plant Cutting" 
+    buildtime="900" 
+    data-productionTimeForLump="30"
+    data-lumpSize="10"
+    desc="A station for collecting firewood and logs.">
     </impr>
-    <impr id="30" name="Mine" resourcelimit="50" cost="15 Wood" resourceneeded="Metal" production="1 Resource" jobtype="Mining" buildtime="900" desc="A small network of shafts and caves for minerals.">
-
+    
+    <impr 
+    id="30" 
+    name="Mine" 
+    resourcelimit="50" 
+    cost="15 Wood" 
+    resourceneeded="Metal" 
+    production="1 Resource" 
+    jobtype="Mining" 
+    buildtime="900" 
+    data-productionTimeForLump="30"
+    data-lumpSize="5"
+    desc="A small network of shafts and caves for minerals.">
     </impr>
-    <impr id="40" name="Farm" resourcelimit="50" cost="10 Wood" production="1 Food" jobtype="Growing" buildtime="900" desc="A small farmhouse built for harvesting the soil.">
-
+    
+    <impr 
+    id="40" 
+    name="Farm" 
+    resourcelimit="50" 
+    cost="10 Wood" 
+    production="1 Food" 
+    jobtype="Farming" 
+    buildtime="9" 
+    data-productionTimeForLump="30"
+    data-lumpSize="5"
+    desc="A small farmhouse built for harvesting the soil.">
     </impr>
-    <impr id="50" name="Blacksmith" resourcelimit="50" cost="15 Wood, 10 Iron" production="5 Iron > 1 Iron Sword; 5 Iron > 1 Iron Shield" jobtype="Smithing" buildtime="1800" desc="A house containing an anvil, small forge, and tools.">
-
+    
+    <impr 
+    id="50" 
+    name="Blacksmith" 
+    resourcelimit="50" 
+    cost="15 Wood, 10 Iron" 
+    production="5 Iron > 1 Iron Sword; 5 Iron > 1 Iron Shield" 
+    jobtype="Smithing" 
+    buildtime="1800" 
+    desc="A house containing an anvil, small forge, and tools.">
     </impr>
+    
 </imprroot>

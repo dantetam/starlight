@@ -131,7 +131,11 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         geocoder = new Geocoder(this, Locale.getDefault());
 
-        world = new World();
+        constructionTree = new ConstructionTree();
+        ItemXmlParser.parseResourceTree(constructionTree, this, R.raw.resource_tree);
+        BuildingXMLParser.parseBuildingTree(constructionTree, this, R.raw.building_tree);
+
+        world = new World(constructionTree);
         gold = new VariableListener<Integer>(100) {
             @Override
             public void callback() {
@@ -149,10 +153,6 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                     display.setText(String.format("Distance Travelled: %.2f m", distTravelled.value()));
             }
         };
-
-        constructionTree = new ConstructionTree();
-        ItemXmlParser.parseResourceTree(constructionTree, this, R.raw.resource_tree);
-        BuildingXMLParser.parseBuildingTree(constructionTree, this, R.raw.building_tree);
 
         settlementIndicesByMarker = new HashMap<>();
 

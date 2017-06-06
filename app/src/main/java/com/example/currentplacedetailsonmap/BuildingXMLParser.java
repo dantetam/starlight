@@ -109,7 +109,7 @@ public class BuildingXMLParser {
                         }
                     }
 
-                    String[] customData = new String[]{"mineTimeForLump", "lumpSize"};
+                    String[] customData = new String[]{"productionTimeForLump", "lumpSize"};
                     for (String customAttr: customData) {
                         String attr = xpp.getAttributeValue(null, "data-" + customAttr);
                         if (attr == null) {

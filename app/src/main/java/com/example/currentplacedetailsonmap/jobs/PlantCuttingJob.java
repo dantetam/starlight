@@ -2,9 +2,8 @@ package com.example.currentplacedetailsonmap.jobs;
 
 import com.example.currentplacedetailsonmap.Building;
 import com.example.currentplacedetailsonmap.Settlement;
-import com.example.currentplacedetailsonmap.Tile;
-import com.example.currentplacedetailsonmap.tasks.ConstructionTask;
-import com.example.currentplacedetailsonmap.tasks.MiningTask;
+import com.example.currentplacedetailsonmap.tasks.FarmingTask;
+import com.example.currentplacedetailsonmap.tasks.PlantCuttingTask;
 import com.example.currentplacedetailsonmap.tasks.Task;
 
 import java.util.ArrayList;
@@ -13,24 +12,24 @@ import java.util.List;
 /**
  * Created by Dante on 6/4/2017.
  */
-public class MiningJob extends Job {
+public class PlantCuttingJob extends Job {
 
-    public Building mine;
+    public Building lumberyard;
 
-    public MiningJob(Settlement settlement, Building building) {
+    public PlantCuttingJob(Settlement settlement, Building building) {
         super(settlement);
-        this.mine = building;
+        this.lumberyard = building;
     }
 
     @Override
     public String type() {
-        return "Mining";
+        return "Plant Cutting";
     }
 
     @Override
     public List<Task> createTasks() {
         List<Task> tasks = new ArrayList<>();
-        tasks.add(new MiningTask((int) mine.getBuildingData("productionTimeForLump"), (int) mine.getBuildingData("lumpSize"), mine));
+        tasks.add(new PlantCuttingTask((int) lumberyard.getBuildingData("productionTimeForLump"), (int) lumberyard.getBuildingData("lumpSize"), lumberyard));
         return tasks;
     }
 
@@ -41,10 +40,10 @@ public class MiningJob extends Job {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof MiningJob)) {
+        if (!(other instanceof PlantCuttingJob)) {
             return false;
         }
-        MiningJob miningJob = (MiningJob) other;
-        return this.mine.equals(miningJob.mine);
+        PlantCuttingJob miningJob = (PlantCuttingJob) other;
+        return this.lumberyard.equals(miningJob.lumberyard);
     }
 }

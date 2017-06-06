@@ -4,6 +4,7 @@ import android.speech.RecognizerIntent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,6 +29,7 @@ public class Building implements Serializable {
     private List<Recipe> productions;
 
     private String jobType;
+    public String getJobType() {return jobType;}
 
     private int maxRecipesEnabled = 1;
     private List<Integer> activeRecipes;
@@ -59,6 +61,7 @@ public class Building implements Serializable {
         this.resourceNeeded = resourceNeeded;
         this.jobType = jobType;
         this.buildTime = buildTime;
+        this.buildingData = new HashMap<>();
         items = new Inventory();
         cost = new ArrayList<>();
         productions = new ArrayList<>();
@@ -66,6 +69,9 @@ public class Building implements Serializable {
 
     public Building(Building building) {
         this(building.id, building.name, building.desc, building.resourceLimit, building.housingNum, building.resourceNeeded, building.jobType, building.buildTime);
+        for (Map.Entry<String, Float> entry: building.buildingData.entrySet()) {
+            this.putBuildingData(entry.getKey(), entry.getValue());
+        }
         items = new Inventory();
         cost = new ArrayList<>(building.cost);
         productions = new ArrayList<>(building.productions);

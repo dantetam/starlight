@@ -132,7 +132,7 @@ public class World {
             List<Item> possibleResources = new ArrayList<>();
             possibleResources.add(tree.copyItem("Wood", 10));
             possibleResources.add(tree.copyItem("Iron", 10));
-            possibleResources.add(tree.copyItem("Food", 10));
+            //possibleResources.add(tree.copyItem("Food", 10));
 
             settlement.initializeSettlementTileResources(generateRandomTilesWithMask(20, 20, 0, 10, 0.8f, -1), possibleResources);
             settlements.add(settlement);

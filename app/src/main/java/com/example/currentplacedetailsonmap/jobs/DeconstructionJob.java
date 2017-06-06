@@ -4,7 +4,7 @@ import com.example.currentplacedetailsonmap.Building;
 import com.example.currentplacedetailsonmap.Settlement;
 import com.example.currentplacedetailsonmap.Tile;
 import com.example.currentplacedetailsonmap.tasks.ConstructionTask;
-import com.example.currentplacedetailsonmap.tasks.MiningTask;
+import com.example.currentplacedetailsonmap.tasks.DeconstructionTask;
 import com.example.currentplacedetailsonmap.tasks.Task;
 
 import java.util.ArrayList;
@@ -13,38 +13,40 @@ import java.util.List;
 /**
  * Created by Dante on 6/4/2017.
  */
-public class MiningJob extends Job {
+public class DeconstructionJob extends Job {
 
-    public Building mine;
+    public Building building;
+    public Tile tile;
 
-    public MiningJob(Settlement settlement, Building building) {
+    public DeconstructionJob(Settlement settlement, Building building, Tile tile) {
         super(settlement);
-        this.mine = building;
+        this.building = building;
+        this.tile = tile;
     }
 
     @Override
     public String type() {
-        return "Mining";
+        return "Construction";
     }
 
     @Override
     public List<Task> createTasks() {
         List<Task> tasks = new ArrayList<>();
-        tasks.add(new MiningTask((int) mine.getBuildingData("productionTimeForLump"), (int) mine.getBuildingData("lumpSize"), mine));
+        tasks.add(new DeconstructionTask(building.buildTime, settlement, building, tile));
         return tasks;
     }
 
     @Override
     public boolean doneCondition() {
-        return false;
+        return tile.getBuilding() == null;
     }
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof MiningJob)) {
+        if (!(other instanceof DeconstructionJob)) {
             return false;
         }
-        MiningJob miningJob = (MiningJob) other;
-        return this.mine.equals(miningJob.mine);
+        DeconstructionJob constructionJob = (DeconstructionJob) other;
+        return this.building.equals(constructionJob.building) && this.tile.equals(constructionJob.tile);
     }
 }

@@ -2,8 +2,7 @@ package com.example.currentplacedetailsonmap.jobs;
 
 import com.example.currentplacedetailsonmap.Building;
 import com.example.currentplacedetailsonmap.Settlement;
-import com.example.currentplacedetailsonmap.Tile;
-import com.example.currentplacedetailsonmap.tasks.ConstructionTask;
+import com.example.currentplacedetailsonmap.tasks.FarmingTask;
 import com.example.currentplacedetailsonmap.tasks.MiningTask;
 import com.example.currentplacedetailsonmap.tasks.Task;
 
@@ -13,24 +12,24 @@ import java.util.List;
 /**
  * Created by Dante on 6/4/2017.
  */
-public class MiningJob extends Job {
+public class FarmingJob extends Job {
 
-    public Building mine;
+    public Building farm;
 
-    public MiningJob(Settlement settlement, Building building) {
+    public FarmingJob(Settlement settlement, Building building) {
         super(settlement);
-        this.mine = building;
+        this.farm = building;
     }
 
     @Override
     public String type() {
-        return "Mining";
+        return "Farming";
     }
 
     @Override
     public List<Task> createTasks() {
         List<Task> tasks = new ArrayList<>();
-        tasks.add(new MiningTask((int) mine.getBuildingData("productionTimeForLump"), (int) mine.getBuildingData("lumpSize"), mine));
+        tasks.add(new FarmingTask((int) farm.getBuildingData("productionTimeForLump"), (int) farm.getBuildingData("lumpSize"), farm));
         return tasks;
     }
 
@@ -41,10 +40,10 @@ public class MiningJob extends Job {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof MiningJob)) {
+        if (!(other instanceof FarmingJob)) {
             return false;
         }
-        MiningJob miningJob = (MiningJob) other;
-        return this.mine.equals(miningJob.mine);
+        FarmingJob miningJob = (FarmingJob) other;
+        return this.farm.equals(miningJob.farm);
     }
 }

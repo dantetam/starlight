@@ -4,19 +4,22 @@ import com.example.currentplacedetailsonmap.Building;
 import com.example.currentplacedetailsonmap.Settlement;
 import com.example.currentplacedetailsonmap.Tile;
 import com.example.currentplacedetailsonmap.jobs.FarmingJob;
+import com.example.currentplacedetailsonmap.jobs.Job;
 import com.example.currentplacedetailsonmap.jobs.MiningJob;
 import com.example.currentplacedetailsonmap.jobs.PlantCuttingJob;
+
+import java.util.List;
 
 /**
  * Created by Dante on 6/4/2017.
  */
-public class ConstructionTask extends Task {
+public class DeconstructionTask extends Task {
 
     public Settlement settlement;
     public Building building;
     public Tile tile;
 
-    public ConstructionTask(int ticksLeft, Settlement settlement, Building building, Tile tile) {
+    public DeconstructionTask(int ticksLeft, Settlement settlement, Building building, Tile tile) {
         super(ticksLeft);
         this.settlement = settlement;
         this.building = building;
@@ -25,19 +28,30 @@ public class ConstructionTask extends Task {
 
     @Override
     public void executeAction() {
-        tile.addBuilding(new Building(building));
-
-        if (building.getJobType() != null) {
+        List<Job> jobs = settlement.availableJobsBySkill.get(building.getJobType());
+        for (int i = 0; i < jobs.size(); i++) {
+            Job job = jobs.get(i);
             if (building.getJobType().equals("Farming")) {
-                settlement.availableJobsBySkill.get(building.getJobType()).add(new FarmingJob(settlement, building));
+                if (((FarmingJob)job).farm.equals(building)) {
+                    jobs.remove(i);
+                    break;
+                }
             }
             else if (building.getJobType().equals("Mining")) {
-                settlement.availableJobsBySkill.get(building.getJobType()).add(new MiningJob(settlement, building));
+                if (((MiningJob)job).mine.equals(building)) {
+                    jobs.remove(i);
+                    break;
+                }
             }
             else if (building.getJobType().equals("Plant Cutting")) {
-                settlement.availableJobsBySkill.get(building.getJobType()).add(new PlantCuttingJob(settlement, building));
+                if (((PlantCuttingJob)job).lumberyard.equals(building)) {
+                    jobs.remove(i);
+                    break;
+                }
             }
         }
+
+        tile.removeBuilding();
     }
 
 }
