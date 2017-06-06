@@ -35,14 +35,17 @@ public class World {
                     //Go through skills sorted by highest priority first,
                     //looking for available jobs within the respective settlements
                     Map<String, Integer> sortedSkillsDescending = MapUtil.sortByValueDescending(person.skillPriorities);
+                    findJobLoop:
                     for (Map.Entry<String, Integer> entry: sortedSkillsDescending.entrySet()) {
                         String skillName = entry.getKey();
-                        if (settlement.availableJobsBySkill.get(skillName).size() > 0) {
-                            Job assignedJob = settlement.availableJobsBySkill.get(skillName).get(0);
-                            person.currentJob = assignedJob;
-                            assignedJob.reservedPerson = person;
-
-                            settlement.availableJobsBySkill.get(skillName).remove(0);
+                        List<Job> jobsInSkill = settlement.availableJobsBySkill.get(skillName);
+                        for (int i = 0; i < jobsInSkill.size(); i++) {
+                            Job assignedJob = jobsInSkill.get(i);
+                            if (assignedJob.reservedPerson == null) {
+                                person.currentJob = assignedJob;
+                                assignedJob.reservedPerson = person;
+                                break findJobLoop;
+                            }
                         }
                     }
                 }
@@ -50,6 +53,20 @@ public class World {
                 //The person may or may not have been assigned a job
                 if (person.currentJob != null) {
                     if (person.currentJob.doneCondition()) {
+                        String skillName = person.currentJob.type();
+
+                        //Find the job and remove it from any settlement level queues
+                        if (settlement.availableJobsBySkill.get(skillName).contains(person.currentJob)) {
+                            settlement.availableJobsBySkill.get(skillName).remove(person.currentJob);
+                        }
+                        else {
+                            for (Map.Entry<String, Integer> entry: person.skillPriorities.entrySet()) {
+                                String otherSkillName = entry.getKey();
+                                List<Job> jobsInSkill = settlement.availableJobsBySkill.get(otherSkillName);
+                                jobsInSkill.remove(person.currentJob);
+                            }
+                        }
+
                         person.currentJob.reservedPerson = null;
                         person.currentJob = null;
                     }

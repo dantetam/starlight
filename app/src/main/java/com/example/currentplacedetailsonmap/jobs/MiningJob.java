@@ -1,56 +1,50 @@
 package com.example.currentplacedetailsonmap.jobs;
 
 import com.example.currentplacedetailsonmap.Building;
-import com.example.currentplacedetailsonmap.Person;
 import com.example.currentplacedetailsonmap.Settlement;
 import com.example.currentplacedetailsonmap.Tile;
 import com.example.currentplacedetailsonmap.tasks.ConstructionTask;
+import com.example.currentplacedetailsonmap.tasks.MiningTask;
 import com.example.currentplacedetailsonmap.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Dante on 6/4/2017.
  */
-public class ConstructionJob extends Job {
+public class MiningJob extends Job {
 
-    public Building building;
-    public Tile tile;
+    public Building mine;
 
-    public ConstructionJob(Settlement settlement, Building building, Tile tile) {
+    public MiningJob(Settlement settlement, Building building) {
         super(settlement);
-        this.building = building;
-        this.tile = tile;
+        this.mine = building;
     }
 
     @Override
     public String type() {
-        return "Construction";
+        return "Mining";
     }
 
     @Override
     public List<Task> createTasks() {
         List<Task> tasks = new ArrayList<>();
-        tasks.add(new ConstructionTask(building.buildTime, settlement, building, tile));
+        tasks.add(new MiningTask((int) mine.getBuildingData("mineTimeForLump"), (int) mine.getBuildingData("lumpSize"), mine));
         return tasks;
     }
 
     @Override
     public boolean doneCondition() {
-        if (tile.getBuilding() == null) {
-            return false;
-        }
-        return tile.getBuilding().equals(building);
+        return false;
     }
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof ConstructionJob)) {
+        if (!(other instanceof MiningJob)) {
             return false;
         }
-        ConstructionJob constructionJob = (ConstructionJob) other;
-        return this.building.equals(constructionJob.building) && this.tile.equals(constructionJob.tile);
+        MiningJob miningJob = (MiningJob) other;
+        return this.mine.equals(miningJob.mine);
     }
 }

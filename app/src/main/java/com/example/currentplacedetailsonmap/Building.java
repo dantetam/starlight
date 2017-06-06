@@ -5,6 +5,7 @@ import android.speech.RecognizerIntent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -30,6 +31,22 @@ public class Building implements Serializable {
 
     private int maxRecipesEnabled = 1;
     private List<Integer> activeRecipes;
+
+    private Tile tile;
+    public void setTile(Tile t) {tile = t;}
+
+    private Map<String, Float> buildingData;
+    public float getBuildingData(String name) {
+        if (buildingData.containsKey(name)) {
+            return buildingData.get(name);
+        }
+        else {
+            throw new IllegalArgumentException("Could not find name of key: " + name);
+        }
+    }
+    public void putBuildingData(String key, Float value) {
+        buildingData.put(key, value);
+    }
 
     public int buildTime;
 
@@ -105,6 +122,13 @@ public class Building implements Serializable {
         for (int recipeIndex: successfulRecipes) {
             Recipe recipe = productions.get(recipeIndex);
             this.items.addInventory(recipe.output);
+        }
+        //The only items of temporary type "Resource" must be added here
+        //i.e. all "Resource" items are converted to the same object
+        if (tile != null) {
+            if (tile.resources.getItems().size() > 0) {
+                this.items.replaceGenericTileResource(tile.resources.getItems());
+            }
         }
     }
 

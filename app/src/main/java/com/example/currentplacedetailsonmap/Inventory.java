@@ -152,4 +152,21 @@ public class Inventory implements Serializable {
         }
     }*/
 
+    //Exchange all units of "Resource" for a set of replacement items
+    public void replaceGenericTileResource(List<Item> replacements) {
+        int multiple = 0;
+        for (int i = items.size() - 1; i >= 0; i--) {
+            Item possibleGeneric = items.get(i);
+            if (possibleGeneric.name.equals("Resource")) {
+                multiple += possibleGeneric.quantity;
+                items.remove(i);
+            }
+        }
+        if (multiple > 0) {
+            for (Item replacement: replacements) {
+                addItem(new Item(replacement, replacement.quantity * multiple));
+            }
+        }
+    }
+
 }

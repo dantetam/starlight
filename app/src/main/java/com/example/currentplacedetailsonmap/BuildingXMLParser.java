@@ -109,9 +109,25 @@ public class BuildingXMLParser {
                         }
                     }
 
+                    String[] customData = new String[]{"mineTimeForLump", "lumpSize"};
+                    for (String customAttr: customData) {
+                        String attr = xpp.getAttributeValue(null, "data-" + customAttr);
+                        if (attr == null) {
+                            attr = xpp.getAttributeValue(null, customAttr);
+                        }
+                        if (attr != null) {
+                            try {
+                                building.putBuildingData(customAttr, Float.parseFloat(attr));
+                            } catch (NumberFormatException exception) {
+                                exception.printStackTrace();
+                                System.err.println("Could not format string for custom data attr: " + customAttr);
+                            }
+                        }
+                    }
+
                     tree.insertBuilding(building);
 
-                    System.err.println("Passed in " + id + ", " + buildingName);
+                    //System.err.println("Passed in " + id + ", " + buildingName);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
 

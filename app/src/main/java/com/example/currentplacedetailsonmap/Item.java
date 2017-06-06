@@ -32,4 +32,12 @@ public class Item implements Serializable {
         return quantity + " " + name;
     }
 
+    public boolean equals(Object other) {
+        if (!(other instanceof Item)) {
+            return false;
+        }
+        Item item = (Item) other;
+        return this.id == item.id && this.quantity == item.quantity && this.health == item.health;
+    }
+
 }

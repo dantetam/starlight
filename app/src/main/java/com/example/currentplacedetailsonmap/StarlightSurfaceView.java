@@ -212,6 +212,24 @@ class StarlightSurfaceView extends SurfaceView {
                 }
             }
         }
+
+        if (hoverTile != null) {
+            if (hoverTile.row >= startX && hoverTile.row <= endX && hoverTile.col >= startY && hoverTile.col <= endY) {
+                int displayR = hoverTile.row - startX;
+                int displayC = hoverTile.col - startY;
+
+                Bitmap bmpIcon = BitmapManager.getBitmapFromName("tile_target", context, R.drawable.tile_target);
+
+                canvas.drawBitmap(bmpIcon, null, new Rect(
+                                (int) (displayR * renderWidth),
+                                (int) (displayC * renderHeight),
+                                (int) ((displayR + 1) * renderWidth),
+                                (int) ((displayC + 1) * renderHeight)
+                        ),
+                        null
+                );
+            }
+        }
     }
 
     @Override
@@ -250,6 +268,7 @@ class StarlightSurfaceView extends SurfaceView {
                 touched = true;
                 break;
             case MotionEvent.ACTION_UP:
+                drawSettlement();
                 showTileDetails(tile);
                 hoverTile = tile;
                 touched = false;
@@ -277,6 +296,7 @@ class StarlightSurfaceView extends SurfaceView {
         ((TextView) context.findViewById(R.id.buildingHousingNum)).setVisibility(GONE);
         ((TextView) context.findViewById(R.id.buildingItemsList)).setVisibility(GONE);
         ((Button) context.findViewById(R.id.btnProduceTest)).setVisibility(GONE);
+        //((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(GONE);
 
         Building building = tile.getBuilding();
         if (building != null) {
@@ -286,6 +306,7 @@ class StarlightSurfaceView extends SurfaceView {
             ((TextView) context.findViewById(R.id.buildingHousingNum)).setVisibility(VISIBLE);
             ((TextView) context.findViewById(R.id.buildingProduction)).setVisibility(VISIBLE);
             ((Button) context.findViewById(R.id.btnProduceTest)).setVisibility(VISIBLE);
+            ((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(GONE);
 
             ((TextView) context.findViewById(R.id.buildingName)).setText(building.name);
             ((TextView) context.findViewById(R.id.buildingDesc)).setText(building.desc);
@@ -304,6 +325,9 @@ class StarlightSurfaceView extends SurfaceView {
                     showTileDetails(tile);
                 }
             });
+        }
+        else {
+            ((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(VISIBLE);
         }
     }
 

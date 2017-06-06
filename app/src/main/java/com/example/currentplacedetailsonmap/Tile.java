@@ -24,6 +24,12 @@ public class Tile implements Serializable {
 
     public void addBuilding(Building newBuilding) {
         this.building = newBuilding;
+        this.building.setTile(this);
+    }
+
+    public void removeBuilding() {
+        this.building.setTile(null);
+        this.building = null;
     }
 
     public Building getBuilding() {

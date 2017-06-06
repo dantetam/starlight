@@ -27,6 +27,7 @@ public class Settlement implements Serializable { //implements Parcelable {
     public String formattedDate;
 
     public Map<String, List<Job>> availableJobsBySkill;
+    public List<Job> inProgressJobs;
 
     public Settlement(String name, Date foundDate, Vector2f realGeoCoord, Vector2f gameCoord, int r, int c) {
         this.name = name;
@@ -78,7 +79,6 @@ public class Settlement implements Serializable { //implements Parcelable {
         }
         person.tile = dest;
         dest.people.add(person);
-
     }
 
 }
