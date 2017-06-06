@@ -25,7 +25,7 @@ public class ConstructionTask extends Task {
 
     @Override
     public void executeAction() {
-        tile.addBuilding(new Building(building));
+        tile.addBuilding(building);
 
         if (building.getJobType() != null) {
             if (building.getJobType().equals("Farming")) {

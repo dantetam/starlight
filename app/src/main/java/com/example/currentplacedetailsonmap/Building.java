@@ -87,6 +87,10 @@ public class Building implements Serializable {
         productions.add(recipe);
     }
 
+    public List<Recipe> getCostRecipes() {
+        return cost;
+    }
+
     public String getBuildingCostString() {
         if (cost.size() == 0) {
             return "None";
@@ -114,7 +118,7 @@ public class Building implements Serializable {
         return items.toString();
     }
 
-    //TODO: Remember to account for the special "Resource" which simply refers to the resource within the tile
+    //Account for the special "Resource" which simply refers to the resource within the tile
     public void produce() {
         if (productions.size() == 0) return;
         List<Integer> successfulRecipes = new ArrayList<>();

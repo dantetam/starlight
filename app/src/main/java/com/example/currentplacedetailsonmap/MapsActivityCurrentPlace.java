@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -258,13 +259,13 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             settlementIndicesByMarker.put(marker, settlement);
 
             //Initialize some first buildings
-            Building nexus = constructionTree.copyBuilding("Nexus");
-            settlement.getTile(settlement.rows / 2, settlement.cols / 2).addBuilding(nexus);
+            settlement.nexus = constructionTree.copyBuilding("Nexus");
+            settlement.getTile(settlement.rows / 2, settlement.cols / 2).addBuilding(settlement.nexus);
             Building tent = constructionTree.copyBuilding("Tent");
             settlement.getTile(settlement.rows / 2 + 1, settlement.cols / 2).addBuilding(tent);
-            nexus.items.addItem(constructionTree.copyItem("Wood", 100));
-            nexus.items.addItem(constructionTree.copyItem("Iron", 25));
-            nexus.items.addItem(constructionTree.copyItem("Food", 50));
+            settlement.nexus.items.addItem(constructionTree.copyItem("Wood", 100));
+            settlement.nexus.items.addItem(constructionTree.copyItem("Iron", 25));
+            settlement.nexus.items.addItem(constructionTree.copyItem("Food", 50));
 
             for (int i = 0; i < 10; i++) {
                 Person person = new Person("Person " + (i + 1), constructionTree.skills);
@@ -297,6 +298,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         Collection<Building> buildings = constructionTree.getAllBuildings();
         for (final Building building: buildings) {
+            if (building.buildTime < 0) {
+                continue;
+            }
+
             Button button = new Button(this);
             constructionList.addView(button);
 
@@ -304,15 +309,27 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int chosenCostRecipe = 0; //TODO: Select this from UI
                     if (surfaceView != null && surfaceView.getHoverTile() != null) {
-                        String jobType = "Construction";
-
-                        Job constructionJob = new ConstructionJob(surfaceView.getActiveSettlement(), constructionTree.copyBuilding(building.name), surfaceView.getHoverTile());
-
-                        currentSettlement.availableJobsBySkill.get(jobType).add(constructionJob);
+                        if (currentSettlement.nexus != null) {
+                            Inventory cost = building.getCostRecipes().get(0).input;
+                            if (currentSettlement.nexus.items.hasInventory(cost)) {
+                                currentSettlement.nexus.items.removeInventory(cost);
+                                String jobType = "Construction";
+                                Job constructionJob = new ConstructionJob(surfaceView.getActiveSettlement(), constructionTree.copyBuilding(building.name), surfaceView.getHoverTile(), chosenCostRecipe);
+                                currentSettlement.availableJobsBySkill.get(jobType).add(constructionJob);
+                            }
+                        }
                     }
                     constructionList.setVisibility(View.GONE);
                     constructionList.removeAllViews();
+                }
+            });
+
+            button.setOnHoverListener(new View.OnHoverListener() {
+                @Override
+                public boolean onHover(View v, MotionEvent event) {
+                    return false;
                 }
             });
         }

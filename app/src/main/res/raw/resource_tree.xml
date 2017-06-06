@@ -1,23 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resourceroot>
-    <resource id="9999" name="Resource" maxhealth="-1" marketvalue="0">
-
-    </resource>
-    <resource id="0" name="Wood" maxhealth="50" marketvalue="0.5">
-
-    </resource>
-    <resource id="1" name="Iron" maxhealth="-1" marketvalue="1.5">
-
-    </resource>
-    <resource id="2" name="Food" maxhealth="30" marketvalue="0.5">
-
+    <resource 
+    id="9999" 
+    name="Resource" 
+    maxhealth="-1" 
+    marketvalue="0"
+    desc="">
     </resource>
     
-    <resource id="20" name="Iron Sword" maxhealth="50" marketvalue="8">
-
+    <resource 
+    id="0" 
+    name="Wood" 
+    maxhealth="50" 
+    marketvalue="0.5"
+    desc="Generic organic matter.">
     </resource>
-    <resource id="30" name="Iron Shield" maxhealth="50" marketvalue="8">
-
+    
+    <resource 
+    id="1" 
+    name="Tropical Wood" 
+    maxhealth="70" 
+    marketvalue="0.9"
+    desc="Exotic organic matter.">
+    </resource>
+    
+    <resource 
+    id="10" 
+    name="Iron" 
+    maxhealth="-1" 
+    marketvalue="1.5"
+    desc="Malleable iron chunks.">
+    </resource>
+  
+    <resource 
+    id="20" 
+    name="Silver" 
+    maxhealth="-1" 
+    marketvalue="1"
+    desc="A piece of silver.">
+    </resource>
+    
+    <resource 
+    id="21" 
+    name="Gold" 
+    maxhealth="-1" 
+    marketvalue="5"
+    desc="A shiny ounce of gold.">
+    </resource>
+    
+    <resource 
+    id="30" 
+    name="Iron Sword" 
+    maxhealth="50" 
+    marketvalue="8"
+    desc="A forged iron sword.">
+    </resource>
+    
+    <resource 
+    id="40" 
+    name="Iron Shield" 
+    maxhealth="50" 
+    marketvalue="8"
+    desc="A hammered iron shield.">
+    </resource>
+    
+    <resource 
+    id="100" 
+    name="Food" 
+    maxhealth="30" 
+    marketvalue="0.5"
+    desc="Generic unit of food.">
     </resource>
 </resourceroot>

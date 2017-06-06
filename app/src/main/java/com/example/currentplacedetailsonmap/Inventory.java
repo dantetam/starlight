@@ -59,7 +59,7 @@ public class Inventory implements Serializable {
                 return;
             }
         }
-        items.add(item);
+        items.add(new Item(item, item.quantity));
     }
     public void addInventory(Inventory other) {
         for (Item item: other.items) {

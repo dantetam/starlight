@@ -28,10 +28,20 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     id="10" 
     name="Tent" 
     resourcelimit="10" 
-    cost="10 Wood" 
+    cost="10 Wood; 10 Tropical Wood" 
     housing="2" 
-    buildtime="300" 
+    buildtime="30" 
     desc="A small pitched up tent.">
+    </impr>
+    
+    <impr 
+    id="11" 
+    name="House" 
+    resourcelimit="20" 
+    cost="30 Wood; 30 Tropical Wood" 
+    housing="5" 
+    buildtime="30" 
+    desc="A small, liveable, and modest house.">
     </impr>
     
     <impr 
@@ -40,9 +50,9 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     resourcelimit="50" 
     cost="10 Wood" 
     resourceneeded="Wood" 
-    production="1 Wood" 
+    production="1 Resource" 
     jobtype="Plant Cutting" 
-    buildtime="900" 
+    buildtime="90" 
     data-productionTimeForLump="30"
     data-lumpSize="10"
     desc="A station for collecting firewood and logs.">
@@ -56,7 +66,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     resourceneeded="Metal" 
     production="1 Resource" 
     jobtype="Mining" 
-    buildtime="900" 
+    buildtime="90" 
     data-productionTimeForLump="30"
     data-lumpSize="5"
     desc="A small network of shafts and caves for minerals.">
@@ -69,7 +79,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     cost="10 Wood" 
     production="1 Food" 
     jobtype="Farming" 
-    buildtime="9" 
+    buildtime="90" 
     data-productionTimeForLump="30"
     data-lumpSize="5"
     desc="A small farmhouse built for harvesting the soil.">
@@ -82,7 +92,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     cost="15 Wood, 10 Iron" 
     production="5 Iron > 1 Iron Sword; 5 Iron > 1 Iron Shield" 
     jobtype="Smithing" 
-    buildtime="1800" 
+    buildtime="180" 
     desc="A house containing an anvil, small forge, and tools.">
     </impr>
     

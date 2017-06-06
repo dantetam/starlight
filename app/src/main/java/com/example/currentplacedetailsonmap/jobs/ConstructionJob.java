@@ -19,7 +19,7 @@ public class ConstructionJob extends Job {
     public Building building;
     public Tile tile;
 
-    public ConstructionJob(Settlement settlement, Building building, Tile tile) {
+    public ConstructionJob(Settlement settlement, Building building, Tile tile, int recipeUsed) {
         super(settlement);
         this.building = building;
         this.tile = tile;

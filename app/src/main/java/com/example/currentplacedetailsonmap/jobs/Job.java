@@ -27,5 +27,6 @@ public abstract class Job implements Serializable {
     public abstract List<Task> createTasks();
     public abstract boolean doneCondition();
     public abstract boolean equals(Object other);
+    public abstract void cancelJob();
 
 }

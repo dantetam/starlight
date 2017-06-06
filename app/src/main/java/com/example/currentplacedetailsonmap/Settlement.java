@@ -29,6 +29,8 @@ public class Settlement implements Serializable { //implements Parcelable {
     public Map<String, List<Job>> availableJobsBySkill;
     public List<Job> inProgressJobs;
 
+    public Building nexus; //Where resources are stored
+
     public Settlement(String name, Date foundDate, Vector2f realGeoCoord, Vector2f gameCoord, int r, int c) {
         this.name = name;
         this.foundDate = foundDate;
