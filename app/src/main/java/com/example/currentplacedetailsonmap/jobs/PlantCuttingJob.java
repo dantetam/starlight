@@ -46,4 +46,9 @@ public class PlantCuttingJob extends Job {
         PlantCuttingJob miningJob = (PlantCuttingJob) other;
         return this.lumberyard.equals(miningJob.lumberyard);
     }
+
+    @Override
+    public void cancelJob() {
+
+    }
 }

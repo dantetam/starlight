@@ -1,6 +1,7 @@
 package com.example.currentplacedetailsonmap.jobs;
 
 import com.example.currentplacedetailsonmap.Building;
+import com.example.currentplacedetailsonmap.Inventory;
 import com.example.currentplacedetailsonmap.Person;
 import com.example.currentplacedetailsonmap.Settlement;
 import com.example.currentplacedetailsonmap.Tile;
@@ -18,11 +19,13 @@ public class ConstructionJob extends Job {
 
     public Building building;
     public Tile tile;
+    public int recipeUsed;
 
     public ConstructionJob(Settlement settlement, Building building, Tile tile, int recipeUsed) {
         super(settlement);
         this.building = building;
         this.tile = tile;
+        this.recipeUsed = recipeUsed;
     }
 
     @Override
@@ -52,5 +55,11 @@ public class ConstructionJob extends Job {
         }
         ConstructionJob constructionJob = (ConstructionJob) other;
         return this.building.equals(constructionJob.building) && this.tile.equals(constructionJob.tile);
+    }
+
+    @Override
+    public void cancelJob() {
+        Inventory returnMaterials = building.getCostRecipes().get(recipeUsed).input;
+        settlement.nexus.items.addInventory(returnMaterials);
     }
 }

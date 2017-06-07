@@ -1,7 +1,9 @@
 package com.example.currentplacedetailsonmap;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -97,6 +99,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
     private World world;
     private Settlement currentSettlement;
+
     private VariableListener<Integer> gold;
 
     private VariableListener<Float> distTravelled;
@@ -263,7 +266,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             settlement.getTile(settlement.rows / 2, settlement.cols / 2).addBuilding(settlement.nexus);
             Building tent = constructionTree.copyBuilding("Tent");
             settlement.getTile(settlement.rows / 2 + 1, settlement.cols / 2).addBuilding(tent);
-            settlement.nexus.items.addItem(constructionTree.copyItem("Wood", 100));
+            settlement.nexus.items.addItem(constructionTree.copyItem("Wood", 200));
+            settlement.nexus.items.addItem(constructionTree.copyItem("Tropical Wood", 100));
             settlement.nexus.items.addItem(constructionTree.copyItem("Iron", 25));
             settlement.nexus.items.addItem(constructionTree.copyItem("Food", 50));
 
@@ -292,6 +296,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     }
 
     public void newConstructionBuildingList(View v) {
+        final Context context = this;
         final LinearLayout constructionList = (LinearLayout) findViewById(R.id.constructionBuildingList);
         constructionList.setVisibility(View.VISIBLE);
         constructionList.removeAllViews();
@@ -309,10 +314,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int chosenCostRecipe = 0; //TODO: Select this from UI
+                    int chosenCostRecipe = building.costRecipeNum; //TODO: Select this from UI
                     if (surfaceView != null && surfaceView.getHoverTile() != null) {
                         if (currentSettlement.nexus != null) {
-                            Inventory cost = building.getCostRecipes().get(0).input;
+                            Inventory cost = building.getCostRecipes().get(chosenCostRecipe).input;
                             if (currentSettlement.nexus.items.hasInventory(cost)) {
                                 currentSettlement.nexus.items.removeInventory(cost);
                                 String jobType = "Construction";
@@ -326,10 +331,40 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 }
             });
 
-            button.setOnHoverListener(new View.OnHoverListener() {
+            button.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public boolean onHover(View v, MotionEvent event) {
-                    return false;
+                public boolean onLongClick(View v) {
+                    System.err.println("yes");
+                    List<Recipe> possibleCostRecipes = building.getCostRecipes();
+                    for (int i = 0; i < possibleCostRecipes.size(); i++) {
+                        Recipe recipe = possibleCostRecipes.get(i);
+                        String str = recipe.toString();
+
+                        Button button = new Button(context);
+                        button.setBackgroundColor(Color.BLUE);
+                        constructionList.addView(button);
+                        button.setText("Build with: " + str);
+
+                        final int j = i;
+
+                        button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                building.costRecipeNum = j;
+                                for (int i = 0; i < constructionList.getChildCount(); i++) {
+                                    View child = constructionList.getChildAt(i);
+                                    if (child instanceof Button) {
+                                        Button button = (Button) child;
+                                        if (button.getText().toString().startsWith("Build with: ")) {
+                                            child.setVisibility(View.GONE);
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    return true;
                 }
             });
         }

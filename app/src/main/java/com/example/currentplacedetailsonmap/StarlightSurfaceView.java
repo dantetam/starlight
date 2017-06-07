@@ -13,6 +13,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.currentplacedetailsonmap.jobs.ConstructionJob;
@@ -290,6 +291,8 @@ class StarlightSurfaceView extends SurfaceView {
         ((TextView) context.findViewById(R.id.buildingLocation)).setVisibility(VISIBLE);
         ((TextView) context.findViewById(R.id.buildingLocation)).setText(tile.row + " " + tile.col);
 
+        ((TextView) context.findViewById(R.id.buildingTileResource)).setVisibility(GONE);
+
         ((TextView) context.findViewById(R.id.buildingName)).setVisibility(GONE);
         ((TextView) context.findViewById(R.id.buildingDesc)).setVisibility(GONE);
         ((TextView) context.findViewById(R.id.buildingProduction)).setVisibility(GONE);
@@ -297,6 +300,8 @@ class StarlightSurfaceView extends SurfaceView {
         ((TextView) context.findViewById(R.id.buildingItemsList)).setVisibility(GONE);
         ((Button) context.findViewById(R.id.btnProduceTest)).setVisibility(GONE);
         //((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(GONE);
+
+        ((LinearLayout) context.findViewById(R.id.constructionBuildingList)).removeAllViews();
 
         Building building = tile.getBuilding();
         if (building != null) {
@@ -325,6 +330,11 @@ class StarlightSurfaceView extends SurfaceView {
                     showTileDetails(tile);
                 }
             });
+
+            if (tile.resources.size() > 0) {
+                ((TextView) context.findViewById(R.id.buildingTileResource)).setVisibility(VISIBLE);
+                ((TextView) context.findViewById(R.id.buildingTileResource)).setText("Resources: " + tile.resources.getItems());
+            }
         }
         else {
             ((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(VISIBLE);

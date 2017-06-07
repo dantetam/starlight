@@ -27,6 +27,7 @@ public class Building implements Serializable {
 
     private List<Recipe> cost;
     private List<Recipe> productions;
+    public int costRecipeNum = 0;
 
     private String jobType;
     public String getJobType() {return jobType;}
@@ -136,9 +137,9 @@ public class Building implements Serializable {
         //The only items of temporary type "Resource" must be added here
         //i.e. all "Resource" items are converted to the same object
         if (tile != null) {
-            if (tile.resources.getItems().size() > 0) {
+            //if (tile.resources.getItems().size() > 0) {
                 this.items.replaceGenericTileResource(tile.resources.getItems());
-            }
+            //}
         }
     }
 

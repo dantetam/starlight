@@ -1,6 +1,7 @@
 package com.example.currentplacedetailsonmap.jobs;
 
 import com.example.currentplacedetailsonmap.Building;
+import com.example.currentplacedetailsonmap.Inventory;
 import com.example.currentplacedetailsonmap.Settlement;
 import com.example.currentplacedetailsonmap.Tile;
 import com.example.currentplacedetailsonmap.tasks.ConstructionTask;
@@ -48,5 +49,10 @@ public class DeconstructionJob extends Job {
         }
         DeconstructionJob constructionJob = (DeconstructionJob) other;
         return this.building.equals(constructionJob.building) && this.tile.equals(constructionJob.tile);
+    }
+
+    @Override
+    public void cancelJob() {
+
     }
 }

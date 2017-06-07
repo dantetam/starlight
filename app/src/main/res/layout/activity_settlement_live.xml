@@ -31,6 +31,18 @@
             android:elevation="10dp"/>
         <TextView
             android:text=""
+            android:id="@+id/buildingTileResource"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:background="@android:color/white"
+            android:visibility="gone"
+            android:elevation="10dp"/>
+        <TextView
+            android:text=""
             android:id="@+id/buildingName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -126,7 +138,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/constructionBuildingList"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:visibility="gone">
 
         </LinearLayout>

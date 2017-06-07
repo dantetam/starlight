@@ -138,6 +138,7 @@ public class BuildingXMLParser {
         }
 
         tree.skills.add("Construction");
+        tree.skills.add("Deonstruction");
         tree.skills.add("Transporting");
         tree.skills.add("Shooting");
     }
@@ -149,13 +150,22 @@ public class BuildingXMLParser {
         List<Item> result = new ArrayList<>();
         String[] tokens = string.split(",");
         for (String token: tokens) {
-            String[] split = token.trim().split(" ");
-            int quantity = Integer.parseInt(split[0]);
-            String itemName = split[1];
+            int index = indexOfFirstLetter(token.trim());
+            int quantity = Integer.parseInt(token.trim().substring(0, index).trim());
+            String itemName = token.trim().substring(index).trim();
             Item item = tree.copyItem(itemName, quantity);
             result.add(item);
         }
         return result;
+    }
+
+    private static int indexOfFirstLetter(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            if (Character.isLetter(str.charAt(i))) {
+                return i;
+            }
+        }
+        return -1;
     }
 
 }
