@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!--
+Remember special classes:
+Metal -> Iron, Silver, Gold
+AllWood -> Wood, Tropical Wood
+RawFood -> Wheat, Potato, Apple, Cabbage
+-->
 <resourceroot>
     <resource 
     id="9999" 
@@ -23,6 +28,14 @@
     maxhealth="70" 
     marketvalue="0.9"
     desc="Exotic organic matter.">
+    </resource>
+    
+    <resource 
+    id="5" 
+    name="Cotton" 
+    maxhealth="30" 
+    marketvalue="0.4"
+    desc="Fibers and balls of cotton and seed.">
     </resource>
     
     <resource 
@@ -58,7 +71,7 @@
     </resource>
     
     <resource 
-    id="40" 
+    id="31" 
     name="Iron Shield" 
     maxhealth="50" 
     marketvalue="8"
@@ -66,10 +79,98 @@
     </resource>
     
     <resource 
+    id="35" 
+    name="Wooden Bow" 
+    maxhealth="50" 
+    marketvalue="8.5"
+    desc="A strung, taut wooden bow.">
+    </resource>
+    
+    <resource 
+    id="36" 
+    name="Wooden Composite Bow" 
+    maxhealth="50" 
+    marketvalue="42"
+    desc="A complex composite bow with high power.">
+    </resource>
+    
+    <resource 
+    id="40" 
+    name="Wooden Furniture" 
+    maxhealth="60" 
+    marketvalue="20"
+    desc="Chairs, beds, and tables made of wood.">
+    </resource>
+    
+    <resource 
+    id="41" 
+    name="Iron Furniture" 
+    maxhealth="80" 
+    marketvalue="32"
+    desc="Chairs, beds, and tables made of iron.">
+    </resource>
+    
+    <resource 
     id="100" 
-    name="Food" 
-    maxhealth="30" 
+    name="Component" 
+    maxhealth="-1" 
+    marketvalue="20"
+    desc="A set of carefully crafted small parts and pieces.">
+    </resource>
+    
+    <resource 
+    id="150" 
+    name="Wheat" 
+    maxhealth="20" 
     marketvalue="0.5"
-    desc="Generic unit of food.">
+    desc="A small bundle of wheat.">
+    </resource>
+    
+    <resource 
+    id="151" 
+    name="Potato" 
+    maxhealth="20" 
+    marketvalue="0.5"
+    desc="A raw potato.">
+    </resource>
+    
+    <resource 
+    id="152" 
+    name="Apple" 
+    maxhealth="20" 
+    marketvalue="0.5"
+    desc="A single apple.">
+    </resource>
+    
+    <resource 
+    id="153" 
+    name="Cabbage" 
+    maxhealth="20" 
+    marketvalue="0.5"
+    desc="A leafy green cabbage that lasts a while, still whole.">
+    </resource>
+    
+    <resource 
+    id="200" 
+    name="Cloth Shirt" 
+    maxhealth="30" 
+    marketvalue="6"
+    desc="A shirt made out of cotton.">
+    </resource>
+    
+    <resource 
+    id="201" 
+    name="Cloth Pants" 
+    maxhealth="30" 
+    marketvalue="6"
+    desc="A pair of pants made out of cotton.">
+    </resource>
+    
+    <resource 
+    id="202" 
+    name="Coat" 
+    maxhealth="40" 
+    marketvalue="9"
+    desc="A nice coat made out of cotton.">
     </resource>
 </resourceroot>

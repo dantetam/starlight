@@ -18,10 +18,20 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     id="0" 
     name="Nexus" 
     resourcelimit="-1" 
-    cost="" housing="10" 
+    cost="" 
+    housing="10" 
     jobtype="Governing" 
     buildtime="-1" 
     desc="The center of this settlement.">
+    </impr>
+    
+    <impr 
+    id="0" 
+    name="Fort" 
+    resourcelimit="10" 
+    cost="30 Wood"
+    buildtime="90" 
+    desc="A fortified tower and reinforced house.">
     </impr>
     
     <impr 
@@ -48,8 +58,8 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     id="20" 
     name="Lumberyard" 
     resourcelimit="50" 
-    cost="10 Wood" 
-    resourceneeded="Wood" 
+    cost="30 Wood" 
+    resourceneeded="AllWood" 
     production="1 Resource" 
     jobtype="Plant Cutting" 
     buildtime="90" 
@@ -62,7 +72,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     id="30" 
     name="Mine" 
     resourcelimit="50" 
-    cost="15 Wood" 
+    cost="30 Wood" 
     resourceneeded="Metal" 
     production="1 Resource" 
     jobtype="Mining" 
@@ -76,8 +86,8 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     id="40" 
     name="Farm" 
     resourcelimit="50" 
-    cost="10 Wood" 
-    production="1 Food; 1 Silver" 
+    cost="30 Wood" 
+    production="1 Wheat; 1 Potato; 1 Apple; 1 Cabbage" 
     jobtype="Farming" 
     buildtime="90" 
     data-productionTimeForLump="30"
@@ -89,11 +99,68 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     id="50" 
     name="Blacksmith" 
     resourcelimit="50" 
-    cost="15 Wood, 10 Iron" 
-    production="5 Iron > 1 Iron Sword; 5 Iron > 1 Iron Shield" 
+    cost="35 Wood, 10 Iron" 
+    production="15 Iron > 1 Iron Sword; 15 Iron > 1 Iron Shield; 15 Wood > 1 Wooden Bow; 15 Tropical Wood, 1 Component > 1 Wooden Composite Bow" 
     jobtype="Smithing" 
     buildtime="180" 
     desc="A house containing an anvil, small forge, and tools.">
+    </impr>
+    
+    <impr 
+    id="60" 
+    name="Artisan" 
+    resourcelimit="50" 
+    cost="35 Wood, 10 Iron" 
+    production="5 Wood, 10 Iron > 1 Component; 15 Wood > 1 Wooden Furniture; 15 Iron, 5 Wood > 1 Iron Furniture" 
+    jobtype="Crafting" 
+    buildtime="180" 
+    desc="A workshop containing tools and small parts.">
+    </impr>
+    
+    <impr 
+    id="70" 
+    name="Tailor" 
+    resourcelimit="50" 
+    cost="35 Wood, 10 Iron" 
+    production="10 Cotton > 1 Cloth Shirt; 10 Cotton > 1 Cloth Pants; 15 Cotton > 1 Coat" 
+    jobtype="Tailoring" 
+    buildtime="180" 
+    desc="A workshop for weaving and stitching clothing.">
+    </impr>
+    
+    <impr 
+    id="80" 
+    name="Workshop" 
+    resourcelimit="50" 
+    cost="35 Wood, 10 Iron" 
+    production="" 
+    jobtype="Crafting" 
+    buildtime="180" 
+    desc="A designated place to create special items.">
+    </impr>
+    
+    <impr 
+    id="90" 
+    name="Research Lab" 
+    resourcelimit="50" 
+    cost="30 Wood, 15 Iron, 3 Component" 
+    production="" 
+    jobtype="Research" 
+    buildtime="180" 
+    desc="A lab with many intricate tools, components, and machines.">
+    </impr>
+    
+    <impr 
+    id="100" 
+    name="Kitchen" 
+    resourcelimit="50" 
+    cost="30 Wood" 
+    production="5 RawFood > 1 Meal" 
+    jobtype="Cooking" 
+    buildtime="90" 
+    data-productionTimeForLump="30"
+    data-lumpSize="5"
+    desc="A small farmhouse built for harvesting the soil.">
     </impr>
     
 </imprroot>

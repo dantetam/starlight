@@ -21,6 +21,8 @@ public class ConstructionTree {
     private Map<String, Item> itemsByName;
     private Map<String, Building> buildingsByName;
 
+    private Map<String, List<String>> customResourceGroups;
+
     public List<String> skills;
 
     public ConstructionTree() {
@@ -29,6 +31,7 @@ public class ConstructionTree {
         itemsByName = new HashMap<>();
         buildingsByName = new HashMap<>();
         skills = new ArrayList<>();
+        customResourceGroups = new HashMap<>();
     }
 
     public void insertBuilding(Building building) {
@@ -71,6 +74,16 @@ public class ConstructionTree {
 
     public Collection<Building> getAllBuildings() {
         return buildingsById.values();
+    }
+
+    public boolean itemIsInGroup(String group, String name) {
+        if (!customResourceGroups.containsKey(group)) {
+            throw new IllegalArgumentException("Could not find in item group name: " + group);
+        }
+        else {
+            List<String> groupItems = customResourceGroups.get(group);
+            return groupItems.contains(name);
+        }
     }
 
 }

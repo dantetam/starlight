@@ -347,7 +347,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                         else {
                             button.setBackgroundColor(Color.WHITE);
                         }
-                        
+
                         constructionList.addView(button);
                         button.setText("Build with: " + str);
 
