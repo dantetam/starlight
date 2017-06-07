@@ -301,7 +301,10 @@ class StarlightSurfaceView extends SurfaceView {
         ((Button) context.findViewById(R.id.btnProduceTest)).setVisibility(GONE);
         //((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(GONE);
 
+        ((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(GONE);
+        ((Button) context.findViewById(R.id.btnProductionList)).setVisibility(GONE);
         ((LinearLayout) context.findViewById(R.id.constructionBuildingList)).removeAllViews();
+        ((LinearLayout) context.findViewById(R.id.productionRecipesList)).removeAllViews();
 
         Building building = tile.getBuilding();
         if (building != null) {
@@ -335,6 +338,8 @@ class StarlightSurfaceView extends SurfaceView {
                 ((TextView) context.findViewById(R.id.buildingTileResource)).setVisibility(VISIBLE);
                 ((TextView) context.findViewById(R.id.buildingTileResource)).setText("Resources: " + tile.resources.getItems());
             }
+
+            ((Button) context.findViewById(R.id.btnProductionList)).setVisibility(VISIBLE);
         }
         else {
             ((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(VISIBLE);

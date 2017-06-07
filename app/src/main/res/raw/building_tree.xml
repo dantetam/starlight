@@ -77,7 +77,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     name="Farm" 
     resourcelimit="50" 
     cost="10 Wood" 
-    production="1 Food" 
+    production="1 Food; 1 Silver" 
     jobtype="Farming" 
     buildtime="90" 
     data-productionTimeForLump="30"

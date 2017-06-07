@@ -334,14 +334,20 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             button.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    System.err.println("yes");
                     List<Recipe> possibleCostRecipes = building.getCostRecipes();
                     for (int i = 0; i < possibleCostRecipes.size(); i++) {
                         Recipe recipe = possibleCostRecipes.get(i);
                         String str = recipe.toString();
 
                         Button button = new Button(context);
-                        button.setBackgroundColor(Color.BLUE);
+
+                        if (building.costRecipeNum == i) {
+                            button.setBackgroundColor(Color.BLUE);
+                        }
+                        else {
+                            button.setBackgroundColor(Color.WHITE);
+                        }
+                        
                         constructionList.addView(button);
                         button.setText("Build with: " + str);
 
@@ -369,6 +375,54 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             });
         }
 
+    }
+
+    public void newProductionRecipesList(View v) {
+        final Context context = this;
+        final LinearLayout productionList = (LinearLayout) findViewById(R.id.productionRecipesList);
+        productionList.setVisibility(View.VISIBLE);
+        productionList.removeAllViews();
+
+        Tile hover = surfaceView.getHoverTile();
+        if (hover == null || hover.getBuilding() == null) {
+            return;
+        }
+
+        final Building building = hover.getBuilding();
+        List<Recipe> recipes = building.getProductionRecipes();
+        for (int i = 0; i < recipes.size(); i++) {
+            final int j = i;
+
+            Recipe recipe = recipes.get(i);
+            Button button = new Button(this);
+            productionList.addView(button);
+
+            if (building.getActiveRecipes().contains(i)) {
+                button.setBackgroundColor(Color.BLUE);
+            }
+            else {
+                button.setBackgroundColor(Color.WHITE);
+            }
+
+            button.setText(recipe.toString());
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (building.getActiveRecipes().contains(j)) {
+                        building.deactivateRecipe(j);
+                    }
+                    else {
+                        if (building.getActiveRecipes().size() >= building.maxRecipesEnabled) {
+                            building.deactivateRandom();
+                        }
+                        building.activateRecipe(j);
+                    }
+                    productionList.setVisibility(View.GONE);
+                    productionList.removeAllViews();
+                    newProductionRecipesList(null);
+                }
+            });
+        }
     }
 
     /**

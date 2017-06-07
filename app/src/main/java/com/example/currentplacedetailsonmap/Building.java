@@ -32,7 +32,8 @@ public class Building implements Serializable {
     private String jobType;
     public String getJobType() {return jobType;}
 
-    private int maxRecipesEnabled = 1;
+    public int maxRecipesEnabled = 1;
+    public int getMaxRecipesEnabled() {return maxRecipesEnabled;}
     private List<Integer> activeRecipes;
 
     private Tile tile;
@@ -92,6 +93,10 @@ public class Building implements Serializable {
         return cost;
     }
 
+    public List<Recipe> getProductionRecipes() {
+        return productions;
+    }
+
     public String getBuildingCostString() {
         if (cost.size() == 0) {
             return "None";
@@ -138,21 +143,30 @@ public class Building implements Serializable {
         //i.e. all "Resource" items are converted to the same object
         if (tile != null) {
             //if (tile.resources.getItems().size() > 0) {
-                this.items.replaceGenericTileResource(tile.resources.getItems());
+            this.items.replaceGenericTileResource(tile.resources.getItems());
             //}
         }
     }
 
     public void activateRecipe(int index) {
         if (!activeRecipes.contains(index) && activeRecipes.size() < maxRecipesEnabled) {
-            activeRecipes.add(index);
+            activeRecipes.add(new Integer(index));
         }
     }
 
     public void deactivateRecipe(int index) {
         if (activeRecipes.contains(index)) {
-            activeRecipes.remove(index);
+            activeRecipes.remove(new Integer(index));
         }
+    }
+
+    public void deactivateRandom() {
+        int index = (int) (Math.random() * activeRecipes.size());
+        activeRecipes.remove(index);
+    }
+
+    public List<Integer> getActiveRecipes() {
+        return activeRecipes;
     }
 
     public boolean equals(Object other) {
