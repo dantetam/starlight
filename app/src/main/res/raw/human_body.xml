@@ -2,7 +2,11 @@
 <!--
 
 -->
-<bodyroot>
+<bodyroot
+name="Full Body" 
+maxhealth="200" 
+coverage="1"
+desc="">
     <bodypart 
     name="Head" 
     maxhealth="40" 

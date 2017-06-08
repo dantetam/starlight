@@ -9,6 +9,7 @@ import java.util.Map;
 public class Body {
 
     private Map<String, BodyPart> bodyPartsByName;
+    public BodyPart root;
 
     public Body() {
         bodyPartsByName = new HashMap<>();

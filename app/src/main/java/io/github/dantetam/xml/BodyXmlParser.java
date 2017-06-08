@@ -27,9 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.dantetam.world.action.Ability;
-import io.github.dantetam.world.entity.Tech;
-import io.github.dantetam.world.entity.TechTree;
+import io.github.dantetam.person.Body;
+import io.github.dantetam.person.BodyPart;
 
 /**
  * Given an InputStream representation of a feed, it returns a List of entries,
@@ -38,15 +37,12 @@ import io.github.dantetam.world.entity.TechTree;
 public class BodyXmlParser {
     private static final String ns = null;
 
-    public static TechTree parseTechTree(TechTree tree, Context context, int resourceId, int secondResourceId) {
-        final InputStream techStream = context.getResources().openRawResource(
+    public static Body parseTechTree(Context context, int resourceId, int secondResourceId) {
+        final InputStream bodyDataStream = context.getResources().openRawResource(
                 resourceId);
-        final InputStream techLocationStream = context.getResources().openRawResource(
-                secondResourceId);
-        TechTree result = null;
+        Body result = null;
         try {
-            result = parseTechTree(tree, techStream);
-            parseTechLocationTree(result, techLocationStream);
+            result = parseTechTree(bodyDataStream);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -65,7 +61,7 @@ public class BodyXmlParser {
     tag pops a tech off the stack. The stackCounter int represents distance from
     the tech root, where -1 indicates no tech has been parsed.
      */
-    public static TechTree parseTechTree(TechTree tree, InputStream inputStream)
+    public static Body parseTechTree(InputStream inputStream)
             throws XmlPullParserException, IOException {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(false);
@@ -74,176 +70,45 @@ public class BodyXmlParser {
         //xpp.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
         xpp.setInput(inputStream, null);
         int stackCounter = -1;
-        List<Tech> stack = new ArrayList<>();
-        tree.techMap = new HashMap<>();
-        HashMap<String, String> addRequirementsNames = new HashMap<>();
+        List<BodyPart> stack = new ArrayList<>();
+
         int eventType = xpp.getEventType();
+
+        Body body = new Body();
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if (eventType == XmlPullParser.START_DOCUMENT) {
-                //System.out.println("Start document");
+
             } else if (eventType == XmlPullParser.START_TAG) {
-                //System.out.println("Start tag " + xpp.getName());
-                if (xpp.getName().equals("tech") || xpp.getName().equals("techroot")) {
-                    String techName = xpp.getAttributeValue(null, "name");
-                    int workNeeded = Integer.parseInt(xpp.getAttributeValue(null, "workNeeded"));
-                    //System.out.println(techName + " " + workNeeded);
-                    Tech newTech = new Tech(techName, 0, workNeeded);
-                    if (xpp.getName().equals("techroot")) {
-                        tree.root = newTech;
+                if (xpp.getName().equals("bodypart") || xpp.getName().equals("bodyroot")) {
+                    String name = xpp.getAttributeValue(null, "name");
+                    int maxHealth = Integer.parseInt(xpp.getAttributeValue(null, "maxHealth"));
+                    float coverage = Float.parseFloat(xpp.getAttributeValue(null, "coverage"));
+                    String desc = xpp.getAttributeValue(null, "desc");
+
+                    BodyPart bodyPart = new BodyPart(name, desc, coverage, maxHealth);
+                    if (xpp.getName().equals("bodyroot")) {
+                        body.root = bodyPart;
                     }
-                    stack.add(newTech);
+                    stack.add(bodyPart);
                     if (stackCounter >= 0) {
-                        stack.get(stackCounter).unlockedTechs.add(newTech);
-                        newTech.parent = stack.get(stackCounter);
+                        stack.get(stackCounter).subBodyParts.add(bodyPart);
+                        //bodyPart.parent
                     }
                     stackCounter++;
-
-                    String unlockBuilding = xpp.getAttributeValue(null, "building");
-                    String unlockRevealResource = xpp.getAttributeValue(null, "resource_reveal");
-                    String unlockHarvestResource = xpp.getAttributeValue(null, "resource_harvest");
-                    String unlockUnit = xpp.getAttributeValue(null, "unit");
-                    //String unlockUnits = xpp.getAttributeValue(null, "units");
-                    String unlockSpecialAbility = xpp.getAttributeValue(null, "specialAbility");
-
-                    if (unlockBuilding != null) {
-                        String[] buildingsToUnlock;
-                        if (unlockBuilding.contains("/")) {
-                            buildingsToUnlock = unlockBuilding.split("/");
-                            for (String stringy: buildingsToUnlock) {
-                                if (tree.clan.unitTree.personTypes.get(stringy) == null) {
-                                    System.err.println("Could not find building " + stringy + " within " + unlockUnit);
-                                }
-                                newTech.unlockedBuildings.add(tree.clan.buildingTree.buildingTypes.get(stringy));
-                            }
-                        }
-                        else {
-                            if (tree.clan.unitTree.personTypes.get(unlockBuilding) == null) {
-                                System.err.println("Could not find building " + unlockBuilding);
-                            }
-                            newTech.unlockedBuildings.add(tree.clan.buildingTree.buildingTypes.get(unlockBuilding));
-                        }
-                    }
-                    if (unlockRevealResource != null) {
-                        if (TechTree.itemTypes.get(unlockHarvestResource) == null) {
-                            System.err.println("Could not find unit " + unlockHarvestResource);
-                        }
-                        newTech.revealResources.add(TechTree.itemTypes.get(unlockHarvestResource));
-                    }
-                    if (unlockHarvestResource != null) {
-                        newTech.harvestableResources.add(TechTree.itemTypes.get(unlockHarvestResource));
-                    }
-                    if (unlockUnit != null) {
-                        String[] unitsToUnlock;
-                        if (unlockUnit.contains("/")) {
-                            unitsToUnlock = unlockUnit.split("/");
-                            for (String stringy: unitsToUnlock) {
-                                if (tree.clan.unitTree.personTypes.get(stringy) == null) {
-                                    System.err.println("Could not find unit " + stringy + " within " + unlockUnit);
-                                }
-                                newTech.unlockedUnits.add(tree.clan.unitTree.personTypes.get(stringy));
-                            }
-                        }
-                        else {
-                            if (tree.clan.unitTree.personTypes.get(unlockUnit) == null) {
-                                System.err.println("Could not find unit " + unlockUnit);
-                            }
-                            newTech.unlockedUnits.add(tree.clan.unitTree.personTypes.get(unlockUnit));
-                        }
-                    }
-                    if (unlockSpecialAbility != null) {
-                        newTech.unlockedSpecialAbilities.add(new Ability(unlockSpecialAbility, "", "")); //TODO: <---
-                    }
-
-                    tree.techMap.put(techName, newTech);
-                    //A forward declaration for requirements?
-                    String extraRequirement = xpp.getAttributeValue(null, "requirement");
-                    if (extraRequirement != null) {
-                        addRequirementsNames.put(techName, extraRequirement);
-                    }
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
-                //System.out.println("End tag " + xpp.getName());
-                if (xpp.getName().equals("tech") || xpp.getName().equals("techroot")) {
+                if (xpp.getName().equals("bodypart") || xpp.getName().equals("bodyroot")) {
                     stack.remove(stack.size() - 1);
                     stackCounter--;
                 }
             } else if (eventType == XmlPullParser.TEXT) {
-                //System.out.println("Text "+xpp.getText());
+
             }
             eventType = xpp.next();
         }
 
-        for (Map.Entry<String, String> entry: addRequirementsNames.entrySet()) {
-            Tech subject = tree.techMap.get(entry.getKey());
-            Tech requirement = tree.techMap.get(entry.getValue());
-            /*if (requirement == null)
-                System.out.println(entry.getKey() + "<<<<" + entry.getValue());*/
-            subject.extraReqs.add(requirement);
-        }
-        //System.out.println("End document");
-        return tree;
-    }
-
-    //Mutate a tech tree by setting all the render positions
-    public static void parseTechLocationTree(TechTree tree, InputStream inputStream)
-            throws XmlPullParserException, IOException {
-        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-        factory.setNamespaceAware(false);
-        XmlPullParser xpp = factory.newPullParser();
-        xpp.setInput(inputStream, null);
-
-        int eventType = xpp.getEventType();
-
-        //Adjust so that all the indices are not negative, this is required for the tech GridLayout
-        int minX = 0, minY = 0;
-        int maxX = 0, maxY = 0;
-
-        while (eventType != XmlPullParser.END_DOCUMENT) {
-            if (eventType == XmlPullParser.START_DOCUMENT) {
-                //System.out.println("Start document");
-            } else if (eventType == XmlPullParser.START_TAG) {
-                //System.out.println("Start tag " + xpp.getName());
-                if (xpp.getName().equals("tech") || xpp.getName().equals("techroot")) {
-                    String techName = xpp.getAttributeValue(null, "name");
-                    Tech modifyTech = tree.techMap.get(techName);
-
-                    String offsetStringX = xpp.getAttributeValue(null, "x");
-                    String offsetStringY = xpp.getAttributeValue(null, "y");
-                    int offX = Integer.parseInt(offsetStringX), offY = Integer.parseInt(offsetStringY);
-
-                    if (offX < minX) minX = offX;
-                    else if (offX > maxX) maxX = offX;
-                    if (offY < minY) minY = offY;
-                    else if (offY > maxY) maxY = offY;
-
-                    if (modifyTech == null) {
-                        System.out.println(techName);
-                    }
-                    modifyTech.treeOffsetX = offX; modifyTech.treeOffsetY = offY;
-                }
-            } else if (eventType == XmlPullParser.END_TAG) {
-                //System.out.println("End tag " + xpp.getName());
-                if (xpp.getName().equals("tech") || xpp.getName().equals("techroot")) {
-
-                }
-            } else if (eventType == XmlPullParser.TEXT) {
-                //System.out.println("Text "+xpp.getText());
-            }
-            eventType = xpp.next();
-        }
-
-        /*tree.globalOffsetX = minX; tree.globalOffsetY = minY;
-        tree.globalOffsetMaxY = maxY;
-
-        tree.hardGlobalMinimum = new Vector2f(minX, minY);
-        tree.hardGlobalMaximum = new Vector2f(maxX - 4, maxY);*/
-
-        tree.minX = minX; tree.minY = minY;
-        tree.maxX = maxX; tree.maxY = maxY;
-
-        tree.screenCenterX = 0;
-        tree.screenCenterY = 0;
+        return body;
     }
 
 }

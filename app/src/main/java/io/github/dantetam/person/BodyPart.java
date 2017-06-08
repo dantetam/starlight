@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class BodyPart {
 
+    public String name, desc;
     public int maxHealth;
     public float proportionOfParent;
 
@@ -15,8 +16,11 @@ public class BodyPart {
 
     public List<BodyPart> subBodyParts;
 
-    public BodyPart(float proportionOfParent) {
+    public BodyPart(String name, String desc, float proportionOfParent, int maxHealth) {
+        this.name = name;
+        this.desc = desc;
         this.proportionOfParent = proportionOfParent;
+        this.maxHealth = maxHealth;
         injuries = new ArrayList<>();
         subBodyParts = new ArrayList<>();
     }
