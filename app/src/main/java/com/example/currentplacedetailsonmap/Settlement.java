@@ -31,6 +31,8 @@ public class Settlement implements Serializable { //implements Parcelable {
 
     public Building nexus; //Where resources are stored
 
+    public static Pathfinder<Tile> pathfinder = new Pathfinder<>();
+
     public Settlement(String name, Date foundDate, Vector2f realGeoCoord, Vector2f gameCoord, int r, int c) {
         this.name = name;
         this.foundDate = foundDate;
@@ -43,6 +45,22 @@ public class Settlement implements Serializable { //implements Parcelable {
         formattedDate = df.format(foundDate);
         availableJobsBySkill = new HashMap<>();
         gold = 50;
+    }
+
+    public void initializeNeighbors() {
+        for (int r = 0; r < tiles.length; r++) {
+            for (int c = 0; c < tiles[0].length; c++) {
+                Tile tile = tiles[r][c];
+                int[] dr = new int[]{r-1, r-1, r-1, r, r+1, r+1, r+1, r};
+                int[] dc = new int[]{c-1, c, c+1, c+1, c+1, c, c-1, c-1};
+                for (int i = 0; i < 8; i++) {
+                    if (inBounds(r + dr[i], c + dc[i])) {
+                        Tile neighbor = tiles[r + dr[i]][c + dc[i]];
+                        tile.storedNeighbors.add(neighbor);
+                    }
+                }
+            }
+        }
     }
 
     public void initializeSettlementTileTypes(int[][] resources) {

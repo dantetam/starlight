@@ -42,4 +42,13 @@ public class Person implements Serializable {
         return items.toString();
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Person)) {
+            return false;
+        }
+        Person person = (Person) other;
+        return this.name.equals(person.name) && this.tile.equals(person.tile);
+    }
+
 }

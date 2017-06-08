@@ -143,6 +143,14 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
+    id="60" 
+    name="Stone" 
+    maxhealth="50" 
+    marketvalue="0.6"
+    desc="A pile of uncut stones of various sizes.">
+    </resource>
+    
+    <resource 
     id="90" 
     name="Fuel" 
     maxhealth="25" 

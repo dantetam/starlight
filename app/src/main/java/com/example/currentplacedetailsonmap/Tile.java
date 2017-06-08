@@ -7,19 +7,21 @@ import java.util.List;
 /**
  * Created by Dante on 5/18/2017.
  */
-public class Tile implements Serializable {
+public class Tile implements Serializable, Traversable<Tile> {
 
     public int tileType;
     public int row, col;
     private Building building;
     public Inventory resources;
     public List<Person> people;
+    public List<Tile> storedNeighbors;
 
     public Tile(int r, int c) {
         row = r;
         col = c;
         resources = new Inventory();
         people = new ArrayList<>();
+        storedNeighbors = new ArrayList<>();
     }
 
     public void addBuilding(Building newBuilding) {
@@ -40,4 +42,26 @@ public class Tile implements Serializable {
         return "(" + row + ", " + col + ")";
     }
 
+    public boolean accessible() {
+        return true;
+    }
+
+    @Override
+    public float dist(Tile tile) {
+        return 1;
+    }
+
+    @Override
+    public List<Tile> neighbors() {
+        return storedNeighbors;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Tile)) {
+            return false;
+        }
+        Tile tile = (Tile) other;
+        return this.row == tile.row && this.col == tile.col;
+    }
 }

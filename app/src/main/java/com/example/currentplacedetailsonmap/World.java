@@ -133,8 +133,10 @@ public class World {
             possibleResources.add(tree.copyItem("Wood", 10));
             possibleResources.add(tree.copyItem("Iron", 10));
             //possibleResources.add(tree.copyItem("Food", 10));
-
             settlement.initializeSettlementTileResources(generateRandomTilesWithMask(20, 20, 0, 10, 0.8f, -1), possibleResources);
+
+            settlement.initializeNeighbors();
+
             settlements.add(settlement);
             return settlement;
         }
