@@ -171,10 +171,10 @@ class StarlightSurfaceView extends SurfaceView {
                     Bitmap bmpIcon = BitmapManager.getBitmapFromName("building_in_progress_icon", context, R.drawable.building_in_progress_icon);
 
                     canvas.drawBitmap(bmpIcon, null, new Rect(
-                                    (int) (displayR*renderWidth),
-                                    (int) (displayC*renderHeight),
-                                    (int) ((displayR + 1) * renderWidth),
-                                    (int) ((displayC + 1) * renderHeight)
+                                    (int) ((displayR + 0.25)*renderWidth),
+                                    (int) ((displayC + 0.25)*renderHeight),
+                                    (int) ((displayR + 0.75) * renderWidth),
+                                    (int) ((displayC + 0.75) * renderHeight)
                             ),
                             null
                     );
@@ -195,22 +195,22 @@ class StarlightSurfaceView extends SurfaceView {
                 Bitmap bmpIcon;
 
                 if (tile.people.size() > 0) {
-                    bmpIcon = BitmapManager.getBitmapFromName("person", context, R.drawable.person);
-                    canvas.drawBitmap(bmpIcon, null, new Rect(
-                                    (int) ((displayR + 0) * renderWidth),
-                                    (int) ((displayC + 0.5) * renderHeight),
-                                    (int) ((displayR + 0.5) * renderWidth),
-                                    (int) ((displayC + 1) * renderHeight)
-                            ),
-                            null
-                    );
-
                     Person person = tile.people.get(0);
 
                     if (person.queueTasks.size() > 0) {
                         Task firstTask = person.queueTasks.get(0);
                         float percentageCompleted = 1.0f - (float) firstTask.ticksLeft / (float) firstTask.originalTicksLeft;
                         if (!(firstTask instanceof MoveTask)) {
+                            //Draw the person standing still,
+                            bmpIcon = BitmapManager.getBitmapFromName("person", context, R.drawable.person);
+                            canvas.drawBitmap(bmpIcon, null, new Rect(
+                                            (int) ((displayR + 0) * renderWidth),
+                                            (int) ((displayC + 0.5) * renderHeight),
+                                            (int) ((displayR + 0.5) * renderWidth),
+                                            (int) ((displayC + 1) * renderHeight)
+                                    ),
+                                    null
+                            );
                             canvas.drawRect(
                                     (int) ((displayR + 0) * renderWidth),
                                     (int) ((displayC + 0.8) * renderHeight),
@@ -229,8 +229,33 @@ class StarlightSurfaceView extends SurfaceView {
                         else {
                             Tile current = person.tile;
                             Tile dest = ((MoveTask) firstTask).dest;
-                            TODO: Tween the person sprite by the proportion percentageCompleted between these two tiles
+                            //TODO: Tween the person sprite by the proportion percentageCompleted between these two tiles
+                            float trueR = (1 - percentageCompleted) * current.row + percentageCompleted * dest.row;
+                            float trueC = (1 - percentageCompleted) * current.col + percentageCompleted * dest.col;
+                            float displayTweenR = trueR - startX;
+                            float displayTweenC = trueC - startY;
+                            bmpIcon = BitmapManager.getBitmapFromName("person", context, R.drawable.person);
+                            canvas.drawBitmap(bmpIcon, null, new Rect(
+                                            (int) ((displayTweenR + 0) * renderWidth),
+                                            (int) ((displayTweenC + 0.5) * renderHeight),
+                                            (int) ((displayTweenR + 0.5) * renderWidth),
+                                            (int) ((displayTweenC + 1) * renderHeight)
+                                    ),
+                                    null
+                            );
+                            System.err.println(current.toString() + ";" + dest.toString() + ";" + trueR + "," + trueC);
                         }
+                    }
+                    else {
+                        bmpIcon = BitmapManager.getBitmapFromName("person", context, R.drawable.person);
+                        canvas.drawBitmap(bmpIcon, null, new Rect(
+                                        (int) ((displayR + 0) * renderWidth),
+                                        (int) ((displayC + 0.5) * renderHeight),
+                                        (int) ((displayR + 0.5) * renderWidth),
+                                        (int) ((displayC + 1) * renderHeight)
+                                ),
+                                null
+                        );
                     }
                 }
             }
@@ -292,7 +317,8 @@ class StarlightSurfaceView extends SurfaceView {
                 break;
             case MotionEvent.ACTION_UP:
                 drawSettlement();
-                showTileDetails(tile);
+                if (tile != null)
+                    showTileDetails(tile);
                 hoverTile = tile;
                 touched = false;
                 break;

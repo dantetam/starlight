@@ -22,6 +22,7 @@ public class Person implements Serializable {
     public Map<String, Integer> skills;
     public Map<String, Integer> skillPriorities;
     public static int MAX_PRIORITY = 1, MIN_PRIORITY = 4, NO_PRIORITY = 5;
+    public Body body;
 
     public Person(String name, List<String> possibleSkills) {
         this.name = name;
@@ -53,7 +54,11 @@ public class Person implements Serializable {
 
     //The number of ticks passed when moving one tile in any direction
     public int tileMoveSpeed() {
-        return 10;
+        return 6;
+    }
+
+    public void initializeBody() {
+        
     }
 
 }

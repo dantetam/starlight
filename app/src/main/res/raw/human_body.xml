@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+-->
+<bodyroot>
+    <bodypart 
+    name="Head" 
+    maxhealth="40" 
+    coverage="0.05"
+    desc="">
+        <bodypart 
+        name="Brain" 
+        maxhealth="5" 
+        coverage="0.2"
+        desc="">
+        </bodypart>
+        <bodypart 
+        name="Left Eye" 
+        maxhealth="5" 
+        coverage="0.025"
+        desc="">
+        </bodypart>
+        <bodypart 
+        name="Right Eye" 
+        maxhealth="5" 
+        coverage="0.025"
+        desc="">
+        </bodypart>
+        <bodypart 
+        name="Nose" 
+        maxhealth="5" 
+        coverage="0.05"
+        desc="">
+        </bodypart>
+        <bodypart 
+        name="Left Ear" 
+        maxhealth="5" 
+        coverage="0.05"
+        desc="">
+        </bodypart>
+        <bodypart 
+        name="Right Ear" 
+        maxhealth="5" 
+        coverage="0.05"
+        desc="">
+        </bodypart>
+        <bodypart 
+        name="Jaw" 
+        maxhealth="10" 
+        coverage="0.2"
+        desc="">
+        </bodypart>
+    </bodypart>
+    
+    <bodypart 
+    name="Torso" 
+    maxhealth="80" 
+    coverage="0.55"
+    desc="">
+        <bodypart 
+        name="Left Shoulder" 
+        maxhealth="15" 
+        coverage="0.1"
+        desc="">
+        </bodypart>
+        <bodypart 
+        name="Right Shoulder" 
+        maxhealth="15" 
+        coverage="0.1"
+        desc="">
+        </bodypart>
+        <bodypart 
+        name="Left Lung" 
+        maxhealth="5" 
+        coverage="0.02"
+        desc="">
+        </bodypart>
+        <bodypart 
+        name="Right Lung" 
+        maxhealth="5" 
+        coverage="0.02"
+        desc="">
+        </bodypart>
+        <bodypart 
+        name="Stomach" 
+        maxhealth="10" 
+        coverage="0.1"
+        desc="">
+        </bodypart>
+        <bodypart 
+        name="Liver" 
+        maxhealth="10" 
+        coverage="0.05"
+        desc="">
+        </bodypart>
+        <bodypart 
+        name="Left Kidney" 
+        maxhealth="5" 
+        coverage="0.02"
+        desc="">
+        </bodypart>
+        <bodypart 
+        name="Right Kidney" 
+        maxhealth="5" 
+        coverage="0.02"
+        desc="">
+        </bodypart>
+    </bodypart>
+    
+    <bodypart 
+    name="Left Arm" 
+    maxhealth="20" 
+    coverage="0.1"
+    desc="">
+    </bodypart>
+    
+    <bodypart 
+    name="Right Arm" 
+    maxhealth="20" 
+    coverage="0.1"
+    desc="">
+    </bodypart>
+    
+    <bodypart 
+    name="Left Leg" 
+    maxhealth="20" 
+    coverage="0.1"
+    desc="">
+    </bodypart>
+    
+    <bodypart 
+    name="Right Leg" 
+    maxhealth="20" 
+    coverage="0.1"
+    desc="">
+    </bodypart>
+</bodyroot>

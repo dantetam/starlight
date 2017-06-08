@@ -39,6 +39,7 @@ public class ConstructionJob extends Job {
             List<Task> tasks = new ArrayList<>();
             List<Tile> path = Settlement.pathfinder.findPath(reservedPerson.tile, tile);
             if (path != null) { //If a valid path was found
+                path.remove(0);
                 for (Tile tile: path) {
                     Task localMoveTask = new MoveTask(reservedPerson.tileMoveSpeed(), reservedPerson, settlement, tile);
                     tasks.add(localMoveTask);
