@@ -30,7 +30,6 @@ public class Pathfinder<GraphNode extends Traversable<GraphNode>> {
                 GraphNode n1 = (GraphNode) o1;
                 GraphNode n2 = (GraphNode) o2;
                 if (n1.equals(n2)) return 0;
-                //return (int)((dist.get(n1) - dist.get(n2) + end.dist(n1) - end.dist(n2)*16.0d));
                 return dist.get(n1) - dist.get(n2) + end.dist(n1) - end.dist(n2) > 0 ? 1 : -1;
             }
         });

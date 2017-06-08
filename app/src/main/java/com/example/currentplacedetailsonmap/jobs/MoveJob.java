@@ -21,7 +21,7 @@ public class MoveJob extends Job {
     public Tile dest;
 
     public MoveJob(Person person, int tileMoveSpeed, Settlement settlement, Tile dest) {
-        super(settlement);
+        super(settlement, dest);
         this.person = person;
         this.tileMoveSpeed = tileMoveSpeed;
         this.dest = dest;
@@ -29,17 +29,16 @@ public class MoveJob extends Job {
 
     @Override
     public String type() {
-        return "Farming";
+        return "Moving";
     }
 
     @Override
     public List<Task> createTasks() {
         List<Task> tasks = new ArrayList<>();
-        //tasks.add(new FarmingTask((int) farm.getBuildingData("productionTimeForLump"), (int) farm.getBuildingData("lumpSize"), farm));
         List<Tile> path = Settlement.pathfinder.findPath(person.tile, dest);
         if (path != null) { //If a valid path was found
             for (Tile tile: path) {
-                Task localMoveTask = new MoveTask(tileMoveSpeed, person, settlement, tile);
+                Task localMoveTask = new MoveTask(person.tileMoveSpeed(), person, settlement, tile);
                 tasks.add(localMoveTask);
             }
         }

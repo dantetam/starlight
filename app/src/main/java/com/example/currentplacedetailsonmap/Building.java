@@ -37,6 +37,7 @@ public class Building implements Serializable {
     private List<Integer> activeRecipes;
 
     private Tile tile;
+    public Tile getTile() {return tile;}
     public void setTile(Tile t) {tile = t;}
 
     private Map<String, Float> buildingData;

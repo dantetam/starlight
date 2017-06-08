@@ -48,7 +48,10 @@ public class Tile implements Serializable, Traversable<Tile> {
 
     @Override
     public float dist(Tile tile) {
-        return 1;
+        if (row == tile.row || col == tile.col) {
+            return 1;
+        }
+        return 1.1f;
     }
 
     @Override

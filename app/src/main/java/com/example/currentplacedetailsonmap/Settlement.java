@@ -54,8 +54,8 @@ public class Settlement implements Serializable { //implements Parcelable {
                 int[] dr = new int[]{r-1, r-1, r-1, r, r+1, r+1, r+1, r};
                 int[] dc = new int[]{c-1, c, c+1, c+1, c+1, c, c-1, c-1};
                 for (int i = 0; i < 8; i++) {
-                    if (inBounds(r + dr[i], c + dc[i])) {
-                        Tile neighbor = tiles[r + dr[i]][c + dc[i]];
+                    if (inBounds(dr[i], dc[i])) {
+                        Tile neighbor = tiles[dr[i]][dc[i]];
                         tile.storedNeighbors.add(neighbor);
                     }
                 }

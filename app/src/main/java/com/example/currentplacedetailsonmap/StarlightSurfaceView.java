@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.currentplacedetailsonmap.jobs.ConstructionJob;
 import com.example.currentplacedetailsonmap.jobs.Job;
+import com.example.currentplacedetailsonmap.tasks.MoveTask;
 import com.example.currentplacedetailsonmap.tasks.Task;
 
 import java.util.Set;
@@ -156,39 +157,6 @@ class StarlightSurfaceView extends SurfaceView {
                             null
                     );
                 }
-
-                if (tile.people.size() > 0) {
-                    bmpIcon = BitmapManager.getBitmapFromName("person", context, R.drawable.person);
-                    canvas.drawBitmap(bmpIcon, null, new Rect(
-                                    (int) ((displayR + 0) * renderWidth),
-                                    (int) ((displayC + 0.5) * renderHeight),
-                                    (int) ((displayR + 0.5) * renderWidth),
-                                    (int) ((displayC + 1) * renderHeight)
-                            ),
-                            null
-                    );
-
-                    Person person = tile.people.get(0);
-
-                    if (person.queueTasks.size() > 0) {
-                        Task firstTask = person.queueTasks.get(0);
-                        float percentageCompleted = 1.0f - (float) firstTask.ticksLeft / (float) firstTask.originalTicksLeft;
-                        canvas.drawRect(
-                                (int) ((displayR + 0) * renderWidth),
-                                (int) ((displayC + 0.8) * renderHeight),
-                                (int) ((displayR + 0.5) * renderWidth),
-                                (int) ((displayC + 1) * renderHeight),
-                                whitePaint
-                        );
-                        canvas.drawRect(
-                                (int) ((displayR + 0) * renderWidth),
-                                (int) ((displayC + 0.8) * renderHeight),
-                                (int) ((displayR + percentageCompleted*0.5) * renderWidth),
-                                (int) ((displayC + 1) * renderHeight),
-                                bluePaint
-                        );
-                    }
-                }
             }
         }
 
@@ -210,6 +178,60 @@ class StarlightSurfaceView extends SurfaceView {
                             ),
                             null
                     );
+                }
+            }
+        }
+
+        for (int r = startX; r <= endX; r++) {
+            for (int c = startY; c <= endY; c++) {
+                Tile tile = activeSettlement.getTile(r,c);
+                if (tile == null) {
+                    continue;
+                }
+
+                int displayR = r - startX;
+                int displayC = c - startY;
+
+                Bitmap bmpIcon;
+
+                if (tile.people.size() > 0) {
+                    bmpIcon = BitmapManager.getBitmapFromName("person", context, R.drawable.person);
+                    canvas.drawBitmap(bmpIcon, null, new Rect(
+                                    (int) ((displayR + 0) * renderWidth),
+                                    (int) ((displayC + 0.5) * renderHeight),
+                                    (int) ((displayR + 0.5) * renderWidth),
+                                    (int) ((displayC + 1) * renderHeight)
+                            ),
+                            null
+                    );
+
+                    Person person = tile.people.get(0);
+
+                    if (person.queueTasks.size() > 0) {
+                        Task firstTask = person.queueTasks.get(0);
+                        float percentageCompleted = 1.0f - (float) firstTask.ticksLeft / (float) firstTask.originalTicksLeft;
+                        if (!(firstTask instanceof MoveTask)) {
+                            canvas.drawRect(
+                                    (int) ((displayR + 0) * renderWidth),
+                                    (int) ((displayC + 0.8) * renderHeight),
+                                    (int) ((displayR + 0.5) * renderWidth),
+                                    (int) ((displayC + 1) * renderHeight),
+                                    whitePaint
+                            );
+                            canvas.drawRect(
+                                    (int) ((displayR + 0) * renderWidth),
+                                    (int) ((displayC + 0.8) * renderHeight),
+                                    (int) ((displayR + percentageCompleted * 0.5) * renderWidth),
+                                    (int) ((displayC + 1) * renderHeight),
+                                    bluePaint
+                            );
+                        }
+                        else {
+                            Tile current = person.tile;
+                            Tile dest = ((MoveTask) firstTask).dest;
+                            TODO: Tween the person sprite by the proportion percentageCompleted between these two tiles
+                        }
+                    }
                 }
             }
         }

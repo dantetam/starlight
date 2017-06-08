@@ -51,4 +51,9 @@ public class Person implements Serializable {
         return this.name.equals(person.name) && this.tile.equals(person.tile);
     }
 
+    //The number of ticks passed when moving one tile in any direction
+    public int tileMoveSpeed() {
+        return 10;
+    }
+
 }

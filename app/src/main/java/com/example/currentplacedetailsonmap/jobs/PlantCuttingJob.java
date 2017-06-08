@@ -2,7 +2,9 @@ package com.example.currentplacedetailsonmap.jobs;
 
 import com.example.currentplacedetailsonmap.Building;
 import com.example.currentplacedetailsonmap.Settlement;
+import com.example.currentplacedetailsonmap.Tile;
 import com.example.currentplacedetailsonmap.tasks.FarmingTask;
+import com.example.currentplacedetailsonmap.tasks.MoveTask;
 import com.example.currentplacedetailsonmap.tasks.PlantCuttingTask;
 import com.example.currentplacedetailsonmap.tasks.Task;
 
@@ -17,7 +19,7 @@ public class PlantCuttingJob extends Job {
     public Building lumberyard;
 
     public PlantCuttingJob(Settlement settlement, Building building) {
-        super(settlement);
+        super(settlement, building.getTile());
         this.lumberyard = building;
     }
 
@@ -28,6 +30,18 @@ public class PlantCuttingJob extends Job {
 
     @Override
     public List<Task> createTasks() {
+        if (!tile.equals(reservedPerson.tile)) {
+            List<Task> tasks = new ArrayList<>();
+            List<Tile> path = Settlement.pathfinder.findPath(reservedPerson.tile, tile);
+            if (path != null) { //If a valid path was found
+                for (Tile tile: path) {
+                    Task localMoveTask = new MoveTask(reservedPerson.tileMoveSpeed(), reservedPerson, settlement, tile);
+                    tasks.add(localMoveTask);
+                }
+            }
+            return tasks;
+        }
+
         List<Task> tasks = new ArrayList<>();
         tasks.add(new PlantCuttingTask((int) lumberyard.getBuildingData("productionTimeForLump"), (int) lumberyard.getBuildingData("lumpSize"), lumberyard));
         return tasks;

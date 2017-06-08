@@ -2,6 +2,7 @@ package com.example.currentplacedetailsonmap.jobs;
 
 import com.example.currentplacedetailsonmap.Person;
 import com.example.currentplacedetailsonmap.Settlement;
+import com.example.currentplacedetailsonmap.Tile;
 import com.example.currentplacedetailsonmap.tasks.Task;
 
 import java.io.Serializable;
@@ -16,11 +17,13 @@ import java.util.List;
 public abstract class Job implements Serializable {
 
     public Settlement settlement;
+    public Tile tile;
     public Person reservedPerson;
     public abstract String type();
 
-    public Job(Settlement settlement) {
+    public Job(Settlement settlement, Tile tile) {
         this.settlement = settlement;
+        this.tile = tile;
         reservedPerson = null;
     }
 
