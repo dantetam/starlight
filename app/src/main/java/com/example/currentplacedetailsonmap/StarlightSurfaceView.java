@@ -326,13 +326,13 @@ class StarlightSurfaceView extends SurfaceView {
             ((TextView) context.findViewById(R.id.buildingItemsList)).setText("Stored: " + building.getItemsString());
 
             ((Button) context.findViewById(R.id.btnProduceTest)).setOnClickListener(null);
-            ((Button) context.findViewById(R.id.btnProduceTest)).setOnClickListener(new OnClickListener() {
+            /*((Button) context.findViewById(R.id.btnProduceTest)).setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     tile.getBuilding().produce();
                     showTileDetails(tile);
                 }
-            });
+            });*/
 
             if (tile.resources.size() > 0) {
                 ((TextView) context.findViewById(R.id.buildingTileResource)).setVisibility(VISIBLE);

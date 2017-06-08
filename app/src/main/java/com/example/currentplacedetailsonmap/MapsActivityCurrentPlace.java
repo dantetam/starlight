@@ -269,7 +269,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             settlement.nexus.items.addItem(constructionTree.copyItem("Wood", 200));
             settlement.nexus.items.addItem(constructionTree.copyItem("Tropical Wood", 100));
             settlement.nexus.items.addItem(constructionTree.copyItem("Iron", 25));
-            settlement.nexus.items.addItem(constructionTree.copyItem("Food", 50));
+            settlement.nexus.items.addItem(constructionTree.copyItem("Meal", 50));
 
             for (int i = 0; i < 10; i++) {
                 Person person = new Person("Person " + (i + 1), constructionTree.skills);
@@ -316,6 +316,14 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 public void onClick(View v) {
                     int chosenCostRecipe = building.costRecipeNum; //TODO: Select this from UI
                     if (surfaceView != null && surfaceView.getHoverTile() != null) {
+
+                        if (building.resourceNeeded != null) {
+                            Item item = constructionTree.getItemByName(building.resourceNeeded);
+                            if (!surfaceView.getHoverTile().resources.hasItem(item)) {
+                                return;
+                            }
+                        }
+
                         if (currentSettlement.nexus != null) {
                             Inventory cost = building.getCostRecipes().get(chosenCostRecipe).input;
                             if (currentSettlement.nexus.items.hasInventory(cost)) {
@@ -325,6 +333,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                                 currentSettlement.availableJobsBySkill.get(jobType).add(constructionJob);
                             }
                         }
+
                     }
                     constructionList.setVisibility(View.GONE);
                     constructionList.removeAllViews();
@@ -343,8 +352,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
                         if (building.costRecipeNum == i) {
                             button.setBackgroundColor(Color.BLUE);
-                        }
-                        else {
+                        } else {
                             button.setBackgroundColor(Color.WHITE);
                         }
 

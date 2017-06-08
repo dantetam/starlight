@@ -7,6 +7,7 @@ import com.example.currentplacedetailsonmap.Item;
 import com.example.currentplacedetailsonmap.Settlement;
 import com.example.currentplacedetailsonmap.Tile;
 import com.example.currentplacedetailsonmap.tasks.ConstructionTask;
+import com.example.currentplacedetailsonmap.tasks.CookingTask;
 import com.example.currentplacedetailsonmap.tasks.Task;
 
 import java.util.ArrayList;
@@ -18,17 +19,13 @@ import java.util.List;
 public class CookingJob extends Job {
 
     public Building kitchen;
-    public int goalFood;
+    public int goalNumMeals;
 
-    public CookingJob(Settlement settlement, Building building, ConstructionTree tree, int goalFood) {
+    public CookingJob(Settlement settlement, Building building, int goalNumMeals) {
         super(settlement);
         this.kitchen = building;
-        List<Item> possibleFood = kitchen.items.getItems();
-        for (Item item: possibleFood) {
-            if (tree.itemIsInGroup("RawFood", item.name)) {
-                //TODO:
-            }
-        }
+        this.goalNumMeals = goalNumMeals;
+        //List<Item> possibleFood = kitchen.items.getItems();
     }
 
     @Override
@@ -39,13 +36,19 @@ public class CookingJob extends Job {
     @Override
     public List<Task> createTasks() {
         List<Task> tasks = new ArrayList<>();
-        tasks.add(new CookingTask(kitchen.getBuildingData("productionTimeForLump"), settlement, kitchen));
+        tasks.add(new CookingTask((int) kitchen.getBuildingData("productionTimeForLump"), settlement, kitchen));
         return tasks;
     }
 
     @Override
     public boolean doneCondition() {
-        return kitchen
+        int quantity = 0;
+        for (Item item: kitchen.items.getItems()) {
+            if (item.name.contains("Meal")) {
+                quantity += item.quantity;
+            }
+        }
+        return quantity >= goalNumMeals;
     }
 
     @Override
@@ -54,12 +57,12 @@ public class CookingJob extends Job {
             return false;
         }
         CookingJob constructionJob = (CookingJob) other;
-        return this.building.equals(constructionJob.building) && this.tile.equals(constructionJob.tile);
+        return this.kitchen.equals(constructionJob.kitchen) && this.goalNumMeals == goalNumMeals;
     }
 
     @Override
     public void cancelJob() {
-        Inventory returnMaterials = building.getCostRecipes().get(recipeUsed).input;
-        settlement.nexus.items.addInventory(returnMaterials);
+
     }
+
 }

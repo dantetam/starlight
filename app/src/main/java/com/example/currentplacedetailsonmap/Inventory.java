@@ -75,7 +75,7 @@ public class Inventory implements Serializable {
         Inventory result = new Inventory();
         for (int i = 0; i < items.size(); i++) {
             Item heldItem = items.get(i);
-            if (heldItem.id == item.id) {
+            if (heldItem.id == item.id || (heldItem.superClassId != null && heldItem.superClassId == item.id)) {
                 desired -= heldItem.quantity;
                 Item foundItem = new Item(heldItem, heldItem.quantity);
                 if (desired < 0) {
@@ -99,7 +99,7 @@ public class Inventory implements Serializable {
         int desired = item.quantity;
         for (int i = items.size() - 1; i >= 0; i--) {
             Item heldItem = items.get(i);
-            if (heldItem.id == item.id) {
+            if (heldItem.id == item.id || (heldItem.superClassId != null && heldItem.superClassId == item.id)) {
                 desired -= heldItem.quantity;
                 if (desired < 0) {
                     heldItem.quantity = -desired;

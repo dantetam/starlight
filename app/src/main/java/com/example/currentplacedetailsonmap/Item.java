@@ -12,6 +12,7 @@ public class Item implements Serializable {
     public String name;
     public int health, maxHealth;
     public String quality;
+    public Integer superClassId = null;
 
     public Item(int id, String name, int maxHealth) {
         this.id = id;
@@ -22,6 +23,7 @@ public class Item implements Serializable {
 
     public Item(Item item, int quantity) {
         this(item.id, item.name, item.maxHealth);
+        this.superClassId = item.superClassId;
         if (quantity == 0) {
             throw new IllegalArgumentException("Cannot create a item of zero quantity");
         }

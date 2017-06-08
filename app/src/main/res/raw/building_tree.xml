@@ -8,7 +8,6 @@ Special keywords:
         Resource, the current resource the building is on top of
     Notation:
         > indicates a recipe i.e. 1 Iron > 1 Iron Sword
-
 Commas indicate ands i.e. "1 Wood, 1 Metal" -> 1 Wood and 1 Metal
 Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
 -->
@@ -87,7 +86,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     name="Farm" 
     resourcelimit="50" 
     cost="30 Wood" 
-    production="1 Wheat; 1 Potato; 1 Apple; 1 Cabbage" 
+    production="1 Wheat; 1 Potato; 1 Fruit; 1 Greens" 
     jobtype="Farming" 
     buildtime="90" 
     data-productionTimeForLump="30"
@@ -111,7 +110,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     name="Artisan" 
     resourcelimit="50" 
     cost="35 Wood, 10 Iron" 
-    production="5 Wood, 10 Iron > 1 Component; 15 Wood > 1 Wooden Furniture; 15 Iron, 5 Wood > 1 Iron Furniture" 
+    production="5 Wood, 5 Iron > 1 Component; 15 Wood > 1 Wooden Furniture; 15 Iron, 5 Wood > 1 Iron Furniture" 
     jobtype="Crafting" 
     buildtime="180" 
     desc="A workshop containing tools and small parts.">
@@ -144,7 +143,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     name="Research Lab" 
     resourcelimit="50" 
     cost="30 Wood, 15 Iron, 3 Component" 
-    production="" 
+    production="20 Wood, 2 Iron > 1 Medicine" 
     jobtype="Research" 
     buildtime="180" 
     desc="A lab with many intricate tools, components, and machines.">
@@ -161,6 +160,43 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     data-productionTimeForLump="30"
     data-lumpSize="5"
     desc="A small farmhouse built for harvesting the soil.">
+    </impr>
+    
+    <impr 
+    id="110" 
+    name="Freezer" 
+    resourcelimit="150" 
+    cost="20 Wood, 15 Iron, 2 Component" 
+    production=""
+    buildtime="90" 
+    data-temperature="0"
+    desc="A large, insulated room for freezing and preserving food and other items.">
+    </impr>
+    
+    <impr 
+    id="120" 
+    name="Refinery" 
+    resourcelimit="50" 
+    cost="20 Wood, 25 Iron, 2 Component" 
+    production="5 Wheat > 1 Beer; 5 Potato > 1 Beer; 5 Sludge > 2 Fuel; 15 Wood > 1 Fuel; 3 Fuel, 1 Component, 1 Medicine > 1 Blackglass"
+    jobtype="Crafting"
+    buildtime="120"
+    data-productionTimeForLump="30"
+    data-lumpSize="5"
+    desc="Purifies, distills, and processes chemicals and mixtures.">
+    </impr>
+    
+    <impr 
+    id="130" 
+    name="Electronics Facility" 
+    resourcelimit="50" 
+    cost="20 Wood, 50 Iron, 4 Component" 
+    production="5 Wood, 20 Iron > 1 Electronics"
+    jobtype="Crafting" 
+    buildtime="120"
+    data-productionTimeForLump="30"
+    data-lumpSize="1"
+    desc="A specialized lab for creating electronic parts and tools.">
     </impr>
     
 </imprroot>

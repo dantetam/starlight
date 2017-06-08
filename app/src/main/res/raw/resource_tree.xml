@@ -15,6 +15,30 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
+    id="-3" 
+    name="Metal" 
+    maxhealth="-1" 
+    marketvalue="0"
+    desc="">
+    </resource>
+    
+    <resource 
+    id="-2" 
+    name="AllWood" 
+    maxhealth="-1" 
+    marketvalue="0"
+    desc="">
+    </resource>
+    
+    <resource 
+    id="-1" 
+    name="RawFood" 
+    maxhealth="-1" 
+    marketvalue="0"
+    desc="">
+    </resource>
+    
+    <resource 
     id="0" 
     name="Wood" 
     maxhealth="50" 
@@ -58,7 +82,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     id="21" 
     name="Gold" 
     maxhealth="-1" 
-    marketvalue="5"
+    marketvalue="10"
     desc="A shiny ounce of gold.">
     </resource>
     
@@ -111,11 +135,35 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
+    id="50" 
+    name="Sludge" 
+    maxhealth="20" 
+    marketvalue="0.9"
+    desc="Some kind of swampy mess containing flammable compounds.">
+    </resource>
+    
+    <resource 
+    id="90" 
+    name="Fuel" 
+    maxhealth="25" 
+    marketvalue="5.5"
+    desc="A refined, pure, and flammable liquid fuel.">
+    </resource>
+    
+    <resource 
     id="100" 
     name="Component" 
     maxhealth="-1" 
     marketvalue="20"
     desc="A set of carefully crafted small parts and pieces.">
+    </resource>
+    
+    <resource 
+    id="100" 
+    name="Electronics" 
+    maxhealth="-1" 
+    marketvalue="20"
+    desc="A set of intricate, general-purpose electronic circuit parts, boards, etc.">
     </resource>
     
     <resource 
@@ -136,18 +184,50 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     
     <resource 
     id="152" 
-    name="Apple" 
+    name="Fruit" 
     maxhealth="20" 
     marketvalue="0.5"
-    desc="A single apple.">
+    desc="Several small assorted fruits.">
     </resource>
     
     <resource 
     id="153" 
-    name="Cabbage" 
+    name="Greens" 
     maxhealth="20" 
     marketvalue="0.5"
-    desc="A leafy green cabbage that lasts a while, still whole.">
+    desc="Some whole, leafy green vegetables.">
+    </resource>
+    
+    <resource 
+    id="175" 
+    name="Meal" 
+    maxhealth="30" 
+    marketvalue="3"
+    desc="A single simple meal.">
+    </resource>
+    
+    <resource 
+    id="180" 
+    name="Beer" 
+    maxhealth="30" 
+    marketvalue="5"
+    desc="A homebrewed alcoholic drink.">
+    </resource>
+    
+    <resource 
+    id="181" 
+    name="Medicine" 
+    maxhealth="30" 
+    marketvalue="25"
+    desc="Medicine derived from wood acid and a single-use surgical kit.">
+    </resource>
+    
+    <resource 
+    id="182" 
+    name="Blackglass" 
+    maxhealth="30" 
+    marketvalue="60"
+    desc="A strong, homemade narcotic of distilled tar, acid, and fuel.">
     </resource>
     
     <resource 

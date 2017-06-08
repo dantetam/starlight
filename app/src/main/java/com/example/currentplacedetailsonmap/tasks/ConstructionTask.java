@@ -3,6 +3,7 @@ package com.example.currentplacedetailsonmap.tasks;
 import com.example.currentplacedetailsonmap.Building;
 import com.example.currentplacedetailsonmap.Settlement;
 import com.example.currentplacedetailsonmap.Tile;
+import com.example.currentplacedetailsonmap.jobs.CookingJob;
 import com.example.currentplacedetailsonmap.jobs.FarmingJob;
 import com.example.currentplacedetailsonmap.jobs.MiningJob;
 import com.example.currentplacedetailsonmap.jobs.PlantCuttingJob;
@@ -36,6 +37,12 @@ public class ConstructionTask extends Task {
             }
             else if (building.getJobType().equals("Plant Cutting")) {
                 settlement.availableJobsBySkill.get(building.getJobType()).add(new PlantCuttingJob(settlement, building));
+            }
+            else if (building.getJobType().equals("Cooking")) {
+                settlement.availableJobsBySkill.get(building.getJobType()).add(new CookingJob(settlement, building, 30));
+            }
+            else if (building.getJobType().equals("Farming")) {
+                settlement.availableJobsBySkill.get(building.getJobType()).add(new FarmingJob(settlement, building));
             }
         }
     }

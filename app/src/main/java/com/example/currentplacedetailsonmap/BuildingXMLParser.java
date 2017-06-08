@@ -137,10 +137,23 @@ public class BuildingXMLParser {
             eventType = xpp.next();
         }
 
+        //Temporary until this code can be added programmatically
         tree.skills.add("Construction");
         tree.skills.add("Deonstruction");
         tree.skills.add("Transporting");
         tree.skills.add("Shooting");
+
+        tree.getItemByName("Iron").superClassId = -3;
+        tree.getItemByName("Silver").superClassId = -3;
+        tree.getItemByName("Gold").superClassId = -3;
+
+        tree.getItemByName("Wood").superClassId = -2;
+        tree.getItemByName("Tropical Wood").superClassId = -2;
+
+        tree.getItemByName("Wheat").superClassId = -1;
+        tree.getItemByName("Potato").superClassId = -1;
+        tree.getItemByName("Fruit").superClassId = -1;
+        tree.getItemByName("Greens").superClassId = -1;
     }
 
     /*
