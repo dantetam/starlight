@@ -4,12 +4,12 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <com.example.currentplacedetailsonmap.StarlightSurfaceView
+    <io.github.dantetam.StarlightSurfaceView
         android:id="@+id/worldView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="0dp"
-        tools:context="com.example.currentplacedetailsonmap.MapsActivityCurrentPlace"
+        tools:context="io.github.dantetam.MapsActivityCurrentPlace"
         android:visibility="gone"/>
 
     <LinearLayout

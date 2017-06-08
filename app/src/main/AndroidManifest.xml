@@ -19,7 +19,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapsActivityCurrentPlace"
+            android:name="io.github.dantetam.MapsActivityCurrentPlace"
             android:label="@string/title_activity_maps" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,15 +28,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettlementDetailsActivity"
+            android:name="io.github.dantetam.SettlementDetailsActivity"
             android:label="@string/title_activity_settlement_details" >
         </activity>
         <activity
-            android:name=".SettlementPeopleActivity"
+            android:name="io.github.dantetam.SettlementPeopleActivity"
             android:label="@string/title_activity_settlement_people" >
         </activity>
         <activity
-            android:name=".SettlementBuildingsActivity"
+            android:name="io.github.dantetam.SettlementBuildingsActivity"
             android:label="@string/title_activity_settlement_buildings" >
         </activity>
     </application>
