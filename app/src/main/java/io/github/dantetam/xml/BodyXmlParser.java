@@ -37,12 +37,12 @@ import io.github.dantetam.person.BodyPart;
 public class BodyXmlParser {
     private static final String ns = null;
 
-    public static Body parseTechTree(Context context, int resourceId, int secondResourceId) {
+    public static Body parseBodyTree(Context context, int resourceId) {
         final InputStream bodyDataStream = context.getResources().openRawResource(
                 resourceId);
         Body result = null;
         try {
-            result = parseTechTree(bodyDataStream);
+            result = parseBodyTree(bodyDataStream);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -61,7 +61,7 @@ public class BodyXmlParser {
     tag pops a tech off the stack. The stackCounter int represents distance from
     the tech root, where -1 indicates no tech has been parsed.
      */
-    public static Body parseTechTree(InputStream inputStream)
+    public static Body parseBodyTree(InputStream inputStream)
             throws XmlPullParserException, IOException {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(false);
@@ -82,11 +82,14 @@ public class BodyXmlParser {
             } else if (eventType == XmlPullParser.START_TAG) {
                 if (xpp.getName().equals("bodypart") || xpp.getName().equals("bodyroot")) {
                     String name = xpp.getAttributeValue(null, "name");
-                    int maxHealth = Integer.parseInt(xpp.getAttributeValue(null, "maxHealth"));
+                    int maxHealth = Integer.parseInt(xpp.getAttributeValue(null, "maxhealth"));
                     float coverage = Float.parseFloat(xpp.getAttributeValue(null, "coverage"));
                     String desc = xpp.getAttributeValue(null, "desc");
 
                     BodyPart bodyPart = new BodyPart(name, desc, coverage, maxHealth);
+
+                    body.getBodyPartsByName().put(name, bodyPart);
+
                     if (xpp.getName().equals("bodyroot")) {
                         body.root = bodyPart;
                     }

@@ -59,8 +59,8 @@ public class Person implements Serializable {
         return 6;
     }
 
-    public void initializeBody() {
-        TODO
+    public void initializeBody(Body body) {
+        this.body = body;
     }
 
 }

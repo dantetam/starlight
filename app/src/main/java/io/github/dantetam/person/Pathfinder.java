@@ -1,5 +1,6 @@
 package io.github.dantetam.person;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.util.PriorityQueue;
  * Created by Dante on 6/23/2016.
  * Took this from 61b proj3 because it is cleaner, even if it uses more memory
  */
-public class Pathfinder<GraphNode extends Traversable<GraphNode>> {
+public class Pathfinder<GraphNode extends Traversable<GraphNode>> implements Serializable {
 
     public List<GraphNode> findPath(GraphNode start, final GraphNode end) {
         List<GraphNode> results = new ArrayList<>();

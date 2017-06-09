@@ -10,7 +10,8 @@
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
- */
+ *//*
+
 
 package io.github.dantetam.xml;
 
@@ -34,10 +35,12 @@ import io.github.dantetam.world.entity.ItemType;
 import io.github.dantetam.world.entity.Tech;
 import io.github.dantetam.world.entity.TechTree;
 
+*/
 /**
  * Given an InputStream representation of a feed, it returns a List of entries,
  * where each list element represents a single entry (post) in the XML feed.
- */
+ *//*
+
 public class TechXmlParser {
     private static final String ns = null;
 
@@ -58,7 +61,8 @@ public class TechXmlParser {
         return result;
     }
 
-    /*
+    */
+/*
     This method parses an XML document, line by line. It individually searches tags,
     where <techroot>...</techroot> marks the first technology, and all its children
     are future techs linked to the parent tech.
@@ -67,7 +71,8 @@ public class TechXmlParser {
     pushes a new tech to the stack and sets the parent if it exists, and a </tech>
     tag pops a tech off the stack. The stackCounter int represents distance from
     the tech root, where -1 indicates no tech has been parsed.
-     */
+     *//*
+
     public static TechTree parseTechTree(TechTree tree, InputStream inputStream)
             throws XmlPullParserException, IOException {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -180,8 +185,10 @@ public class TechXmlParser {
         for (Map.Entry<String, String> entry: addRequirementsNames.entrySet()) {
             Tech subject = tree.techMap.get(entry.getKey());
             Tech requirement = tree.techMap.get(entry.getValue());
-            /*if (requirement == null)
-                System.out.println(entry.getKey() + "<<<<" + entry.getValue());*/
+            */
+/*if (requirement == null)
+                System.out.println(entry.getKey() + "<<<<" + entry.getValue());*//*
+
             subject.extraReqs.add(requirement);
         }
         //System.out.println("End document");
@@ -236,11 +243,13 @@ public class TechXmlParser {
             eventType = xpp.next();
         }
 
-        /*tree.globalOffsetX = minX; tree.globalOffsetY = minY;
+        */
+/*tree.globalOffsetX = minX; tree.globalOffsetY = minY;
         tree.globalOffsetMaxY = maxY;
 
         tree.hardGlobalMinimum = new Vector2f(minX, minY);
-        tree.hardGlobalMaximum = new Vector2f(maxX - 4, maxY);*/
+        tree.hardGlobalMaximum = new Vector2f(maxX - 4, maxY);*//*
+
 
         tree.minX = minX; tree.minY = minY;
         tree.maxX = maxX; tree.maxY = maxY;
@@ -250,3 +259,4 @@ public class TechXmlParser {
     }
 
 }
+*/

@@ -3,6 +3,7 @@ package io.github.dantetam;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -28,6 +29,7 @@ import com.example.currentplacedetailsonmap.R;
 
 import io.github.dantetam.jobs.ConstructionJob;
 import io.github.dantetam.jobs.Job;
+import io.github.dantetam.person.Body;
 import io.github.dantetam.person.Person;
 import io.github.dantetam.util.VariableListener;
 import io.github.dantetam.util.Vector2f;
@@ -38,9 +40,12 @@ import io.github.dantetam.world.Recipe;
 import io.github.dantetam.world.Settlement;
 import io.github.dantetam.world.Tile;
 import io.github.dantetam.world.World;
+import io.github.dantetam.xml.BodyXmlParser;
 import io.github.dantetam.xml.BuildingXMLParser;
 import io.github.dantetam.xml.ConstructionTree;
 import io.github.dantetam.xml.ItemXmlParser;
+import io.github.dantetam.xml.NameStorage;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -59,6 +64,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -122,6 +128,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
     private ConstructionTree constructionTree;
 
+    private AssetManager assetManager;
+
+    private NameStorage nameStorage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -179,6 +189,11 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         gold.set(100);
         distTravelled.set(0.0f);
+
+        assetManager = this.getAssets();
+
+        nameStorage = new NameStorage();
+        nameStorage.loadNames(assetManager, "male_names.txt", "female_names.txt");
     }
 
     /**
@@ -286,8 +301,9 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             settlement.nexus.items.addItem(constructionTree.copyItem("Meal", 50));
 
             for (int i = 0; i < 10; i++) {
-                Person person = new Person("Person " + (i + 1), constructionTree.skills);
-                person.initializeBody();
+                Person person = new Person(nameStorage.randomName(), constructionTree.skills);
+                Body parsedHumanBody = BodyXmlParser.parseBodyTree(this, R.raw.human_body);
+                person.initializeBody(parsedHumanBody);
                 settlement.people.add(person);
                 Tile randomTile = settlement.randomTile();
                 settlement.movePerson(person, randomTile);
@@ -763,8 +779,9 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         prevLocation = mLastKnownLocation;
     }
 
-    private int mInterval = 30; // in milliseconds, 5 seconds by default, can be changed later
+    private int mInterval = 20; // in milliseconds, 5 seconds by default, can be changed later
     private Handler mHandler;
+    private int frameModulo = 0;
 
     @Override
     public void onDestroy() {
@@ -776,7 +793,13 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         @Override
         public void run() {
             try {
+                frameModulo++;
+                frameModulo %= 6;
                 //this function can change value of mInterval.
+                if (frameModulo == 5) {
+
+                }
+
                 world.updateWorld();
                 updateDistance();
                 //((TextView) findViewById(R.id.mapDistDisplay)).setText(String.format("Distance Travelled: %.2f m", distTravelled.value()));

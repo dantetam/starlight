@@ -15,4 +15,8 @@ public class Body {
         bodyPartsByName = new HashMap<>();
     }
 
+    public Map<String, BodyPart> getBodyPartsByName() {
+        return bodyPartsByName;
+    }
+
 }

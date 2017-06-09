@@ -6,10 +6,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.v4.view.VelocityTrackerCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.VelocityTracker;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,6 +35,7 @@ import io.github.dantetam.xml.BitmapManager;
 class StarlightSurfaceView extends SurfaceView {
 
     private MapsActivityCurrentPlace context;
+    private VelocityTracker mVelocityTracker = null;
 
     private Canvas canvas;
 
@@ -42,6 +46,8 @@ class StarlightSurfaceView extends SurfaceView {
 
     private float centerX, centerY;
     private float width;
+
+    private float aspectRatio = 0f;
 
     public StarlightSurfaceView(Context context, AttributeSet attr) {
         super(context);
@@ -96,14 +102,18 @@ class StarlightSurfaceView extends SurfaceView {
 
         Paint whitePaint = new Paint();
         Paint bluePaint = new Paint();
+        Paint blackTextPaint = new Paint();
 
         whitePaint.setColor(Color.WHITE);
         bluePaint.setColor(Color.BLUE);
+        blackTextPaint.setColor(Color.BLACK);
 
         canvas.drawColor(Color.BLACK);
 
         float widthX = width;
-        float aspectRatio = (float) getHeight() / (float) getWidth();
+        if (aspectRatio == 0) {
+            aspectRatio = (float) getHeight() / (float) getWidth();
+        }
         float widthY = aspectRatio * widthX;
 
         int startX = (int) Math.floor(centerX - widthX);
@@ -119,6 +129,20 @@ class StarlightSurfaceView extends SurfaceView {
         float renderWidth = getWidth() / (endX - startX + 1.0f);
         float renderHeight = getHeight() / (endY - startY + 1.0f);
 
+        setTextSizeForWidth(blackTextPaint, renderWidth, "Name");
+
+        Bitmap seaTile = BitmapManager.getBitmapFromName("shallow_sea_texture", context, R.drawable.shallow_sea_texture);
+        Bitmap iceTile = BitmapManager.getBitmapFromName("ice_texture", context, R.drawable.ice_texture);
+        Bitmap taigaTile = BitmapManager.getBitmapFromName("taiga_texture", context, R.drawable.taiga_texture);
+        Bitmap desertTile = BitmapManager.getBitmapFromName("desert_texture", context, R.drawable.desert_texture);
+        Bitmap steppeTile = BitmapManager.getBitmapFromName("steppe_texture", context, R.drawable.steppe_texture);
+        Bitmap dryForestTile = BitmapManager.getBitmapFromName("dryforest_texture", context, R.drawable.dryforest_texture);
+        Bitmap forestTile = BitmapManager.getBitmapFromName("forest_texture", context, R.drawable.forest_texture);
+        Bitmap rainforestTile = BitmapManager.getBitmapFromName("rainforest_texture", context, R.drawable.rainforest_texture);
+        Bitmap[] bitmapTiles = new Bitmap[]{seaTile, iceTile, taigaTile, desertTile, steppeTile, dryForestTile, forestTile, rainforestTile};
+
+        Bitmap androidTile = BitmapManager.getBitmapFromName("coal", context, R.drawable.coal);
+
         for (int r = startX; r <= endX; r++) {
             for (int c = startY; c <= endY; c++) {
                 Tile tile = activeSettlement.getTile(r,c);
@@ -126,17 +150,20 @@ class StarlightSurfaceView extends SurfaceView {
                     continue;
                 }
 
-                int displayR = r - startX;
-                int displayC = c - startY;
+                float displayR = r - startX;
+                float displayC = c - startY;
+
+                displayR -= centerX % 1.0f;
+                displayC -= centerY % 1.0f;
 
                 Bitmap bmpIcon;
-
-                if ((r + c) % 2 == 0) {
-                    bmpIcon = BitmapManager.getBitmapFromName("forest_texture", context, R.drawable.forest_texture);
+                if (tile.tileType >= 0 && tile.tileType < 8) {
+                    bmpIcon = bitmapTiles[tile.tileType];
                 }
                 else {
-                    bmpIcon = BitmapManager.getBitmapFromName("desert_texture", context, R.drawable.desert_texture);
+                    bmpIcon = androidTile;
                 }
+
 
                 canvas.drawBitmap(bmpIcon, null, new Rect(
                         (int) (displayR*renderWidth),
@@ -227,6 +254,12 @@ class StarlightSurfaceView extends SurfaceView {
                                     (int) ((displayC + 1) * renderHeight),
                                     bluePaint
                             );
+                            canvas.drawText(
+                                    person.name,
+                                    (int) ((displayR + 0) * renderWidth),
+                                    (int) ((displayC + 1.1f) * renderHeight),
+                                    blackTextPaint
+                            );
                         }
                         else {
                             Tile current = person.tile;
@@ -245,7 +278,14 @@ class StarlightSurfaceView extends SurfaceView {
                                     ),
                                     null
                             );
-                            System.err.println(current.toString() + ";" + dest.toString() + ";" + trueR + "," + trueC);
+                            //Draw the person's name near the bottom of the tile
+                            canvas.drawText(
+                                    person.name,
+                                    (int) ((displayTweenR + 0) * renderWidth),
+                                    (int) ((displayTweenC + 1.1f) * renderHeight),
+                                    blackTextPaint
+                            );
+                            //System.err.println(current.toString() + ";" + dest.toString() + ";" + trueR + "," + trueC);
                         }
                     }
                     else {
@@ -257,6 +297,13 @@ class StarlightSurfaceView extends SurfaceView {
                                         (int) ((displayC + 1) * renderHeight)
                                 ),
                                 null
+                        );
+                        //Draw the person's name near the bottom of the tile
+                        canvas.drawText(
+                                person.name,
+                                (int) ((displayR + 0) * renderWidth),
+                                (int) ((displayC + 1.1f) * renderHeight),
+                                blackTextPaint
                         );
                     }
                 }
@@ -282,6 +329,37 @@ class StarlightSurfaceView extends SurfaceView {
         }
     }
 
+    /**
+     * Sets the text size for a Paint object so a given string of text will be a
+     * given width.
+     *
+     * @param paint
+     *            the Paint to set the text size for
+     * @param desiredWidth
+     *            the desired width
+     * @param text
+     *            the text that should be that width
+     */
+    private static void setTextSizeForWidth(Paint paint, float desiredWidth,
+                                            String text) {
+        // Pick a reasonably large value for the test. Larger values produce
+        // more accurate results, but may cause problems with hardware
+        // acceleration. But there are workarounds for that, too; refer to
+        // http://stackoverflow.com/questions/6253528/font-size-too-large-to-fit-in-cache
+        final float testTextSize = 48f;
+
+        // Get the bounds of the text, using our testTextSize.
+        paint.setTextSize(testTextSize);
+        Rect bounds = new Rect();
+        paint.getTextBounds(text, 0, text.length(), bounds);
+
+        // Calculate the desired size as a proportion of our testTextSize.
+        float desiredTextSize = testTextSize * desiredWidth / bounds.width();
+
+        // Set the paint for that size.
+        paint.setTextSize(desiredTextSize);
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean touched;
@@ -289,7 +367,9 @@ class StarlightSurfaceView extends SurfaceView {
         float touchedY = event.getY();
 
         float widthX = width;
-        float aspectRatio = (float) getHeight() / (float) getWidth();
+        if (aspectRatio == 0) {
+            aspectRatio = (float) getHeight() / (float) getWidth();
+        }
         float widthY = aspectRatio * widthX;
 
         int startX = (int) Math.floor(centerX - widthX);
@@ -308,13 +388,51 @@ class StarlightSurfaceView extends SurfaceView {
             tile = activeSettlement.getTile(x,y);
         }
 
-        int action = event.getAction();
+        //int action = event.getAction();
+        int index = event.getActionIndex();
+        int action = event.getActionMasked();
+        int pointerId = event.getPointerId(index);
+
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                if (mVelocityTracker == null) {
+                    // Retrieve a new VelocityTracker object to watch the velocity of a motion.
+                    mVelocityTracker = VelocityTracker.obtain();
+                }
+                else {
+                    // Reset the velocity tracker back to its initial state.
+                    mVelocityTracker.clear();
+                }
+                // Add a user's movement to the tracker.
+                mVelocityTracker.addMovement(event);
+
                 hoverTile = tile;
                 touched = true;
                 break;
             case MotionEvent.ACTION_MOVE:
+                mVelocityTracker.addMovement(event);
+                // When you want to determine the velocity, call
+                // computeCurrentVelocity(). Then call getXVelocity()
+                // and getYVelocity() to retrieve the velocity for each pointer ID.
+                mVelocityTracker.computeCurrentVelocity(1000);
+                // Log velocity of pixels per second
+                // Best practice to use VelocityTrackerCompat where possible.
+
+                float dx = VelocityTrackerCompat.getXVelocity(mVelocityTracker, pointerId);
+                float dy = VelocityTrackerCompat.getYVelocity(mVelocityTracker, pointerId);
+
+                centerX -= dx / 600.0f;
+                centerY -= dy / 600.0f;
+
+                centerX = Math.min(Math.max(0, centerX), activeSettlement.rows - 1);
+                centerY = Math.min(Math.max(0, centerY), activeSettlement.cols - 1);
+
+                drawSettlement();
+                if (tile != null)
+                    showTileDetails(tile);
+
+                invalidate();
+
                 touched = true;
                 break;
             case MotionEvent.ACTION_UP:
@@ -325,6 +443,8 @@ class StarlightSurfaceView extends SurfaceView {
                 touched = false;
                 break;
             case MotionEvent.ACTION_CANCEL:
+                mVelocityTracker.recycle();
+
                 touched = false;
                 break;
             case MotionEvent.ACTION_OUTSIDE:
