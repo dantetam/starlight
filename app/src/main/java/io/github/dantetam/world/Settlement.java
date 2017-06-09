@@ -4,6 +4,7 @@ import io.github.dantetam.util.Vector2f;
 import io.github.dantetam.jobs.Job;
 import io.github.dantetam.person.Pathfinder;
 import io.github.dantetam.person.Person;
+import io.github.dantetam.xml.ConstructionTree;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -21,7 +22,7 @@ public class Settlement implements Serializable { //implements Parcelable {
     public Vector2f realGeoCoord, gameCoord;
     private Tile[][] tiles;
     public final int rows, cols;
-    public ArrayList<Person> people;
+    public List<Person> people;
 
     public int gold;
 
@@ -37,8 +38,9 @@ public class Settlement implements Serializable { //implements Parcelable {
     public static Pathfinder<Tile> pathfinder = new Pathfinder<>();
 
     public CombatHandler combatHandler;
+    public List<Person> visitors;
 
-    public Settlement(String name, Date foundDate, Vector2f realGeoCoord, Vector2f gameCoord, int r, int c) {
+    public Settlement(String name, Date foundDate, Vector2f realGeoCoord, Vector2f gameCoord, int r, int c, ConstructionTree tree) {
         this.name = name;
         this.foundDate = foundDate;
         this.realGeoCoord = realGeoCoord;
@@ -50,7 +52,8 @@ public class Settlement implements Serializable { //implements Parcelable {
         formattedDate = df.format(foundDate);
         availableJobsBySkill = new HashMap<>();
         gold = 50;
-        combatHandler = new CombatHandler(this);
+        combatHandler = new CombatHandler(this, tree);
+        visitors = new ArrayList<>();
     }
 
     public void initializeNeighbors() {

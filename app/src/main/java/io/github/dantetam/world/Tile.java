@@ -61,6 +61,10 @@ public class Tile implements Serializable, Traversable<Tile> {
         return Math.abs(tile.row - row) + Math.abs(tile.col - col);
     }
 
+    public float trueEuclideanDist(Tile tile) {
+        return (float) (Math.pow(tile.row - row, 2) + Math.pow(tile.col - col, 2));
+    }
+
     @Override
     public List<Tile> neighbors() {
         return storedNeighbors;

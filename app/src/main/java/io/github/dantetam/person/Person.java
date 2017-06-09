@@ -28,8 +28,11 @@ public class Person implements Serializable {
     public Body body;
 
     public Item weapon;
+    public boolean isDrafted = false;
 
-    public Person(String name, List<String> possibleSkills) {
+    public Faction faction;
+
+    public Person(String name, List<String> possibleSkills, Faction faction) {
         this.name = name;
         this.items = new Inventory();
         queueTasks = new ArrayList<>();
@@ -42,6 +45,9 @@ public class Person implements Serializable {
             int initialPriority = (int) (Math.random() * 5) + 1;
             skillPriorities.put(skill, initialPriority);
         }
+
+        this.faction = faction;
+        faction.people.add(this);
     }
 
     public String getItemsString() {

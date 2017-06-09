@@ -281,7 +281,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         LatLng convertedLoc = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
         String name = "Settlement " + (world.settlements.size() + 1);
-        Settlement settlement = world.createSettlement(name, c.getTime(), new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
+        Settlement settlement = world.createSettlement(name, c.getTime(), new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), constructionTree);
 
         if (settlement != null && gold.value() >= 35) {
             gold.set(gold.value() - 35);
@@ -304,7 +304,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             settlement.nexus.items.addItem(constructionTree.copyItem("Meal", 50));
 
             for (int i = 0; i < 10; i++) {
-                Person person = new Person(nameStorage.randomName(), constructionTree.skills);
+                Person person = new Person(nameStorage.randomName(), constructionTree.skills, faction);
                 Body parsedHumanBody = BodyXmlParser.parseBodyTree(this, R.raw.human_body);
                 person.initializeBody(parsedHumanBody);
                 settlement.people.add(person);
@@ -464,6 +464,21 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                     newProductionRecipesList(null);
                 }
             });
+        }
+    }
+
+    public void toggleDraft(View v) {
+        if (currentSettlement != null) {
+            for (Person person: currentSettlement.people) {
+                if (!person.isDead()) {
+                    if (person.isDrafted) {
+                        person.isDrafted = false;
+                    }
+                    else {
+                        person.isDrafted = true;
+                    }
+                }
+            }
         }
     }
 

@@ -87,6 +87,17 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
+    id="29" 
+    name="Fist" 
+    maxhealth="10" 
+    marketvalue="3"
+    data-combatmelee="3"
+    data-combatchance="0.60"
+    data-combattime="8"
+    desc="A forged iron sword.">
+    </resource>
+    
+    <resource 
     id="30" 
     name="Iron Sword" 
     maxhealth="50" 

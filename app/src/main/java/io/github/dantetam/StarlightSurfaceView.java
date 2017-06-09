@@ -23,6 +23,8 @@ import io.github.dantetam.android.BitmapHelper;
 import io.github.dantetam.jobs.ConstructionJob;
 import io.github.dantetam.jobs.Job;
 import io.github.dantetam.person.Person;
+import io.github.dantetam.tasks.CombatMeleeTask;
+import io.github.dantetam.tasks.CombatRangedTask;
 import io.github.dantetam.tasks.MoveTask;
 import io.github.dantetam.tasks.Task;
 import io.github.dantetam.world.Building;
@@ -155,6 +157,8 @@ class StarlightSurfaceView extends SurfaceView {
         Bitmap[] bitmapTiles = new Bitmap[]{seaTile, iceTile, taigaTile, desertTile, steppeTile, dryForestTile, forestTile, rainforestTile};
         Bitmap androidTile = BitmapHelper.findBitmapOrBuild(R.drawable.coal);
 
+        Bitmap combatIcon = BitmapHelper.findBitmapOrBuild(R.drawable.shock);
+
         for (int r = startX; r <= endX; r++) {
             for (int c = startY; c <= endY; c++) {
                 Tile tile = activeSettlement.getTile(r,c);
@@ -241,6 +245,8 @@ class StarlightSurfaceView extends SurfaceView {
                 if (tile.people.size() > 0) {
                     Person person = tile.people.get(0);
 
+                    float healthPercent = person.body.root.getHealth() / person.body.root.maxHealth;
+
                     if (person.queueTasks.size() > 0) {
                         Task firstTask = person.queueTasks.get(0);
                         float percentageCompleted = 1.0f - (float) firstTask.ticksLeft / (float) firstTask.originalTicksLeft;
@@ -275,6 +281,16 @@ class StarlightSurfaceView extends SurfaceView {
                                     (int) ((displayC + 1.1f) * renderHeight),
                                     blackTextPaint
                             );
+                            if (firstTask instanceof CombatMeleeTask || firstTask instanceof CombatRangedTask) {
+                                canvas.drawBitmap(combatIcon, null, new Rect(
+                                                (int) ((displayR + 0.25) * renderWidth),
+                                                (int) ((displayC + 0.25) * renderHeight),
+                                                (int) ((displayR + 0.75) * renderWidth),
+                                                (int) ((displayC + 0.75) * renderHeight)
+                                        ),
+                                        null
+                                );
+                            }
                         }
                         else {
                             Tile current = person.tile;

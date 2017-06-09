@@ -3,6 +3,7 @@ package io.github.dantetam.xml;
 import io.github.dantetam.world.Building;
 import io.github.dantetam.world.Item;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,7 +17,7 @@ import java.util.Map;
  * TODO: Items should be standardized across one class
  * This means that different people could have different types of buildings and such.
  */
-public class ConstructionTree {
+public class ConstructionTree implements Serializable {
 
     private Map<Integer, Item> itemsById;
     private Map<Integer, Building> buildingsById;

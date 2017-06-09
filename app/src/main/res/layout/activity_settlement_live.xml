@@ -164,4 +164,18 @@
             android:visibility="gone">
         </LinearLayout>
     </LinearLayout>
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:text="Draft/Undraft All"
+        android:id="@+id/btnToggleDraft"
+        android:background="#ffff1a7c"
+        android:textColor="#ffffffff"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:onClick="toggleDraft"
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

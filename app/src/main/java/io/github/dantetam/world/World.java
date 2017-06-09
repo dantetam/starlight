@@ -1,5 +1,7 @@
 package io.github.dantetam.world;
 
+import io.github.dantetam.jobs.CombatJob;
+import io.github.dantetam.person.Faction;
 import io.github.dantetam.xml.ConstructionTree;
 import io.github.dantetam.util.GeoUtil;
 import io.github.dantetam.util.MapUtil;
@@ -27,30 +29,51 @@ public class World {
 
     public static Vector2f geoHome;
 
+    public List<Faction> factions;
+
     public World(ConstructionTree tree) {
         settlements = new ArrayList<Settlement>();
         this.tree = tree;
+        factions = new ArrayList<>();
     }
 
     public void updateWorld() {
         //Look for jobs
         for (Settlement settlement: settlements) {
             for (Person person : settlement.people) {
+                if (person.isDead()) {
+                    continue;
+                }
                 if (person.currentJob == null) {
-                    //Look for a job within the settlement based on priority
-                    //Go through skills sorted by highest priority first,
-                    //looking for available jobs within the respective settlements
-                    Map<String, Integer> sortedSkillsDescending = MapUtil.sortByValueDescending(person.skillPriorities);
-                    findJobLoop:
-                    for (Map.Entry<String, Integer> entry: sortedSkillsDescending.entrySet()) {
-                        String skillName = entry.getKey();
-                        List<Job> jobsInSkill = settlement.availableJobsBySkill.get(skillName);
-                        for (int i = 0; i < jobsInSkill.size(); i++) {
-                            Job assignedJob = jobsInSkill.get(i);
-                            if (assignedJob.reservedPerson == null) {
-                                person.currentJob = assignedJob;
-                                assignedJob.reservedPerson = person;
-                                break findJobLoop;
+                    if (person.isDrafted) {
+                        for (Person visitor: settlement.visitors) {
+                            if (visitor.isDead()) {
+                                continue;
+                            }
+                            if (factionsHostile(person.faction, visitor.faction)) {
+                                Job attackJob = new CombatJob(settlement, person, visitor);
+                                person.currentJob = attackJob;
+                                attackJob.reservedPerson = person;
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        //Look for a job within the settlement based on priority
+                        //Go through skills sorted by highest priority first,
+                        //looking for available jobs within the respective settlements
+                        Map<String, Integer> sortedSkillsDescending = MapUtil.sortByValueDescending(person.skillPriorities);
+                        findJobLoop:
+                        for (Map.Entry<String, Integer> entry: sortedSkillsDescending.entrySet()) {
+                            String skillName = entry.getKey();
+                            List<Job> jobsInSkill = settlement.availableJobsBySkill.get(skillName);
+                            for (int i = 0; i < jobsInSkill.size(); i++) {
+                                Job assignedJob = jobsInSkill.get(i);
+                                if (assignedJob.reservedPerson == null) {
+                                    person.currentJob = assignedJob;
+                                    assignedJob.reservedPerson = person;
+                                    break findJobLoop;
+                                }
                             }
                         }
                     }
@@ -128,10 +151,10 @@ public class World {
         return allowed;
     }
 
-    public Settlement createSettlement(String name, Date foundDate, Vector2f geoCoord) {
+    public Settlement createSettlement(String name, Date foundDate, Vector2f geoCoord, ConstructionTree tree) {
         if (canCreateSettlement(geoCoord)) {
             int width = 40, height = 40;
-            Settlement settlement = new Settlement(name, foundDate, geoCoord, convertToGameCoord(geoCoord), width, height);
+            Settlement settlement = new Settlement(name, foundDate, geoCoord, convertToGameCoord(geoCoord), width, height, tree);
             settlement.initializeSettlementTileTypes(generateTiles(width, height));
 
             List<Item> possibleResources = new ArrayList<>();
@@ -207,6 +230,13 @@ public class World {
             }
         }
         return result;
+    }
+
+    private boolean factionsHostile(Faction a, Faction b) {
+        if (a.equals(b)) {
+            return false;
+        }
+        return true;
     }
 
 }

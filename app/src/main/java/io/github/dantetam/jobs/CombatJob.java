@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.dantetam.person.Person;
-import io.github.dantetam.tasks.CombatTask;
+import io.github.dantetam.tasks.CombatMeleeTask;
+import io.github.dantetam.tasks.CombatRangedTask;
 import io.github.dantetam.tasks.CookingTask;
 import io.github.dantetam.tasks.MoveTask;
 import io.github.dantetam.tasks.Task;
@@ -34,8 +35,23 @@ public class CombatJob extends Job {
 
     @Override
     public List<Task> createTasks() {
-        if (!target.tile.equals(reservedPerson.tile)) {
-            List<Task> tasks = new ArrayList<>();
+        List<Task> tasks = new ArrayList<>();
+
+        int time = 10;
+        if (reservedPerson.weapon != null) {
+            time = (int) reservedPerson.weapon.getItemData("combattime");
+        }
+
+        if (reservedPerson.tile.trueManhattanDist(target.tile) == 1) {
+            tasks.add(new CombatMeleeTask(time, settlement, reservedPerson, target));
+        }
+        else if (reservedPerson.weapon.hasItemData("combatshot")) {
+            float l2Dist = reservedPerson.tile.trueEuclideanDist(target.tile);
+            if (l2Dist <= reservedPerson.weapon.getItemData("combatrange")) {
+                tasks.add(new CombatRangedTask(time, settlement, reservedPerson, target));
+            }
+        }
+        else {
             List<Tile> path = Settlement.pathfinder.findPath(reservedPerson.tile, target.tile);
             if (path != null) { //If a valid path was found
                 for (Tile tile: path) {
@@ -46,13 +62,10 @@ public class CombatJob extends Job {
             return tasks;
         }
 
-        int time = 10;
-        if (reservedPerson.weapon != null) {
-            time = (int) reservedPerson.weapon.getItemData("combattime");
-        }
+        //TODO Check if the player is in range with either a melee or ranged weapon
 
-        List<Task> tasks = new ArrayList<>();
-        tasks.add(new CombatTask(time, settlement, reservedPerson, target));
+
+
         return tasks;
     }
 
