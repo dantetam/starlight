@@ -91,6 +91,9 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     name="Iron Sword" 
     maxhealth="50" 
     marketvalue="8"
+    data-combatmelee="7"
+    data-combatchance="0.80"
+    data-combattime="10"
     desc="A forged iron sword.">
     </resource>
     
@@ -99,6 +102,9 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     name="Iron Shield" 
     maxhealth="50" 
     marketvalue="8"
+    data-combatmelee="3"
+    data-combatchance="0.90"
+    data-combattime="15"
     desc="A hammered iron shield.">
     </resource>
     
@@ -107,6 +113,11 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     name="Wooden Bow" 
     maxhealth="50" 
     marketvalue="8.5"
+    data-combatmelee="3"
+    data-combatshot="6"
+    data-combatrange="10"
+    data-combatchance="0.60"
+    data-combattime="20"
     desc="A strung, taut wooden bow.">
     </resource>
     
@@ -115,11 +126,34 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     name="Wooden Composite Bow" 
     maxhealth="50" 
     marketvalue="42"
+    data-combatmelee="3"
+    data-combatshot="10"
+    data-combatrange="14"
+    data-combatchance="0.65"
+    data-combattime="17"
     desc="A complex composite bow with high power.">
     </resource>
     
     <resource 
     id="40" 
+    name="Cloth Armor" 
+    maxhealth="50" 
+    marketvalue="15"
+    data-protection="15"
+    desc="Light, improvised padded armor with some protection against small threats.">
+    </resource>
+    
+    <resource 
+    id="41" 
+    name="Iron Armor" 
+    maxhealth="50" 
+    marketvalue="25"
+    data-protection="30"
+    desc="Heavy and inflexible armor with protection against most melee weapons.">
+    </resource>
+    
+    <resource 
+    id="60" 
     name="Wooden Furniture" 
     maxhealth="60" 
     marketvalue="20"
@@ -127,7 +161,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
-    id="41" 
+    id="61" 
     name="Iron Furniture" 
     maxhealth="80" 
     marketvalue="32"
@@ -135,7 +169,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
-    id="50" 
+    id="70" 
     name="Sludge" 
     maxhealth="20" 
     marketvalue="0.9"
@@ -143,7 +177,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
-    id="60" 
+    id="80" 
     name="Stone" 
     maxhealth="50" 
     marketvalue="0.6"

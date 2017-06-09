@@ -1,6 +1,8 @@
 package io.github.dantetam.world;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Dante on 5/18/2017.
@@ -14,11 +16,26 @@ public class Item implements Serializable {
     public String quality;
     public Integer superClassId = null;
 
+    private Map<String, Float> itemData;
+    public float getItemData(String name) {
+        if (itemData.containsKey(name)) {
+            return itemData.get(name);
+        }
+        else {
+            throw new IllegalArgumentException("Could not find name of key: " + name);
+        }
+    }
+    public void putItemData(String key, Float value) {
+        itemData.put(key, value);
+    }
+    public boolean hasItemData(String name) {return itemData.containsKey(name);}
+
     public Item(int id, String name, int maxHealth) {
         this.id = id;
         this.name = name;
         this.maxHealth = maxHealth;
         this.health = maxHealth;
+        this.itemData = new HashMap<>();
     }
 
     public Item(Item item, int quantity) {

@@ -130,14 +130,15 @@ public class World {
 
     public Settlement createSettlement(String name, Date foundDate, Vector2f geoCoord) {
         if (canCreateSettlement(geoCoord)) {
-            Settlement settlement = new Settlement(name, foundDate, geoCoord, convertToGameCoord(geoCoord), 20, 20);
-            settlement.initializeSettlementTileTypes(generateTiles(20, 20));
+            int width = 40, height = 40;
+            Settlement settlement = new Settlement(name, foundDate, geoCoord, convertToGameCoord(geoCoord), width, height);
+            settlement.initializeSettlementTileTypes(generateTiles(width, height));
 
             List<Item> possibleResources = new ArrayList<>();
             possibleResources.add(tree.copyItem("Wood", 10));
             possibleResources.add(tree.copyItem("Iron", 10));
             //possibleResources.add(tree.copyItem("Food", 10));
-            settlement.initializeSettlementTileResources(generateRandomTilesWithMask(20, 20, 0, 10, 0.8f, -1), possibleResources);
+            settlement.initializeSettlementTileResources(generateRandomTilesWithMask(width, height, 0, 10, 0.8f, -1), possibleResources);
 
             settlement.initializeNeighbors();
 
@@ -156,10 +157,10 @@ public class World {
     public static int[][] generateTiles(int width, int height) {
         int larger = Math.max(width, height);
         int sufficientWidth = (int)Math.pow(2, (int)Math.ceil(Math.log(larger)/Math.log(2)));
-        double[][] temp = DiamondSquare.makeTable(3, 3, 3, 3, sufficientWidth + 1);
+        double[][] temp = DiamondSquare.makeTable(4, 4, 4, 4, sufficientWidth + 1);
         DiamondSquare ds = new DiamondSquare(temp);
         ds.seed(System.currentTimeMillis());
-        return convertToIntArray(ds.generate(new double[]{0, 0, sufficientWidth, 2, 0.4}), width, height);
+        return convertToIntArray(ds.generate(new double[]{0, 0, sufficientWidth, 4, 0.55}), width, height);
     }
 
     //Generates random noise within min and max inclusive

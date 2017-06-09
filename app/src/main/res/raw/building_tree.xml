@@ -121,7 +121,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     name="Tailor" 
     resourcelimit="50" 
     cost="35 Wood, 10 Iron" 
-    production="10 Cotton > 1 Cloth Shirt; 10 Cotton > 1 Cloth Pants; 15 Cotton > 1 Coat" 
+    production="10 Cotton > 1 Cloth Shirt; 10 Cotton > 1 Cloth Pants; 15 Cotton > 1 Coat; 15 Cotton, 10 Wood > 1 Cloth Armor; 15 Iron > 1 Iron Armor" 
     jobtype="Tailoring" 
     buildtime="180" 
     desc="A workshop for weaving and stitching clothing.">

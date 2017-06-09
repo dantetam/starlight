@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-
+Note that the root "part" must have parts which add to 1
 -->
 <bodyroot
 name="Full Body" 

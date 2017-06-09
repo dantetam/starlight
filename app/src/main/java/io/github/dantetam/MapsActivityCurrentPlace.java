@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.example.currentplacedetailsonmap.R;
 
+import io.github.dantetam.android.BitmapHelper;
 import io.github.dantetam.jobs.ConstructionJob;
 import io.github.dantetam.jobs.Job;
 import io.github.dantetam.person.Body;
@@ -194,6 +195,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         nameStorage = new NameStorage();
         nameStorage.loadNames(assetManager, "male_names.txt", "female_names.txt");
+
+        BitmapHelper.init(this);
     }
 
     /**

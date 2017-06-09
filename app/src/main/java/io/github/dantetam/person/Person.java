@@ -1,6 +1,7 @@
 package io.github.dantetam.person;
 
 import io.github.dantetam.world.Inventory;
+import io.github.dantetam.world.Item;
 import io.github.dantetam.world.Tile;
 import io.github.dantetam.jobs.Job;
 import io.github.dantetam.tasks.Task;
@@ -25,6 +26,8 @@ public class Person implements Serializable {
     public Map<String, Integer> skillPriorities;
     public static int MAX_PRIORITY = 1, MIN_PRIORITY = 4, NO_PRIORITY = 5;
     public Body body;
+
+    public Item weapon;
 
     public Person(String name, List<String> possibleSkills) {
         this.name = name;
@@ -61,6 +64,10 @@ public class Person implements Serializable {
 
     public void initializeBody(Body body) {
         this.body = body;
+    }
+
+    public boolean isDead() {
+        return body.root.getHealth() > 0;
     }
 
 }

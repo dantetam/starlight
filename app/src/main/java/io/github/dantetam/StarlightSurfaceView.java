@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.currentplacedetailsonmap.R;
 
+import io.github.dantetam.android.BitmapHelper;
 import io.github.dantetam.jobs.ConstructionJob;
 import io.github.dantetam.jobs.Job;
 import io.github.dantetam.person.Person;
@@ -52,7 +53,7 @@ class StarlightSurfaceView extends SurfaceView {
     public StarlightSurfaceView(Context context, AttributeSet attr) {
         super(context);
         this.context = ((MapsActivityCurrentPlace) context);
-        width = 7;
+        width = 4;
         init();
     }
 
@@ -126,12 +127,12 @@ class StarlightSurfaceView extends SurfaceView {
         endX = Math.min(endX, settlement.rows);
         endY = Math.min(endY, settlement.cols);*/
 
-        float renderWidth = getWidth() / (endX - startX + 1.0f);
-        float renderHeight = getHeight() / (endY - startY + 1.0f);
+        float renderWidth = getWidth() / (2 * widthX + 1.0f);
+        float renderHeight = getHeight() / (2 * widthY + 1.0f);
 
         setTextSizeForWidth(blackTextPaint, renderWidth, "Name");
 
-        Bitmap seaTile = BitmapManager.getBitmapFromName("shallow_sea_texture", context, R.drawable.shallow_sea_texture);
+        /*Bitmap seaTile = BitmapManager.getBitmapFromName("shallow_sea_texture", context, R.drawable.shallow_sea_texture);
         Bitmap iceTile = BitmapManager.getBitmapFromName("ice_texture", context, R.drawable.ice_texture);
         Bitmap taigaTile = BitmapManager.getBitmapFromName("taiga_texture", context, R.drawable.taiga_texture);
         Bitmap desertTile = BitmapManager.getBitmapFromName("desert_texture", context, R.drawable.desert_texture);
@@ -140,8 +141,19 @@ class StarlightSurfaceView extends SurfaceView {
         Bitmap forestTile = BitmapManager.getBitmapFromName("forest_texture", context, R.drawable.forest_texture);
         Bitmap rainforestTile = BitmapManager.getBitmapFromName("rainforest_texture", context, R.drawable.rainforest_texture);
         Bitmap[] bitmapTiles = new Bitmap[]{seaTile, iceTile, taigaTile, desertTile, steppeTile, dryForestTile, forestTile, rainforestTile};
-
         Bitmap androidTile = BitmapManager.getBitmapFromName("coal", context, R.drawable.coal);
+        */
+
+        Bitmap seaTile = BitmapHelper.findBitmapOrBuild(R.drawable.shallow_sea_texture);
+        Bitmap iceTile = BitmapHelper.findBitmapOrBuild(R.drawable.ice_texture);
+        Bitmap taigaTile = BitmapHelper.findBitmapOrBuild(R.drawable.taiga_texture);
+        Bitmap desertTile = BitmapHelper.findBitmapOrBuild(R.drawable.desert_texture);
+        Bitmap steppeTile = BitmapHelper.findBitmapOrBuild(R.drawable.steppe_texture);
+        Bitmap dryForestTile = BitmapHelper.findBitmapOrBuild(R.drawable.dryforest_texture);
+        Bitmap forestTile = BitmapHelper.findBitmapOrBuild(R.drawable.forest_texture);
+        Bitmap rainforestTile = BitmapHelper.findBitmapOrBuild(R.drawable.rainforest_texture);
+        Bitmap[] bitmapTiles = new Bitmap[]{seaTile, iceTile, taigaTile, desertTile, steppeTile, dryForestTile, forestTile, rainforestTile};
+        Bitmap androidTile = BitmapHelper.findBitmapOrBuild(R.drawable.coal);
 
         for (int r = startX; r <= endX; r++) {
             for (int c = startY; c <= endY; c++) {
@@ -150,11 +162,11 @@ class StarlightSurfaceView extends SurfaceView {
                     continue;
                 }
 
-                float displayR = r - startX;
-                float displayC = c - startY;
+                int displayR = tile.row - startX;
+                int displayC = tile.col - startY;
 
-                displayR -= centerX % 1.0f;
-                displayC -= centerY % 1.0f;
+                /*displayR -= centerX % 1.0f;
+                displayC -= centerY % 1.0f;*/
 
                 Bitmap bmpIcon;
                 if (tile.tileType >= 0 && tile.tileType < 8) {
@@ -200,8 +212,8 @@ class StarlightSurfaceView extends SurfaceView {
                     Bitmap bmpIcon = BitmapManager.getBitmapFromName("building_in_progress_icon", context, R.drawable.building_in_progress_icon);
 
                     canvas.drawBitmap(bmpIcon, null, new Rect(
-                                    (int) ((displayR + 0.25)*renderWidth),
-                                    (int) ((displayC + 0.25)*renderHeight),
+                                    (int) ((displayR + 0.25) * renderWidth),
+                                    (int) ((displayC + 0.25) * renderHeight),
                                     (int) ((displayR + 0.75) * renderWidth),
                                     (int) ((displayC + 0.75) * renderHeight)
                             ),
@@ -218,8 +230,11 @@ class StarlightSurfaceView extends SurfaceView {
                     continue;
                 }
 
-                int displayR = r - startX;
-                int displayC = c - startY;
+                int displayR = tile.row - startX;
+                int displayC = tile.col - startY;
+
+                /*displayR -= centerX % 1.0f;
+                displayC -= centerY % 1.0f;*/
 
                 Bitmap bmpIcon;
 
@@ -315,6 +330,9 @@ class StarlightSurfaceView extends SurfaceView {
                 int displayR = hoverTile.row - startX;
                 int displayC = hoverTile.col - startY;
 
+                /*displayR -= centerX % 1.0f;
+                displayC -= centerY % 1.0f;*/
+
                 Bitmap bmpIcon = BitmapManager.getBitmapFromName("tile_target", context, R.drawable.tile_target);
 
                 canvas.drawBitmap(bmpIcon, null, new Rect(
@@ -377,8 +395,8 @@ class StarlightSurfaceView extends SurfaceView {
         int endX = (int) Math.ceil(centerX + widthX);
         int endY = (int) Math.ceil(centerY + widthY);
 
-        float screenWidthX = getWidth() / (endX - startX + 1);
-        float screenWidthY = getHeight() / (endY - startY + 1);
+        float screenWidthX = getWidth() / (2 * widthX + 1);
+        float screenWidthY = getHeight() / (2 * widthY + 1);
 
         int x = (int) Math.floor(touchedX / screenWidthX + startX);
         int y = (int) Math.floor(touchedY / screenWidthY + startY);
@@ -428,11 +446,12 @@ class StarlightSurfaceView extends SurfaceView {
                 centerY = Math.min(Math.max(0, centerY), activeSettlement.cols - 1);
 
                 drawSettlement();
-                if (tile != null)
-                    showTileDetails(tile);
+                /*if (tile != null)
+                    showTileDetails(tile);*/
 
                 invalidate();
 
+                //hoverTile = tile;
                 touched = true;
                 break;
             case MotionEvent.ACTION_UP:

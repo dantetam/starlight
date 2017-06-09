@@ -39,13 +39,13 @@ public class BitmapHelper {
         };
     }
 
-    public static void addBitmap(String key, Bitmap bitmap) {
+    private static void addBitmap(String key, Bitmap bitmap) {
         if (getBitmap(key) == null) {
             mMemoryCache.put(key, bitmap);
         }
     }
 
-    public static Bitmap getBitmap(String key) {
+    private static Bitmap getBitmap(String key) {
         return mMemoryCache.get(key);
     }
 
@@ -58,11 +58,15 @@ public class BitmapHelper {
         if (bitmapStored != null) {
             return bitmapStored;
         }
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inScaled = false;	// No pre-scaling
-        options.inMutable = true;
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
-        return bitmap;
+        else {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;	// No pre-scaling
+            options.inMutable = true;
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
+            mMemoryCache.put(name, bitmap);
+            return bitmap;
+        }
+
     }
 
 }

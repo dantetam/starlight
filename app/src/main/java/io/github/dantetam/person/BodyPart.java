@@ -37,18 +37,4 @@ public class BodyPart {
         }
         return Math.max(0, total);
     }
-
-    public class Injury {
-        public String injuryType;
-        public int bodyPartDamage;
-        public float bloodLossPercentTick;
-        public boolean fixable;
-
-        public Injury(String injuryType, int bodyPartDamage, float bloodLossPercentTick, boolean fixable) {
-            this.injuryType = injuryType;
-            this.bodyPartDamage = bodyPartDamage;
-            this.bloodLossPercentTick = bloodLossPercentTick;
-            this.fixable = fixable;
-        }
-    }
 }

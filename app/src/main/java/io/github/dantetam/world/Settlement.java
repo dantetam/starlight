@@ -36,6 +36,8 @@ public class Settlement implements Serializable { //implements Parcelable {
 
     public static Pathfinder<Tile> pathfinder = new Pathfinder<>();
 
+    public CombatHandler combatHandler;
+
     public Settlement(String name, Date foundDate, Vector2f realGeoCoord, Vector2f gameCoord, int r, int c) {
         this.name = name;
         this.foundDate = foundDate;
@@ -48,6 +50,7 @@ public class Settlement implements Serializable { //implements Parcelable {
         formattedDate = df.format(foundDate);
         availableJobsBySkill = new HashMap<>();
         gold = 50;
+        combatHandler = new CombatHandler(this);
     }
 
     public void initializeNeighbors() {
