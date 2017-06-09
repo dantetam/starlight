@@ -44,29 +44,32 @@ public class CombatJob extends Job {
 
         if (reservedPerson.tile.trueManhattanDist(target.tile) == 1) {
             tasks.add(new CombatMeleeTask(time, settlement, reservedPerson, target));
+            return tasks;
         }
         else if (reservedPerson.weapon.hasItemData("combatshot")) {
             float l2Dist = reservedPerson.tile.trueEuclideanDist(target.tile);
             if (l2Dist <= reservedPerson.weapon.getItemData("combatrange")) {
                 tasks.add(new CombatRangedTask(time, settlement, reservedPerson, target));
+                return tasks;
             }
         }
-        else {
-            List<Tile> path = Settlement.pathfinder.findPath(reservedPerson.tile, target.tile);
-            if (path != null) { //If a valid path was found
-                for (Tile tile: path) {
-                    Task localMoveTask = new MoveTask(reservedPerson.tileMoveSpeed(), reservedPerson, settlement, tile);
-                    tasks.add(localMoveTask);
+
+        List<Tile> path = Settlement.pathfinder.findPath(reservedPerson.tile, target.tile);
+        if (path != null) { //If a valid path was found
+            path.remove(path.size() - 1);
+            for (Tile tile: path) {
+                Task localMoveTask = new MoveTask(reservedPerson.tileMoveSpeed(), reservedPerson, settlement, tile);
+                tasks.add(localMoveTask);
+                if (reservedPerson.weapon.hasItemData("combatshot")) {
+                    if (tile.trueEuclideanDist(target.tile) <= reservedPerson.weapon.getItemData("combatrange")) {
+                        break;
+                    }
                 }
             }
-            return tasks;
         }
+        return tasks;
 
         //TODO Check if the player is in range with either a melee or ranged weapon
-
-
-
-        return tasks;
     }
 
     @Override

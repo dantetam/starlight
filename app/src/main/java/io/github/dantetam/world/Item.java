@@ -40,6 +40,9 @@ public class Item implements Serializable {
 
     public Item(Item item, int quantity) {
         this(item.id, item.name, item.maxHealth);
+        for (Map.Entry<String, Float> entry: item.itemData.entrySet()) {
+            this.putItemData(entry.getKey(), entry.getValue());
+        }
         this.superClassId = item.superClassId;
         if (quantity == 0) {
             throw new IllegalArgumentException("Cannot create a item of zero quantity");

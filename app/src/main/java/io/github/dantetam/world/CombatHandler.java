@@ -24,12 +24,16 @@ public class CombatHandler implements Serializable {
     public void processMeleeAttack(Person attacker, Person target) {
         double rand = Math.random();
         //TODO Handle weapon is null, use fists
-        if (rand < attacker.weapon.getItemData("combatchance")) {
+        Item weapon = attacker.weapon;
+        if (weapon == null) {
+            weapon = tree.copyItem("Fists", 1);
+        }
+        if (rand < weapon.getItemData("combatchance")) {
             BodyPart randBodyPart = target.body.randomBodyPart();
             if (randBodyPart.getHealth() > 0) {
                 float damage = 0;
                 if (attacker.tile.trueManhattanDist(target.tile) == 1) {
-                    damage = attacker.weapon.getItemData("combatmelee");
+                    damage = weapon.getItemData("combatmelee");
                 }
                 damage += new Random().nextGaussian() * (damage / 4.0f);
                 if (damage > 0) {
@@ -41,6 +45,9 @@ public class CombatHandler implements Serializable {
 
     public void processRangedAttack(Person attacker, Person target) {
         double rand = Math.random();
+        if (attacker.weapon == null) {
+            return;
+        }
         if (rand < attacker.weapon.getItemData("combatchance")) {
             BodyPart randBodyPart = target.body.randomBodyPart();
             if (randBodyPart.getHealth() > 0) {
@@ -52,6 +59,7 @@ public class CombatHandler implements Serializable {
                 if (damage > 0) {
                     randBodyPart.injuries.add(new Injury("RangedInjury", (int) damage, damage / 20.0f, true));
                 }
+                //System.err.println("Dealt " + damage + " damage to " + target.name + ".");
             }
         }
     }

@@ -69,6 +69,22 @@ public class ItemXmlParser {
 
                     Item item = new Item(id, itemName, maxHealth);
 
+                    String[] customData = new String[]{"combatmelee", "combatshot", "combatrange", "combatchance", "combattime"};
+                    for (String customAttr: customData) {
+                        String attr = xpp.getAttributeValue(null, "data-" + customAttr);
+                        if (attr == null) {
+                            attr = xpp.getAttributeValue(null, customAttr);
+                        }
+                        if (attr != null) {
+                            try {
+                                item.putItemData(customAttr, Float.parseFloat(attr));
+                            } catch (NumberFormatException exception) {
+                                exception.printStackTrace();
+                                System.err.println("Could not format string for custom data attr: " + customAttr);
+                            }
+                        }
+                    }
+
                     tree.insertItem(item);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {

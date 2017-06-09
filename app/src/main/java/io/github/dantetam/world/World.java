@@ -44,36 +44,35 @@ public class World {
                 if (person.isDead()) {
                     continue;
                 }
-                if (person.currentJob == null) {
-                    if (person.isDrafted) {
-                        for (Person visitor: settlement.visitors) {
-                            if (visitor.isDead()) {
-                                continue;
-                            }
-                            if (factionsHostile(person.faction, visitor.faction)) {
-                                Job attackJob = new CombatJob(settlement, person, visitor);
-                                person.currentJob = attackJob;
-                                attackJob.reservedPerson = person;
-                                break;
-                            }
+                //Assign a job, combat or non-combat
+                if (person.isDrafted) {
+                    for (Person visitor: settlement.visitors) {
+                        if (visitor.isDead()) {
+                            continue;
+                        }
+                        if (factionsHostile(person.faction, visitor.faction)) {
+                            Job attackJob = new CombatJob(settlement, person, visitor);
+                            person.currentJob = attackJob;
+                            //attackJob.reservedPerson = person;
+                            break;
                         }
                     }
-                    else {
-                        //Look for a job within the settlement based on priority
-                        //Go through skills sorted by highest priority first,
-                        //looking for available jobs within the respective settlements
-                        Map<String, Integer> sortedSkillsDescending = MapUtil.sortByValueDescending(person.skillPriorities);
-                        findJobLoop:
-                        for (Map.Entry<String, Integer> entry: sortedSkillsDescending.entrySet()) {
-                            String skillName = entry.getKey();
-                            List<Job> jobsInSkill = settlement.availableJobsBySkill.get(skillName);
-                            for (int i = 0; i < jobsInSkill.size(); i++) {
-                                Job assignedJob = jobsInSkill.get(i);
-                                if (assignedJob.reservedPerson == null) {
-                                    person.currentJob = assignedJob;
-                                    assignedJob.reservedPerson = person;
-                                    break findJobLoop;
-                                }
+                }
+                else if (person.currentJob == null) {
+                    //Look for a job within the settlement based on priority
+                    //Go through skills sorted by highest priority first,
+                    //looking for available jobs within the respective settlements
+                    Map<String, Integer> sortedSkillsDescending = MapUtil.sortByValueDescending(person.skillPriorities);
+                    findJobLoop:
+                    for (Map.Entry<String, Integer> entry: sortedSkillsDescending.entrySet()) {
+                        String skillName = entry.getKey();
+                        List<Job> jobsInSkill = settlement.availableJobsBySkill.get(skillName);
+                        for (int i = 0; i < jobsInSkill.size(); i++) {
+                            Job assignedJob = jobsInSkill.get(i);
+                            if (assignedJob.reservedPerson == null) {
+                                person.currentJob = assignedJob;
+                                assignedJob.reservedPerson = person;
+                                break findJobLoop;
                             }
                         }
                     }
@@ -107,7 +106,7 @@ public class World {
                             }
                         }
                         else {
-                            //Do nothing, the job is still going open.
+                            //Do nothing, the job is still going on.
                             //Later, process the person's queue of tasks,
                             //which may or may not be associated with the job.
                             //Note that a job does not override in progress/queued tasks
@@ -153,7 +152,7 @@ public class World {
 
     public Settlement createSettlement(String name, Date foundDate, Vector2f geoCoord, ConstructionTree tree) {
         if (canCreateSettlement(geoCoord)) {
-            int width = 40, height = 40;
+            int width = 26, height = 26;
             Settlement settlement = new Settlement(name, foundDate, geoCoord, convertToGameCoord(geoCoord), width, height, tree);
             settlement.initializeSettlementTileTypes(generateTiles(width, height));
 
@@ -237,6 +236,15 @@ public class World {
             return false;
         }
         return true;
+    }
+
+    public Faction getFaction(String name) {
+        for (Faction faction: factions) {
+            if (faction.name.equals(name)) {
+                return faction;
+            }
+        }
+        return null;
     }
 
 }

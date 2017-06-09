@@ -55,7 +55,7 @@ class StarlightSurfaceView extends SurfaceView {
     public StarlightSurfaceView(Context context, AttributeSet attr) {
         super(context);
         this.context = ((MapsActivityCurrentPlace) context);
-        width = 4;
+        width = 7;
         init();
     }
 
@@ -106,10 +106,12 @@ class StarlightSurfaceView extends SurfaceView {
         Paint whitePaint = new Paint();
         Paint bluePaint = new Paint();
         Paint blackTextPaint = new Paint();
+        Paint redPaint = new Paint();
 
         whitePaint.setColor(Color.WHITE);
         bluePaint.setColor(Color.BLUE);
         blackTextPaint.setColor(Color.BLACK);
+        redPaint.setColor(Color.RED);
 
         canvas.drawColor(Color.BLACK);
 
@@ -240,10 +242,14 @@ class StarlightSurfaceView extends SurfaceView {
                 /*displayR -= centerX % 1.0f;
                 displayC -= centerY % 1.0f;*/
 
-                Bitmap bmpIcon;
+                Bitmap bmpIcon = BitmapHelper.findBitmapOrBuild(R.drawable.person);
 
                 if (tile.people.size() > 0) {
                     Person person = tile.people.get(0);
+
+                    if (person.faction.name.equals("Pirates")) {
+                        bmpIcon = BitmapHelper.findBitmapOrBuild(R.drawable.pirate);
+                    }
 
                     float healthPercent = person.body.root.getHealth() / person.body.root.maxHealth;
 
@@ -252,7 +258,6 @@ class StarlightSurfaceView extends SurfaceView {
                         float percentageCompleted = 1.0f - (float) firstTask.ticksLeft / (float) firstTask.originalTicksLeft;
                         if (!(firstTask instanceof MoveTask)) {
                             //Draw the person standing still,
-                            bmpIcon = BitmapManager.getBitmapFromName("person", context, R.drawable.person);
                             canvas.drawBitmap(bmpIcon, null, new Rect(
                                             (int) ((displayR + 0) * renderWidth),
                                             (int) ((displayC + 0.5) * renderHeight),
@@ -300,7 +305,6 @@ class StarlightSurfaceView extends SurfaceView {
                             float trueC = (1 - percentageCompleted) * current.col + percentageCompleted * dest.col;
                             float displayTweenR = trueR - startX;
                             float displayTweenC = trueC - startY;
-                            bmpIcon = BitmapManager.getBitmapFromName("person", context, R.drawable.person);
                             canvas.drawBitmap(bmpIcon, null, new Rect(
                                             (int) ((displayTweenR + 0) * renderWidth),
                                             (int) ((displayTweenC + 0.5) * renderHeight),
@@ -320,7 +324,6 @@ class StarlightSurfaceView extends SurfaceView {
                         }
                     }
                     else {
-                        bmpIcon = BitmapManager.getBitmapFromName("person", context, R.drawable.person);
                         canvas.drawBitmap(bmpIcon, null, new Rect(
                                         (int) ((displayR + 0) * renderWidth),
                                         (int) ((displayC + 0.5) * renderHeight),
@@ -335,6 +338,23 @@ class StarlightSurfaceView extends SurfaceView {
                                 (int) ((displayR + 0) * renderWidth),
                                 (int) ((displayC + 1.1f) * renderHeight),
                                 blackTextPaint
+                        );
+                    }
+
+                    if (healthPercent < 1) {
+                        canvas.drawRect(
+                                (int) ((displayR + 0) * renderWidth),
+                                (int) ((displayC + 1) * renderHeight),
+                                (int) ((displayR + 0.5) * renderWidth),
+                                (int) ((displayC + 1.2) * renderHeight),
+                                whitePaint
+                        );
+                        canvas.drawRect(
+                                (int) ((displayR + 0) * renderWidth),
+                                (int) ((displayC + 1) * renderHeight),
+                                (int) ((displayR + healthPercent * 0.5) * renderWidth),
+                                (int) ((displayC + 1.2) * renderHeight),
+                                redPaint
                         );
                     }
                 }

@@ -73,7 +73,7 @@ public class Person implements Serializable {
     }
 
     public boolean isDead() {
-        return body.root.getHealth() > 0;
+        return body.root.getHealth() <= 0;
     }
 
 }

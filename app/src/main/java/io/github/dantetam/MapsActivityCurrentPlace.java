@@ -31,6 +31,7 @@ import io.github.dantetam.android.BitmapHelper;
 import io.github.dantetam.jobs.ConstructionJob;
 import io.github.dantetam.jobs.Job;
 import io.github.dantetam.person.Body;
+import io.github.dantetam.person.Faction;
 import io.github.dantetam.person.Person;
 import io.github.dantetam.util.VariableListener;
 import io.github.dantetam.util.Vector2f;
@@ -303,11 +304,24 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             settlement.nexus.items.addItem(constructionTree.copyItem("Iron", 25));
             settlement.nexus.items.addItem(constructionTree.copyItem("Meal", 50));
 
+            world.factions.add(new Faction("Colonists"));
+            world.factions.add(new Faction("Pirates"));
+
             for (int i = 0; i < 10; i++) {
-                Person person = new Person(nameStorage.randomName(), constructionTree.skills, faction);
+                Person person = new Person(nameStorage.randomName(), constructionTree.skills, world.getFaction("Colonists"));
                 Body parsedHumanBody = BodyXmlParser.parseBodyTree(this, R.raw.human_body);
                 person.initializeBody(parsedHumanBody);
                 settlement.people.add(person);
+                Tile randomTile = settlement.randomTile();
+                settlement.movePerson(person, randomTile);
+                person.weapon = constructionTree.copyItem("Wooden Composite Bow", 1);
+            }
+
+            for (int i = 0; i < 10; i++) {
+                Person person = new Person(nameStorage.randomName(), constructionTree.skills, world.getFaction("Pirates"));
+                Body parsedHumanBody = BodyXmlParser.parseBodyTree(this, R.raw.human_body);
+                person.initializeBody(parsedHumanBody);
+                settlement.visitors.add(person);
                 Tile randomTile = settlement.randomTile();
                 settlement.movePerson(person, randomTile);
             }
@@ -476,6 +490,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                     }
                     else {
                         person.isDrafted = true;
+                    }
+                    if (person.currentJob != null) {
+                        person.currentJob.reservedPerson = null;
+                        person.currentJob = null;
                     }
                 }
             }
