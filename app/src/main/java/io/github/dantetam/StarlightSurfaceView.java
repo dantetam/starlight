@@ -251,7 +251,7 @@ class StarlightSurfaceView extends SurfaceView {
                         bmpIcon = BitmapHelper.findBitmapOrBuild(R.drawable.pirate);
                     }
 
-                    float healthPercent = person.body.root.getHealth() / person.body.root.maxHealth;
+                    float healthPercent = (float) person.body.root.getHealth() / (float) person.body.root.maxHealth;
 
                     if (person.queueTasks.size() > 0) {
                         Task firstTask = person.queueTasks.get(0);
@@ -523,13 +523,18 @@ class StarlightSurfaceView extends SurfaceView {
         ((TextView) context.findViewById(R.id.buildingProduction)).setVisibility(GONE);
         ((TextView) context.findViewById(R.id.buildingHousingNum)).setVisibility(GONE);
         ((TextView) context.findViewById(R.id.buildingItemsList)).setVisibility(GONE);
-        ((Button) context.findViewById(R.id.btnProduceTest)).setVisibility(GONE);
+        //((Button) context.findViewById(R.id.btnProduceTest)).setVisibility(GONE);
         //((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(GONE);
 
         ((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(GONE);
         ((Button) context.findViewById(R.id.btnProductionList)).setVisibility(GONE);
         ((LinearLayout) context.findViewById(R.id.constructionBuildingList)).removeAllViews();
         ((LinearLayout) context.findViewById(R.id.productionRecipesList)).removeAllViews();
+
+        ((Button) context.findViewById(R.id.btnTradeResources)).setVisibility(GONE);
+
+        context.findViewById(R.id.scrollTradeDialog).setVisibility(GONE);
+        context.findViewById(R.id.tradeDialog).setVisibility(GONE);
 
         Building building = tile.getBuilding();
         if (building != null) {
@@ -538,7 +543,7 @@ class StarlightSurfaceView extends SurfaceView {
             ((TextView) context.findViewById(R.id.buildingItemsList)).setVisibility(VISIBLE);
             ((TextView) context.findViewById(R.id.buildingHousingNum)).setVisibility(VISIBLE);
             ((TextView) context.findViewById(R.id.buildingProduction)).setVisibility(VISIBLE);
-            ((Button) context.findViewById(R.id.btnProduceTest)).setVisibility(VISIBLE);
+            //((Button) context.findViewById(R.id.btnProduceTest)).setVisibility(VISIBLE);
             ((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(GONE);
 
             ((TextView) context.findViewById(R.id.buildingName)).setText(building.name);
@@ -550,7 +555,7 @@ class StarlightSurfaceView extends SurfaceView {
             ((TextView) context.findViewById(R.id.buildingHousingNum)).setText("Houses " + building.housingNum + " people");
             ((TextView) context.findViewById(R.id.buildingItemsList)).setText("Stored: " + building.getItemsString());
 
-            ((Button) context.findViewById(R.id.btnProduceTest)).setOnClickListener(null);
+            //((Button) context.findViewById(R.id.btnProduceTest)).setOnClickListener(null);
             /*((Button) context.findViewById(R.id.btnProduceTest)).setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -565,6 +570,10 @@ class StarlightSurfaceView extends SurfaceView {
             }
 
             ((Button) context.findViewById(R.id.btnProductionList)).setVisibility(VISIBLE);
+
+            if (building.name.equals("Nexus")) {
+                ((Button) context.findViewById(R.id.btnTradeResources)).setVisibility(VISIBLE);
+            }
         }
         else {
             ((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(VISIBLE);

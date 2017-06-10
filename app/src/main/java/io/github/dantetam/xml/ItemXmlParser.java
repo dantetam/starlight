@@ -67,7 +67,7 @@ public class ItemXmlParser {
                     float marketValue = Float.parseFloat(xpp.getAttributeValue(null, "marketvalue"));
                     int maxHealth = Integer.parseInt(xpp.getAttributeValue(null, "maxhealth"));
 
-                    Item item = new Item(id, itemName, maxHealth);
+                    Item item = new Item(id, itemName, maxHealth, marketValue);
 
                     String[] customData = new String[]{"combatmelee", "combatshot", "combatrange", "combatchance", "combattime"};
                     for (String customAttr: customData) {

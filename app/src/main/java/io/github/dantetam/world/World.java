@@ -12,7 +12,9 @@ import io.github.dantetam.tasks.Task;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +48,15 @@ public class World {
                 }
                 //Assign a job, combat or non-combat
                 if (person.isDrafted) {
+                    Map<Person, Float> peopleByDist = new HashMap<>();
                     for (Person visitor: settlement.visitors) {
+                        peopleByDist.put(visitor, person.tile.trueEuclideanDist(visitor.tile));
+                    }
+
+                    Map<Person, Float> sortedDists = MapUtil.sortByValueAscending(peopleByDist);
+                    Collection<Person> sortedVisitors = sortedDists.keySet();
+
+                    for (Person visitor: sortedVisitors) {
                         if (visitor.isDead()) {
                             continue;
                         }

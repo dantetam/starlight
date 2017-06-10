@@ -15,6 +15,7 @@ public class Item implements Serializable {
     public int health, maxHealth;
     public String quality;
     public Integer superClassId = null;
+    public float baseMarketPrice;
 
     private Map<String, Float> itemData;
     public float getItemData(String name) {
@@ -30,16 +31,17 @@ public class Item implements Serializable {
     }
     public boolean hasItemData(String name) {return itemData.containsKey(name);}
 
-    public Item(int id, String name, int maxHealth) {
+    public Item(int id, String name, int maxHealth, float baseMarketPrice) {
         this.id = id;
         this.name = name;
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.itemData = new HashMap<>();
+        this.baseMarketPrice = baseMarketPrice;
     }
 
     public Item(Item item, int quantity) {
-        this(item.id, item.name, item.maxHealth);
+        this(item.id, item.name, item.maxHealth, item.baseMarketPrice);
         for (Map.Entry<String, Float> entry: item.itemData.entrySet()) {
             this.putItemData(entry.getKey(), entry.getValue());
         }

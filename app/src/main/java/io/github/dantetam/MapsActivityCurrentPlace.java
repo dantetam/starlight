@@ -65,6 +65,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -317,7 +319,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 person.weapon = constructionTree.copyItem("Wooden Composite Bow", 1);
             }
 
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 2; i++) {
                 Person person = new Person(nameStorage.randomName(), constructionTree.skills, world.getFaction("Pirates"));
                 Body parsedHumanBody = BodyXmlParser.parseBodyTree(this, R.raw.human_body);
                 person.initializeBody(parsedHumanBody);
@@ -495,7 +497,67 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                         person.currentJob.reservedPerson = null;
                         person.currentJob = null;
                     }
+                    person.queueTasks.clear();
                 }
+            }
+        }
+    }
+
+    public void openTradeResources(View v) {
+        if (currentSettlement != null && currentSettlement.nexus != null) {
+            findViewById(R.id.scrollTradeDialog).setVisibility(View.VISIBLE);
+            findViewById(R.id.tradeDialog).setVisibility(View.VISIBLE);
+            LinearLayout tradeList = (LinearLayout) findViewById(R.id.tradeDialog);
+            tradeList.removeAllViews();
+
+            List<Item> items = currentSettlement.nexus.items.getItems();
+
+            for (final Item item: items) {
+                LinearLayout itemLayout = new LinearLayout(this);
+                itemLayout.setVisibility(View.VISIBLE);
+                itemLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+                TextView itemName = new TextView(this);
+                itemName.setText(item.name + " (" + item.quantity + "), " + item.baseMarketPrice + ":");
+                itemName.setBackgroundColor(Color.WHITE);
+                itemLayout.addView(itemName);
+
+                itemName.setPadding(5, 0, 5, 0);
+
+                final TextView itemBuySellQuantity = new TextView(this);
+                itemBuySellQuantity.setText("0");
+                itemBuySellQuantity.setBackgroundColor(Color.WHITE);
+                itemLayout.addView(itemBuySellQuantity);
+
+                Button itemBuy = new Button(this);
+                itemBuy.setText("+1");
+                itemLayout.addView(itemBuy);
+
+                Button itemSell = new Button(this);
+                itemSell.setText("-1");
+                itemLayout.addView(itemSell);
+
+                itemBuy.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int quantity = Integer.parseInt(itemBuySellQuantity.getText().toString());
+                        quantity++;
+                        itemBuySellQuantity.setText("" + quantity);
+                    }
+                });
+
+                itemSell.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int quantity = Integer.parseInt(itemBuySellQuantity.getText().toString());
+                        if (-quantity - 1 <= item.quantity) {
+                            quantity--;
+                            itemBuySellQuantity.setText("" + quantity);
+                        }
+                    }
+                });
+
+                tradeList.addView(itemLayout);
             }
         }
     }
@@ -522,7 +584,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             public View getInfoContents(Marker marker) {
                 // Inflate the layouts for the info window, title and snippet.
                 View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents,
-                        (FrameLayout)findViewById(R.id.map), false);
+                        (FrameLayout) findViewById(R.id.map), false);
 
                 TextView title = ((TextView) infoWindow.findViewById(R.id.title));
                 title.setText(marker.getTitle());
