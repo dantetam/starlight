@@ -72,9 +72,9 @@ public class World {
                     //Look for a job within the settlement based on priority
                     //Go through skills sorted by highest priority first,
                     //looking for available jobs within the respective settlements
-                    Map<String, Integer> sortedSkillsDescending = MapUtil.sortByValueDescending(person.skillPriorities);
+                    //Map<String, Integer> sortedSkillsDescending = MapUtil.sortByValueDescending(person.skillPriorities);
                     findJobLoop:
-                    for (Map.Entry<String, Integer> entry: sortedSkillsDescending.entrySet()) {
+                    for (Map.Entry<String, Integer> entry: person.getSortedSkillPrioritiesDes().entrySet()) {
                         String skillName = entry.getKey();
                         List<Job> jobsInSkill = settlement.availableJobsBySkill.get(skillName);
                         for (int i = 0; i < jobsInSkill.size(); i++) {
@@ -98,7 +98,7 @@ public class World {
                             settlement.availableJobsBySkill.get(skillName).remove(person.currentJob);
                         }
                         else {
-                            for (Map.Entry<String, Integer> entry: person.skillPriorities.entrySet()) {
+                            for (Map.Entry<String, Integer> entry: person.getSortedSkillPrioritiesDes().entrySet()) {
                                 String otherSkillName = entry.getKey();
                                 List<Job> jobsInSkill = settlement.availableJobsBySkill.get(otherSkillName);
                                 jobsInSkill.remove(person.currentJob);
@@ -160,17 +160,17 @@ public class World {
         return allowed;
     }
 
-    public Settlement createSettlement(String name, Date foundDate, Vector2f geoCoord, ConstructionTree tree) {
+    public Settlement createSettlement(String name, Date foundDate, Vector2f geoCoord, ConstructionTree tree, Inventory possibleResources) {
         if (canCreateSettlement(geoCoord)) {
             int width = 26, height = 26;
             Settlement settlement = new Settlement(name, foundDate, geoCoord, convertToGameCoord(geoCoord), width, height, tree);
             settlement.initializeSettlementTileTypes(generateTiles(width, height));
 
-            List<Item> possibleResources = new ArrayList<>();
-            possibleResources.add(tree.copyItem("Wood", 10));
+            /*possibleResources.add(tree.copyItem("Wood", 10));
             possibleResources.add(tree.copyItem("Iron", 10));
-            //possibleResources.add(tree.copyItem("Food", 10));
-            settlement.initializeSettlementTileResources(generateRandomTilesWithMask(width, height, 0, 10, 0.8f, -1), possibleResources);
+            //possibleResources.add(tree.copyItem("Food", 10));*/
+
+            settlement.initializeSettlementTileResources(generateRandomTilesWithMask(width, height, 0, 10, 0.95f, -1), possibleResources.getItems());
 
             settlement.initializeNeighbors();
 
@@ -227,7 +227,7 @@ public class World {
         return result;
     }
 
-    private static int[][] convertToIntArray(double[][] arr, int desiredWidth, int desiredHeight) {
+    public static int[][] convertToIntArray(double[][] arr, int desiredWidth, int desiredHeight) {
         if (arr.length == 0) return new int[0][0];
         if (desiredWidth > arr.length || desiredHeight > arr[0].length) {
             throw new IllegalArgumentException("Can't create an array subset greater than original array");
@@ -236,6 +236,23 @@ public class World {
         for (int r = 0; r < desiredWidth; r++) {
             for (int c = 0; c < desiredHeight; c++) {
                 result[r][c] = (int) arr[r][c];
+            }
+        }
+        return result;
+    }
+
+    public static byte[][] convertToByteArray(double[][] arr, int desiredWidth, int desiredHeight) {
+        return convertToByteArray(convertToIntArray(arr, desiredWidth, desiredHeight) ,desiredWidth, desiredHeight);
+    }
+    public static byte[][] convertToByteArray(int[][] arr, int desiredWidth, int desiredHeight) {
+        if (arr.length == 0) return new byte[0][0];
+        if (desiredWidth > arr.length || desiredHeight > arr[0].length) {
+            throw new IllegalArgumentException("Can't create an array subset greater than original array");
+        }
+        byte[][] result = new byte[desiredWidth][desiredHeight];
+        for (int r = 0; r < desiredWidth; r++) {
+            for (byte c = 0; c < desiredHeight; c++) {
+                result[r][c] = (byte) arr[r][c];
             }
         }
         return result;

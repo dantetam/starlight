@@ -30,6 +30,7 @@ import com.example.currentplacedetailsonmap.R;
 import io.github.dantetam.android.BitmapHelper;
 import io.github.dantetam.jobs.ConstructionJob;
 import io.github.dantetam.jobs.Job;
+import io.github.dantetam.maps.MapResourceOverlay;
 import io.github.dantetam.person.Body;
 import io.github.dantetam.person.Faction;
 import io.github.dantetam.person.Person;
@@ -136,6 +137,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
     private NameStorage nameStorage;
 
+    private List<MapResourceOverlay> mapResourceOverlays;
+
+    private List<Inventory> worldPossibleResources;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -200,6 +205,30 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         nameStorage.loadNames(assetManager, "male_names.txt", "female_names.txt");
 
         BitmapHelper.init(this);
+
+        mapResourceOverlays = new ArrayList<>();
+
+        worldPossibleResources = new ArrayList<>();
+
+        Inventory inventory = new Inventory();
+        inventory.addItem(constructionTree.copyItem("Stone", 100));
+        worldPossibleResources.add(inventory);
+
+        inventory = new Inventory();
+        inventory.addItem(constructionTree.copyItem("Silver", 100), constructionTree.copyItem("Gold", 30));
+        worldPossibleResources.add(inventory);
+
+        inventory = new Inventory();
+        inventory.addItem(constructionTree.copyItem("Tropical Wood", 100));
+        worldPossibleResources.add(inventory);
+
+        inventory = new Inventory();
+        inventory.addItem(constructionTree.copyItem("Sludge", 100), constructionTree.copyItem("Stone", 50));
+        worldPossibleResources.add(inventory);
+
+        for (Inventory specialInventory: worldPossibleResources) {
+            specialInventory.addItem(constructionTree.copyItem("Wood", 300), constructionTree.copyItem("Iron", 100), constructionTree.copyItem("Stone", 50));
+        }
     }
 
     /**
@@ -283,8 +312,14 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         Calendar c = Calendar.getInstance();
 
         LatLng convertedLoc = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+
+        Inventory resources = getMapResources(convertedLoc);
+
         String name = "Settlement " + (world.settlements.size() + 1);
-        Settlement settlement = world.createSettlement(name, c.getTime(), new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), constructionTree);
+        Settlement settlement = world.createSettlement(
+                name, c.getTime(),
+                new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()),
+                constructionTree, resources);
 
         if (settlement != null && gold.value() >= 35) {
             gold.set(gold.value() - 35);
@@ -303,7 +338,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             settlement.getTile(settlement.rows / 2 + 1, settlement.cols / 2).addBuilding(tent);
             settlement.nexus.items.addItem(constructionTree.copyItem("Wood", 200));
             settlement.nexus.items.addItem(constructionTree.copyItem("Tropical Wood", 100));
-            settlement.nexus.items.addItem(constructionTree.copyItem("Iron", 25));
+            settlement.nexus.items.addItem(constructionTree.copyItem("Iron", 50));
             settlement.nexus.items.addItem(constructionTree.copyItem("Meal", 50));
 
             world.factions.add(new Faction("Colonists"));
@@ -343,6 +378,22 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }
 
         return false;
+    }
+
+    private Inventory getMapResources(LatLng location) {
+        for (MapResourceOverlay overlay: mapResourceOverlays) {
+            if (overlay.inBounds(location)) {
+                return overlay.getItemsAtCoord(location);
+            }
+        }
+
+        //None of the currently existing map overlays contain this point
+        byte[][] randomResourceData;
+        randomResourceData = World.convertToByteArray(world.generateRandomTiles(100, 100, 0, worldPossibleResources.size() - 1), 100, 100);
+
+        MapResourceOverlay newOverlay = new MapResourceOverlay(location,100,100,randomResourceData,worldPossibleResources);
+        mapResourceOverlays.add(newOverlay);
+        return newOverlay.getItemsAtCoord(location);
     }
 
     public void newConstructionBuildingList(View v) {

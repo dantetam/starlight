@@ -45,12 +45,32 @@ class StarlightSurfaceView extends SurfaceView {
     private Settlement activeSettlement;
     private Tile hoverTile;
 
+    private Building hoverBuilding;
+    private Person hoverPerson;
+
+    //Variable used to store the current object being focused on,
+    //ideally to switch between viewing the building and person on a tile
+    private int viewMode = 0;
+
     private SurfaceHolder surfaceHolder;
 
+    //Position and square "radius" of the camera
     private float centerX, centerY;
     private float width;
 
+    //A variable used to store a constant value of height / width
     private float aspectRatio = 0f;
+
+    private Bitmap seaTile;
+    private Bitmap iceTile;
+    private Bitmap taigaTile;
+    private Bitmap desertTile;
+    private Bitmap steppeTile;
+    private Bitmap dryForestTile;
+    private Bitmap forestTile;
+    private Bitmap rainforestTile;
+    private Bitmap[] bitmapTiles;
+    private Bitmap androidTile;
 
     public StarlightSurfaceView(Context context, AttributeSet attr) {
         super(context);
@@ -83,6 +103,17 @@ class StarlightSurfaceView extends SurfaceView {
 
             }
         });
+
+        seaTile = BitmapHelper.findBitmapOrBuild(R.drawable.shallow_sea_texture);
+        iceTile = BitmapHelper.findBitmapOrBuild(R.drawable.ice_texture);
+        taigaTile = BitmapHelper.findBitmapOrBuild(R.drawable.taiga_texture);
+        desertTile = BitmapHelper.findBitmapOrBuild(R.drawable.desert_texture);
+        steppeTile = BitmapHelper.findBitmapOrBuild(R.drawable.steppe_texture);
+        dryForestTile = BitmapHelper.findBitmapOrBuild(R.drawable.dryforest_texture);
+        forestTile = BitmapHelper.findBitmapOrBuild(R.drawable.forest_texture);
+        rainforestTile = BitmapHelper.findBitmapOrBuild(R.drawable.rainforest_texture);
+        bitmapTiles = new Bitmap[]{seaTile, iceTile, taigaTile, desertTile, steppeTile, dryForestTile, forestTile, rainforestTile};
+        androidTile = BitmapHelper.findBitmapOrBuild(R.drawable.coal);
     }
 
     public void setSettlement(Settlement settlement) {
@@ -98,6 +129,7 @@ class StarlightSurfaceView extends SurfaceView {
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
     }
+
     protected void drawSettlement(Canvas canvas) {
         if (activeSettlement == null) {
             return;
@@ -148,17 +180,6 @@ class StarlightSurfaceView extends SurfaceView {
         Bitmap androidTile = BitmapManager.getBitmapFromName("coal", context, R.drawable.coal);
         */
 
-        Bitmap seaTile = BitmapHelper.findBitmapOrBuild(R.drawable.shallow_sea_texture);
-        Bitmap iceTile = BitmapHelper.findBitmapOrBuild(R.drawable.ice_texture);
-        Bitmap taigaTile = BitmapHelper.findBitmapOrBuild(R.drawable.taiga_texture);
-        Bitmap desertTile = BitmapHelper.findBitmapOrBuild(R.drawable.desert_texture);
-        Bitmap steppeTile = BitmapHelper.findBitmapOrBuild(R.drawable.steppe_texture);
-        Bitmap dryForestTile = BitmapHelper.findBitmapOrBuild(R.drawable.dryforest_texture);
-        Bitmap forestTile = BitmapHelper.findBitmapOrBuild(R.drawable.forest_texture);
-        Bitmap rainforestTile = BitmapHelper.findBitmapOrBuild(R.drawable.rainforest_texture);
-        Bitmap[] bitmapTiles = new Bitmap[]{seaTile, iceTile, taigaTile, desertTile, steppeTile, dryForestTile, forestTile, rainforestTile};
-        Bitmap androidTile = BitmapHelper.findBitmapOrBuild(R.drawable.coal);
-
         Bitmap combatIcon = BitmapHelper.findBitmapOrBuild(R.drawable.shock);
 
         for (int r = startX; r <= endX; r++) {
@@ -191,6 +212,18 @@ class StarlightSurfaceView extends SurfaceView {
                         ),
                         null
                 );
+
+                if (tile.resources.size() > 0) {
+                    bmpIcon = BitmapHelper.findBitmapOrBuild(R.drawable.coal);
+                    canvas.drawBitmap(bmpIcon, null, new Rect(
+                                    (int) ((displayR + 0.5) * renderWidth),
+                                    (int) ((displayC + 0.5) * renderHeight),
+                                    (int) ((displayR + 1) * renderWidth),
+                                    (int) ((displayC + 1) * renderHeight)
+                            ),
+                            null
+                    );
+                }
 
                 Building building = tile.getBuilding();
                 if (building != null) {
@@ -460,7 +493,7 @@ class StarlightSurfaceView extends SurfaceView {
                 // Add a user's movement to the tracker.
                 mVelocityTracker.addMovement(event);
 
-                hoverTile = tile;
+                //hoverTile = tile;
                 touched = true;
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -492,8 +525,33 @@ class StarlightSurfaceView extends SurfaceView {
                 break;
             case MotionEvent.ACTION_UP:
                 drawSettlement();
-                if (tile != null)
-                    showTileDetails(tile);
+                if (tile != null) {
+                    //Behavior: If the same tile is clicked on, cycle through the various objects at that one tile
+                    //Restart the cycle of items (building, person 1, person 2, etc.) when clicking on a new tile
+                    if (hoverTile == tile) {
+                        if (viewMode == 0) viewMode = 1;
+                        else viewMode = 0;
+                    }
+                    else {
+                        viewMode = 0;
+                    }
+
+                    tileDetailsClearUi(tile);
+                    hoverBuilding = null;
+                    hoverPerson = null;
+
+                    if (viewMode == 0) {
+                        hoverBuilding = tile.getBuilding();
+                        showTileBuildingDetails(tile);
+                    }
+                    else if (viewMode == 1) {
+                        hoverPerson = tile.people.size() > 0 ? tile.people.get(0) : null;
+                        showTilePersonDetails(tile);
+                    }
+                }
+                else {
+                    viewMode = 0;
+                }
                 hoverTile = tile;
                 touched = false;
                 break;
@@ -512,10 +570,12 @@ class StarlightSurfaceView extends SurfaceView {
         return true; //processed
     }
 
-    private void showTileDetails(final Tile tile) {
+    private void tileDetailsClearUi(Tile tile) {
+        //Default, display current location's game coords
         ((TextView) context.findViewById(R.id.buildingLocation)).setVisibility(VISIBLE);
         ((TextView) context.findViewById(R.id.buildingLocation)).setText(tile.row + " " + tile.col);
 
+        //Clear all the UI related to buildings
         ((TextView) context.findViewById(R.id.buildingTileResource)).setVisibility(GONE);
 
         ((TextView) context.findViewById(R.id.buildingName)).setVisibility(GONE);
@@ -536,8 +596,19 @@ class StarlightSurfaceView extends SurfaceView {
         context.findViewById(R.id.scrollTradeDialog).setVisibility(GONE);
         context.findViewById(R.id.tradeDialog).setVisibility(GONE);
 
-        Building building = tile.getBuilding();
-        if (building != null) {
+        //Clear all the UI related to people
+        ((TextView) context.findViewById(R.id.personName)).setVisibility(GONE);
+        ((TextView) context.findViewById(R.id.personHealth)).setVisibility(GONE);
+    }
+
+    //Display UI details when trying to look at any buildings at a tile (may not exist)
+    private void showTileBuildingDetails(final Tile tile) {
+        if (tile.resources.size() > 0) {
+            ((TextView) context.findViewById(R.id.buildingTileResource)).setVisibility(VISIBLE);
+            ((TextView) context.findViewById(R.id.buildingTileResource)).setText("Resources: " + tile.resources.toString());
+        }
+
+        if (hoverBuilding != null) {
             ((TextView) context.findViewById(R.id.buildingName)).setVisibility(VISIBLE);
             ((TextView) context.findViewById(R.id.buildingDesc)).setVisibility(VISIBLE);
             ((TextView) context.findViewById(R.id.buildingItemsList)).setVisibility(VISIBLE);
@@ -546,14 +617,14 @@ class StarlightSurfaceView extends SurfaceView {
             //((Button) context.findViewById(R.id.btnProduceTest)).setVisibility(VISIBLE);
             ((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(GONE);
 
-            ((TextView) context.findViewById(R.id.buildingName)).setText(building.name);
-            ((TextView) context.findViewById(R.id.buildingDesc)).setText(building.desc);
+            ((TextView) context.findViewById(R.id.buildingName)).setText(hoverBuilding.name);
+            ((TextView) context.findViewById(R.id.buildingDesc)).setText(hoverBuilding.desc);
             //if (!building.getProductionRecipeString().equals("Nothing")) {
 
-            ((TextView) context.findViewById(R.id.buildingProduction)).setText("Produces: " + building.getProductionRecipeString());
+            ((TextView) context.findViewById(R.id.buildingProduction)).setText("Produces: " + hoverBuilding.getProductionRecipeString());
             //}
-            ((TextView) context.findViewById(R.id.buildingHousingNum)).setText("Houses " + building.housingNum + " people");
-            ((TextView) context.findViewById(R.id.buildingItemsList)).setText("Stored: " + building.getItemsString());
+            ((TextView) context.findViewById(R.id.buildingHousingNum)).setText("Houses " + hoverBuilding.housingNum + " people");
+            ((TextView) context.findViewById(R.id.buildingItemsList)).setText("Stored: " + hoverBuilding.getItemsString());
 
             //((Button) context.findViewById(R.id.btnProduceTest)).setOnClickListener(null);
             /*((Button) context.findViewById(R.id.btnProduceTest)).setOnClickListener(new OnClickListener() {
@@ -564,19 +635,28 @@ class StarlightSurfaceView extends SurfaceView {
                 }
             });*/
 
-            if (tile.resources.size() > 0) {
-                ((TextView) context.findViewById(R.id.buildingTileResource)).setVisibility(VISIBLE);
-                ((TextView) context.findViewById(R.id.buildingTileResource)).setText("Resources: " + tile.resources.getItems());
-            }
-
             ((Button) context.findViewById(R.id.btnProductionList)).setVisibility(VISIBLE);
 
-            if (building.name.equals("Nexus")) {
+            if (hoverBuilding.name.equals("Nexus")) {
                 ((Button) context.findViewById(R.id.btnTradeResources)).setVisibility(VISIBLE);
             }
         }
         else {
             ((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(VISIBLE);
+        }
+    }
+
+    //Display UI details when trying to look at any people at a tile (may not exist)
+    private void showTilePersonDetails(final Tile tile) {
+        if (hoverPerson != null) {
+            ((TextView) context.findViewById(R.id.personName)).setVisibility(VISIBLE);
+            ((TextView) context.findViewById(R.id.personHealth)).setVisibility(VISIBLE);
+
+            ((TextView) context.findViewById(R.id.personName)).setText(hoverPerson.name + " of " + hoverPerson.faction.name);
+            ((TextView) context.findViewById(R.id.personHealth)).setText("Health: " + hoverPerson.body.getHealth() + "/" + hoverPerson.body.maxHealth());
+        }
+        else {
+            //Do nothing, the UI should have been cleared
         }
     }
 

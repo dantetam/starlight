@@ -38,5 +38,12 @@ public class Body {
         return current;
     }
 
+    public int getHealth() {
+        return root.getHealth();
+    }
+
+    public int maxHealth() {
+        return root.maxHealth;
+    }
 
 }

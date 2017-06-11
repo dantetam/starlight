@@ -66,6 +66,11 @@ public class Inventory implements Serializable {
             addItem(item);
         }
     }
+    public void addItem(Item... items) {
+        for (Item item: items) {
+            addItem(item);
+        }
+    }
 
     public boolean hasItem(Item item) {
         return findItem(item) != null;

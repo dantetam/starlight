@@ -62,7 +62,7 @@ public class Tile implements Serializable, Traversable<Tile> {
     }
 
     public float trueEuclideanDist(Tile tile) {
-        return (float) (Math.pow(tile.row - row, 2) + Math.pow(tile.col - col, 2));
+        return (float) Math.sqrt(Math.pow(tile.row - row, 2) + Math.pow(tile.col - col, 2));
     }
 
     @Override

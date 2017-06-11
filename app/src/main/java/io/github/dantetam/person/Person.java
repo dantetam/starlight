@@ -1,5 +1,6 @@
 package io.github.dantetam.person;
 
+import io.github.dantetam.util.MapUtil;
 import io.github.dantetam.world.Inventory;
 import io.github.dantetam.world.Item;
 import io.github.dantetam.world.Tile;
@@ -23,7 +24,8 @@ public class Person implements Serializable {
     public List<Task> queueTasks;
     public Job currentJob;
     public Map<String, Integer> skills;
-    public Map<String, Integer> skillPriorities;
+    private Map<String, Integer> skillPriorities;
+    private Map<String, Integer> sortedSkillPrioritiesDes;
     public static int MAX_PRIORITY = 1, MIN_PRIORITY = 4, NO_PRIORITY = 5;
     public Body body;
 
@@ -45,6 +47,7 @@ public class Person implements Serializable {
             int initialPriority = (int) (Math.random() * 5) + 1;
             skillPriorities.put(skill, initialPriority);
         }
+        sortSkillPriorities();
 
         this.faction = faction;
         faction.people.add(this);
@@ -74,6 +77,20 @@ public class Person implements Serializable {
 
     public boolean isDead() {
         return body.root.getHealth() <= 0;
+    }
+
+    //Sort the skills' priorities only when changed
+    public Map<String, Integer> getSortedSkillPrioritiesDes() {
+        return sortedSkillPrioritiesDes;
+    }
+
+    private void sortSkillPriorities() {
+        sortedSkillPrioritiesDes = MapUtil.sortByValueDescending(skillPriorities);
+    }
+
+    public void changeSkillPriority(String skillName, int newValue) {
+        skillPriorities.put(skillName, newValue);
+        sortSkillPriorities();
     }
 
 }

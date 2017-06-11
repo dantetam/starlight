@@ -91,6 +91,7 @@ public class Settlement implements Serializable { //implements Parcelable {
         if (possibleResources.size() == 0) {
             return;
         }
+
         for (int r = 0; r < tiles.length; r++) {
             for (int c = 0; c < tiles[0].length; c++) {
                 if (resourcesData[r][c] >= 0) {

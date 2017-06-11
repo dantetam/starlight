@@ -146,7 +146,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
-    id="40" 
+    id="60" 
     name="Cloth Armor" 
     maxhealth="50" 
     marketvalue="15"
@@ -155,7 +155,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
-    id="41" 
+    id="61" 
     name="Iron Armor" 
     maxhealth="50" 
     marketvalue="25"
@@ -164,7 +164,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
-    id="60" 
+    id="80" 
     name="Wooden Furniture" 
     maxhealth="60" 
     marketvalue="20"
@@ -172,7 +172,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
-    id="61" 
+    id="81" 
     name="Iron Furniture" 
     maxhealth="80" 
     marketvalue="32"
@@ -180,7 +180,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
-    id="70" 
+    id="90" 
     name="Sludge" 
     maxhealth="20" 
     marketvalue="0.9"
@@ -188,7 +188,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
-    id="80" 
+    id="91" 
     name="Stone" 
     maxhealth="50" 
     marketvalue="0.6"
@@ -196,7 +196,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
-    id="90" 
+    id="100" 
     name="Fuel" 
     maxhealth="25" 
     marketvalue="5.5"
@@ -204,7 +204,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
-    id="100" 
+    id="101" 
     name="Component" 
     maxhealth="-1" 
     marketvalue="20"
@@ -212,7 +212,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
-    id="100" 
+    id="102" 
     name="Electronics" 
     maxhealth="-1" 
     marketvalue="20"

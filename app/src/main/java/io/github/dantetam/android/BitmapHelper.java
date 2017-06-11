@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.LruCache;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Dante on 7/19/2016.
  */
@@ -13,8 +16,11 @@ public class BitmapHelper {
     private static LruCache<String, Bitmap> mMemoryCache;
     private static Context context;
 
+    private static Map<Integer, String> namesById;
+
     public static void init(Context c) {
         context = c;
+        namesById = new HashMap<>();
         // Get max available VM memory, exceeding this amount will throw an
         // OutOfMemory exception. Stored in kilobytes as LruCache takes an
         // int in its constructor.
@@ -53,7 +59,14 @@ public class BitmapHelper {
         if (resourceId == 0) {
             return null;
         }
-        String name = context.getResources().getResourceEntryName(resourceId);
+        String name;
+        if (namesById.containsKey(resourceId)) {
+            name = namesById.get(resourceId);
+        }
+        else {
+            name = context.getResources().getResourceEntryName(resourceId);
+            namesById.put(resourceId, name);
+        }
         Bitmap bitmapStored = getBitmap(name);
         if (bitmapStored != null) {
             return bitmapStored;

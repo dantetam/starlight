@@ -8,32 +8,36 @@ import io.github.dantetam.world.Inventory;
 
 /**
  * Created by Dante on 6/9/2017.
+ *
+ * A 2d grid overlay over the real world, this class represents a "rectangle"
+ * of total geo coordinate width and height equal to (totalGeoLat, totalGeoLon).
+ * It is subdivided into a predetermined number of slices,
+ * and the user's location within this overlay is determined for the resources given to the settlement.
  */
 public class MapResourceOverlay {
 
     public LatLng geoCenter;
     public float totalGeoLat, totalGeoLon;
 
-    public Inventory[][] resourcesInGeoTiles;
+    public byte[][] resourceData;
+    public List<Inventory> inventoryList;
 
-    public MapResourceOverlay(int divLat, int divLon) {
+    public MapResourceOverlay(LatLng geoCenter, int divLat, int divLon, byte[][] resourceData, List<Inventory> inventoryList) {
         if (divLat <= 0 || divLon <= 0) {
             throw new IllegalArgumentException("Geo coord divisions must be greater than 0.");
         }
-        resourcesInGeoTiles = new Inventory[divLat][divLon];
-        for (int r = 0; r < divLat; r++) {
-            for (int c = 0; c < divLon; c++) {
-                resourcesInGeoTiles[r][c] = new Inventory();
-            }
-        }
-    }
-
-    public void initializeResourcesData(int[][] data, List<Inventory> inventoryList) {
-        if (data.length != resourcesInGeoTiles.length || data[0].length != resourcesInGeoTiles[0].length) {
+        if (resourceData.length != resourceData.length || resourceData[0].length != resourceData[0].length) {
             throw new IllegalArgumentException("Initialization of map resources, data mismatch.");
         }
-        for (int r = 0; r < resourcesInGeoTiles.length; r++) {
-            for (int c = 0; c < resourcesInGeoTiles[0].length; c++) {
+        this.geoCenter = geoCenter;
+        this.resourceData = resourceData;
+        this.inventoryList = inventoryList;
+    }
+
+    public void initializeResourcesData() {
+
+        /*for (int r = 0; r < resourceData.length; r++) {
+            for (int c = 0; c < resourceData[0].length; c++) {
                 int index = data[r][c];
                 if (index < 0) {
                     index = 0;
@@ -43,7 +47,7 @@ public class MapResourceOverlay {
                 }
                 resourcesInGeoTiles[r][c] = inventoryList.get(index);
             }
-        }
+        }*/
     }
 
     public boolean inBounds(LatLng geoCoord) {
@@ -57,11 +61,18 @@ public class MapResourceOverlay {
         if (!inBounds(geoCoord)) {
             return null;
         }
-        float divLat = totalGeoLat / resourcesInGeoTiles.length;
-        float divLon = totalGeoLon / resourcesInGeoTiles[0].length;
+        float divLat = totalGeoLat / resourceData.length;
+        float divLon = totalGeoLon / resourceData[0].length;
         int r = (int) Math.floor((geoCoord.latitude - (geoCenter.latitude - totalGeoLat / 2.0)) / divLat);
         int c = (int) Math.floor((geoCoord.longitude - (geoCenter.longitude - totalGeoLon / 2.0)) / divLon);
-        return resourcesInGeoTiles[r][c];
+        byte index = resourceData[r][c];
+        if (index < 0) {
+            index = 0;
+        }
+        else if (index >= inventoryList.size()) {
+            index = (byte) (inventoryList.size() - 1);
+        }
+        return inventoryList.get(index);
     }
 
 }
