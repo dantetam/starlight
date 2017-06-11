@@ -37,7 +37,7 @@ public class CombatHandler implements Serializable {
                 }
                 damage += new Random().nextGaussian() * (damage / 4.0f);
                 if (damage > 0) {
-                    randBodyPart.injuries.add(new Injury("MeleeInjury", (int) damage, damage / 20.0f, true));
+                    randBodyPart.injure(new Injury("MeleeInjury", (int) damage, damage / 20.0f, true));
                 }
             }
         }
@@ -57,7 +57,7 @@ public class CombatHandler implements Serializable {
                 }
                 damage += new Random().nextGaussian() * (damage / 4.0f);
                 if (damage > 0) {
-                    randBodyPart.injuries.add(new Injury("RangedInjury", (int) damage, damage / 20.0f, true));
+                    randBodyPart.injure(new Injury("RangedInjury", (int) damage, damage / 20.0f, true));
                 }
                 //System.err.println("Dealt " + damage + " damage to " + target.name + ".");
             }

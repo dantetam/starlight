@@ -10,5 +10,6 @@ public interface Traversable<T> {
     float dist(T t);
     List<T> neighbors();
     boolean equals(Object t);
+    int hashCode();
 
 }

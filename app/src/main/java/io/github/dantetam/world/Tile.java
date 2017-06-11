@@ -78,4 +78,10 @@ public class Tile implements Serializable, Traversable<Tile> {
         Tile tile = (Tile) other;
         return this.row == tile.row && this.col == tile.col;
     }
+
+    @Override
+    public int hashCode() {
+        return (row + col) % 31;
+    }
+
 }
