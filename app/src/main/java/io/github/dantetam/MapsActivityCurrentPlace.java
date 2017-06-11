@@ -534,6 +534,95 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }
     }
 
+    public void newUpgradesList(View v) {
+        final Context context = this;
+        final LinearLayout upgradesList = ((LinearLayout) findViewById(R.id.buildingUpgradesList));
+
+        Tile hover = surfaceView.getHoverTile();
+        if (hover == null || hover.getBuilding() == null) {
+            return;
+        }
+
+        final Building building = hover.getBuilding();
+
+        for (String possibleUpgrade: building.possibleBuildingUpgrades) {
+            final Building upgradeBuilding = constructionTree.getBuildingByName(possibleUpgrade);
+
+            Button button = new Button(this);
+            upgradesList.addView(button);
+
+            button.setText(possibleUpgrade);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int chosenCostRecipe = upgradeBuilding.costRecipeNum; //TODO: Select this from UI
+                    if (surfaceView != null && surfaceView.getHoverTile() != null) {
+                        if (upgradeBuilding.resourceNeeded != null) {
+                            Item item = constructionTree.getItemByName(upgradeBuilding.resourceNeeded);
+                            if (!surfaceView.getHoverTile().resources.hasItem(item)) {
+                                return;
+                            }
+                        }
+                        if (currentSettlement.nexus != null) {
+                            Inventory cost = upgradeBuilding.getCostRecipes().get(chosenCostRecipe).input;
+                            if (currentSettlement.nexus.items.hasInventory(cost)) {
+                                currentSettlement.nexus.items.removeInventory(cost);
+                                String jobType = "Construction";
+                                Job upgradeJob = TODO
+                                currentSettlement.availableJobsBySkill.get(jobType).add(upgradeJob);
+                            }
+                        }
+                    }
+
+                    upgradesList.setVisibility(View.GONE);
+                    upgradesList.removeAllViews();
+                }
+            });
+
+            button.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    List<Recipe> possibleCostRecipes = upgradeBuilding.getCostRecipes();
+                    for (int i = 0; i < possibleCostRecipes.size(); i++) {
+                        Recipe recipe = possibleCostRecipes.get(i);
+                        String str = recipe.toString();
+
+                        Button button = new Button(context);
+
+                        if (upgradeBuilding.costRecipeNum == i) {
+                            button.setBackgroundColor(Color.BLUE);
+                        } else {
+                            button.setBackgroundColor(Color.WHITE);
+                        }
+
+                        upgradesList.addView(button);
+                        button.setText("Build with: " + str);
+
+                        final int j = i;
+
+                        button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                upgradeBuilding.costRecipeNum = j;
+                                for (int i = 0; i < upgradesList.getChildCount(); i++) {
+                                    View child = upgradesList.getChildAt(i);
+                                    if (child instanceof Button) {
+                                        Button button = (Button) child;
+                                        if (button.getText().toString().startsWith("Build with: ")) {
+                                            child.setVisibility(View.GONE);
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    return true;
+                }
+            });
+        }
+    }
+
     public void toggleDraft(View v) {
         if (currentSettlement != null) {
             for (Person person: currentSettlement.people) {

@@ -92,6 +92,17 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     data-productionTimeForLump="30"
     data-lumpSize="5"
     desc="A small farmhouse built for harvesting the soil.">
+        <imprupgrade 
+        id="41" 
+        name="Barn" 
+        resourcelimit="50" 
+        cost="30 Wood" 
+        production="1 Meat; 1 Eggs; 1 Milk" 
+        buildtime="90" 
+        data-productionTimeForLump="30"
+        data-lumpSize="5"
+        desc="A barn for raising small farm animals.">
+        </imprupgrade>
     </impr>
     
     <impr 
@@ -110,7 +121,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     name="Artisan" 
     resourcelimit="50" 
     cost="35 Wood, 10 Iron" 
-    production="5 Wood, 5 Iron > 1 Component; 15 Wood > 1 Wooden Furniture; 15 Iron, 5 Wood > 1 Iron Furniture" 
+    production="5 Wood, 5 Iron > 1 Component; 15 Wood > 1 Wooden Furniture; 15 Iron, 5 Wood > 1 Iron Furniture; 15 Leather, 5 Wood > 1 Leather Furniture" 
     jobtype="Crafting" 
     buildtime="180" 
     desc="A workshop containing tools and small parts.">

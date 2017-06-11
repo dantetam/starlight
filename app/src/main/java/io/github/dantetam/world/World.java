@@ -274,4 +274,15 @@ public class World {
         return null;
     }
 
+    public void upgradeBuilding(Building building, String upgradeName) {
+        Building upgrade = tree.getBuildingByName(upgradeName);
+
+        building.possibleBuildingUpgrades = new ArrayList<>(upgrade.possibleBuildingUpgrades);
+        building.currentUpgrades.add(upgradeName);
+
+        for (Recipe recipe: upgrade.getProductionRecipes()) {
+            building.addProductionRecipe(recipe);
+        }
+    }
+
 }

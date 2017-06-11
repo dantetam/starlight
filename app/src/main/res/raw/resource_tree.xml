@@ -71,6 +71,14 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
   
     <resource 
+    id="11" 
+    name="Titanium" 
+    maxhealth="-1" 
+    marketvalue="6"
+    desc="Strong, tensile metal alloy.">
+    </resource>
+  
+    <resource 
     id="20" 
     name="Silver" 
     maxhealth="-1" 
@@ -193,6 +201,22 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
+    id="82" 
+    name="Leather Furniture" 
+    maxhealth="60" 
+    marketvalue="40"
+    desc="Chairs, beds, and tables made of leather.">
+    </resource>
+    
+    <resource 
+    id="89" 
+    name="Leather" 
+    maxhealth="30" 
+    marketvalue="2"
+    desc="Cut and dried pieces of animal leather.">
+    </resource>
+    
+    <resource 
     id="90" 
     name="Sludge" 
     maxhealth="20" 
@@ -265,6 +289,14 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
+    id="160" 
+    name="Meat" 
+    maxhealth="20" 
+    marketvalue="1.5"
+    desc="Assorted protein and animal flesh.">
+    </resource>
+    
+    <resource 
     id="175" 
     name="Meal" 
     maxhealth="30" 
@@ -293,7 +325,15 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     name="Blackglass" 
     maxhealth="30" 
     marketvalue="60"
-    desc="A strong, homemade narcotic of distilled tar, acid, and fuel.">
+    desc="A strong, homemade narcotic of distilled tar, acid, and fuel, formed into transparent rocks.">
+    </resource>
+    
+    <resource 
+    id="183" 
+    name="Axltx" 
+    maxhealth="20" 
+    marketvalue="80"
+    desc="An indigenous medicine purified by modern machinery.">
     </resource>
     
     <resource 

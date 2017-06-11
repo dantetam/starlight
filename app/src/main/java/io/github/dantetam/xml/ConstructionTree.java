@@ -25,6 +25,9 @@ public class ConstructionTree implements Serializable {
     private Map<String, Item> itemsByName;
     private Map<String, Building> buildingsByName;
 
+    private Map<Integer, Building> upgradedBuildingsById;
+    private Map<String, Building> upgradedBuildingsByName;
+
     //private Map<String, List<String>> customResourceGroups;
     //public List<String> getCustomGroupsNames() {return new ArrayList<>(customResourceGroups.keySet());}
 
@@ -39,9 +42,14 @@ public class ConstructionTree implements Serializable {
         //customResourceGroups = new HashMap<>();
     }
 
-    public void insertBuilding(Building building) {
+    public void insertBaseBuilding(Building building) {
         buildingsById.put(building.id, building);
         buildingsByName.put(building.name, building);
+    }
+
+    public void insertUpgradeBuilding(Building building) {
+        upgradedBuildingsById.put(building.id, building);
+        upgradedBuildingsByName.put(building.name, building);
     }
 
     public void insertItem(Item item) {
@@ -58,7 +66,14 @@ public class ConstructionTree implements Serializable {
     }
 
     public Building getBuildingByName(String name) {
-        return buildingsByName.get(name);
+        Building base = buildingsByName.get(name);
+        if (base != null) {
+            return base;
+        }
+        else {
+            Building upgrade = upgradedBuildingsByName.get(name);
+            return upgrade;
+        }
     }
 
     public Item getItemByName(String name) {

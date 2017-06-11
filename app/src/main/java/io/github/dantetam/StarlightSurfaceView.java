@@ -588,8 +588,16 @@ class StarlightSurfaceView extends SurfaceView {
 
         ((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(GONE);
         ((Button) context.findViewById(R.id.btnProductionList)).setVisibility(GONE);
+
+        ((LinearLayout) context.findViewById(R.id.constructionBuildingList)).setVisibility(GONE);
+        ((LinearLayout) context.findViewById(R.id.productionRecipesList)).setVisibility(GONE);
+        ((LinearLayout) context.findViewById(R.id.buildingUpgradesList)).setVisibility(GONE);
+
         ((LinearLayout) context.findViewById(R.id.constructionBuildingList)).removeAllViews();
         ((LinearLayout) context.findViewById(R.id.productionRecipesList)).removeAllViews();
+        ((LinearLayout) context.findViewById(R.id.buildingUpgradesList)).removeAllViews();
+
+        ((Button) context.findViewById(R.id.btnUpgradesList)).setVisibility(GONE);
 
         ((Button) context.findViewById(R.id.btnTradeResources)).setVisibility(GONE);
 
@@ -636,6 +644,8 @@ class StarlightSurfaceView extends SurfaceView {
             });*/
 
             ((Button) context.findViewById(R.id.btnProductionList)).setVisibility(VISIBLE);
+
+            ((Button) context.findViewById(R.id.btnUpgradesList)).setVisibility(VISIBLE);
 
             if (hoverBuilding.name.equals("Nexus")) {
                 ((Button) context.findViewById(R.id.btnTradeResources)).setVisibility(VISIBLE);

@@ -97,7 +97,6 @@ public class BodyXmlParser {
                     if (stackCounter >= 0) {
                         bodyPart.parent = stack.get(stackCounter);
                         stack.get(stackCounter).subBodyParts.add(bodyPart);
-                        //bodyPart.parent
                     }
                     stackCounter++;
                 }

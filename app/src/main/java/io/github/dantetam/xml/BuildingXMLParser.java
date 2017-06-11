@@ -16,6 +16,7 @@ package io.github.dantetam.xml;
 
 import android.content.Context;
 
+import io.github.dantetam.person.BodyPart;
 import io.github.dantetam.world.Building;
 import io.github.dantetam.world.Inventory;
 import io.github.dantetam.world.Item;
@@ -58,6 +59,9 @@ public class BuildingXMLParser {
         XmlPullParser xpp = factory.newPullParser();
         xpp.setInput(inputStream, null);
 
+        int stackCounter = -1;
+        List<Building> stack = new ArrayList<>();
+
         //HashMap<String, String> addRequirementsNames = new HashMap<>();
         int eventType = xpp.getEventType();
 
@@ -66,7 +70,7 @@ public class BuildingXMLParser {
                 //System.out.println("Start document");
             } else if (eventType == XmlPullParser.START_TAG) {
                 //System.out.println("Start tag " + xpp.getName());
-                if (xpp.getName().equals("impr")) {
+                if (xpp.getName().equals("impr") || xpp.getName().equals("imprupgrade")) {
                     int id = Integer.parseInt(xpp.getAttributeValue(null, "id"));
                     String buildingName = xpp.getAttributeValue(null, "name");
                     int housingNum = xpp.getAttributeValue(null, "housing") != null ?
@@ -130,12 +134,25 @@ public class BuildingXMLParser {
                         }
                     }
 
-                    tree.insertBuilding(building);
+                    if (xpp.getName().equals("impr")) { //Is a "root" building, unlocked by tech
+                        tree.insertBaseBuilding(building);
+                    }
+                    else if (xpp.getName().equals("imprupgrade")) { //Is an upgraded form of another building
+                        tree.insertUpgradeBuilding(building);
+                    }
+
+                    stack.add(building);
+                    if (stackCounter >= 0) {
+                        //building.parent = stack.get(stackCounter);
+                        stack.get(stackCounter).possibleBuildingUpgrades.add(buildingName);
+                    }
+                    stackCounter++;
 
                     //System.err.println("Passed in " + id + ", " + buildingName);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
-
+                stack.remove(stack.size() - 1);
+                stackCounter--;
             } else if (eventType == XmlPullParser.TEXT) {
 
             }

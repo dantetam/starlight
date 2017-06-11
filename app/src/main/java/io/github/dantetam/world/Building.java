@@ -29,6 +29,9 @@ public class Building implements Serializable {
     private String jobType;
     public String getJobType() {return jobType;}
 
+    public List<String> possibleBuildingUpgrades;
+    public List<String> currentUpgrades;
+
     public int maxRecipesEnabled = 1;
     public int getMaxRecipesEnabled() {return maxRecipesEnabled;}
     private List<Integer> activeRecipes;
@@ -65,6 +68,8 @@ public class Building implements Serializable {
         items = new Inventory();
         cost = new ArrayList<>();
         productions = new ArrayList<>();
+        possibleBuildingUpgrades = new ArrayList<>();
+        currentUpgrades = new ArrayList<>();
     }
 
     public Building(Building building) {
@@ -77,6 +82,8 @@ public class Building implements Serializable {
         productions = new ArrayList<>(building.productions);
         activeRecipes = new ArrayList<>();
         activeRecipes.add(0);
+        possibleBuildingUpgrades = new ArrayList<>(building.possibleBuildingUpgrades);
+        currentUpgrades = new ArrayList<>(building.currentUpgrades);
     }
 
     public void addBuildingCost(Recipe recipe) {
