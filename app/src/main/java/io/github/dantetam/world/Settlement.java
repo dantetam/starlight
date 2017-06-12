@@ -1,5 +1,6 @@
 package io.github.dantetam.world;
 
+import io.github.dantetam.person.Faction;
 import io.github.dantetam.util.Vector2f;
 import io.github.dantetam.jobs.Job;
 import io.github.dantetam.person.Pathfinder;
@@ -42,7 +43,7 @@ public class Settlement implements Serializable { //implements Parcelable {
 
     public ConstructionTree constructionTree;
 
-    public Settlement(String name, Date foundDate, Vector2f realGeoCoord, Vector2f gameCoord, int r, int c, ConstructionTree tree) {
+    public Settlement(String name, Date foundDate, Vector2f realGeoCoord, Vector2f gameCoord, Faction faction, int r, int c, ConstructionTree tree) {
         this.name = name;
         this.foundDate = foundDate;
         this.realGeoCoord = realGeoCoord;

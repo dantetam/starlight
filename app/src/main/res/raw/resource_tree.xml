@@ -251,9 +251,25 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     <resource 
     id="102" 
     name="Electronics" 
-    maxhealth="-1" 
+    maxhealth="40" 
     marketvalue="20"
     desc="A set of intricate, general-purpose electronic circuit parts, boards, etc.">
+    </resource>
+    
+    <resource 
+    id="110" 
+    name="Synthetic Brain" 
+    maxhealth="30" 
+    marketvalue="100"
+    desc="An electronic brain made of rare metals, circuits and AI.">
+    </resource>
+    
+    <resource 
+    id="140" 
+    name="Fairflower" 
+    maxhealth="20" 
+    marketvalue="1"
+    desc="A beautiful flower native to this planet.">
     </resource>
     
     <resource 
@@ -348,7 +364,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     id="183" 
     name="Axltx" 
     maxhealth="20" 
-    marketvalue="80"
+    marketvalue="85"
     desc="An indigenous medicine purified by modern machinery.">
     </resource>
     

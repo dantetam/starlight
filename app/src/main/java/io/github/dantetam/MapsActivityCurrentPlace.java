@@ -78,6 +78,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
@@ -125,21 +126,16 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
     private World world;
     private Settlement currentSettlement;
-
     private VariableListener<Integer> gold;
-
     private VariableListener<Float> distTravelled;
 
     private Map<Marker, Settlement> settlementIndicesByMarker;
+    private Map<Settlement, Boolean> discoveredSettlementMap;
 
     private ConstructionTree constructionTree;
-
     private AssetManager assetManager;
-
     private NameStorage nameStorage;
-
     private List<MapResourceOverlay> mapResourceOverlays;
-
     private List<Inventory> worldPossibleResources;
 
     @Override
@@ -230,6 +226,12 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         for (Inventory specialInventory: worldPossibleResources) {
             specialInventory.addItem(constructionTree.copyItem("Wood", 300), constructionTree.copyItem("Iron", 100), constructionTree.copyItem("Stone", 50));
         }
+
+        world.factions.add(new Faction("Colonists"));
+        world.factions.add(new Faction("Pirates"));
+        world.factions.add(new Faction("Tribes"));
+        world.factions.add(new Faction("Officers"));
+        world.factions.add(new Faction("Settlers"));
     }
 
     /**
@@ -307,10 +309,70 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         return false;
     }
 
+    public void initializeOtherSettlements(LatLng location) {
+        if (world.settlements.size() < 10) {
+            int numCreate = 10 - world.settlements.size();
+            for (int j = 0; j < numCreate; j++) {
+                float dLat = (float) (Math.random() - 0.5f);
+                float dLon = (float) (Math.random() - 0.5f);
+                LatLng randLoc = new LatLng(location.latitude + dLat, location.longitude + dLon);
+
+                Inventory resources = getMapResources(randLoc);
+
+                Faction faction;
+
+                do {
+                    faction = world.randomFaction();
+                } while (faction.name.equals("Colonists"));
+
+                Calendar calendar = Calendar.getInstance();
+
+                Settlement settlement = world.createSettlement(
+                        faction.name, calendar.getTime(),
+                        new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()),
+                        faction,
+                        constructionTree, resources);
+
+                if (settlement == null) {
+                    continue;
+                }
+
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                        .title("Settlement " + faction.name)
+                        .position(randLoc)
+                        .snippet(""));
+                settlementIndicesByMarker.put(marker, settlement);
+
+                //Initialize some first buildings
+                settlement.nexus = constructionTree.copyBuilding("Nexus");
+                settlement.getTile(settlement.rows / 2, settlement.cols / 2).addBuilding(settlement.nexus);
+                Building tent = constructionTree.copyBuilding("Tent");
+                settlement.getTile(settlement.rows / 2 + 1, settlement.cols / 2).addBuilding(tent);
+                settlement.nexus.items.addItem(constructionTree.copyItem("Wood", 300));
+                settlement.nexus.items.addItem(constructionTree.copyItem("Iron", 300));
+                settlement.nexus.items.addItem(constructionTree.copyItem("Meal", 50));
+
+                for (int i = 0; i < 20; i++) {
+                    Person person = new Person(nameStorage.randomName(), constructionTree.skills, faction);
+                    Body parsedHumanBody = BodyXmlParser.parseBodyTree(this, R.raw.human_body);
+                    person.initializeBody(parsedHumanBody);
+                    settlement.people.add(person);
+                    Tile randomTile = settlement.randomTile();
+                    settlement.movePerson(person, randomTile);
+                    person.weapon = constructionTree.copyItem("Wooden Bow", 1);
+                }
+
+                for (String skill: constructionTree.skills) {
+                    settlement.availableJobsBySkill.put(skill, new ArrayList<Job>());
+                }
+            }
+        }
+    }
+
     public boolean newSettlementButton(View v) {
         getDeviceLocation();
 
-        Calendar c = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
 
         LatLng convertedLoc = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
 
@@ -318,9 +380,12 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         String name = "Settlement " + (world.settlements.size() + 1);
         Settlement settlement = world.createSettlement(
-                name, c.getTime(),
+                name, calendar.getTime(),
                 new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()),
+                world.getFaction("Colonists"),
                 constructionTree, resources);
+
+        discoveredSettlementMap.put(settlement, false);
 
         if (settlement != null && gold.value() >= 35) {
             gold.set(gold.value() - 35);
@@ -341,9 +406,6 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             settlement.nexus.items.addItem(constructionTree.copyItem("Tropical Wood", 100));
             settlement.nexus.items.addItem(constructionTree.copyItem("Iron", 50));
             settlement.nexus.items.addItem(constructionTree.copyItem("Meal", 50));
-
-            world.factions.add(new Faction("Colonists"));
-            world.factions.add(new Faction("Pirates"));
 
             for (int i = 0; i < 10; i++) {
                 Person person = new Person(nameStorage.randomName(), constructionTree.skills, world.getFaction("Colonists"));
@@ -745,6 +807,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
+
+        initializeOtherSettlements(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
 
         mMap.setOnMarkerClickListener(this);
     }

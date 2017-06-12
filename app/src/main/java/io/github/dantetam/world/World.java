@@ -27,7 +27,7 @@ public class World {
 
     public List<Settlement> settlements;
     public ConstructionTree tree;
-    public static float MIN_SETTLEMENT_GEO_DIST = 500; //In meters
+    public static float MIN_SETTLEMENT_GEO_DIST = 50; //In meters
 
     public static Vector2f geoHome;
 
@@ -150,7 +150,7 @@ public class World {
         }
     }
 
-    private boolean canCreateSettlement(Vector2f geoCoord) {
+    public boolean canCreateSettlement(Vector2f geoCoord) {
         boolean allowed = true;
         for (Settlement settlement : settlements) {
             LatLng newCoord = new LatLng(geoCoord.x, geoCoord.y);
@@ -160,10 +160,10 @@ public class World {
         return allowed;
     }
 
-    public Settlement createSettlement(String name, Date foundDate, Vector2f geoCoord, ConstructionTree tree, Inventory possibleResources) {
+    public Settlement createSettlement(String name, Date foundDate, Vector2f geoCoord, Faction faction, ConstructionTree tree, Inventory possibleResources) {
         if (canCreateSettlement(geoCoord)) {
             int width = 26, height = 26;
-            Settlement settlement = new Settlement(name, foundDate, geoCoord, convertToGameCoord(geoCoord), width, height, tree);
+            Settlement settlement = new Settlement(name, foundDate, geoCoord, convertToGameCoord(geoCoord), faction, width, height, tree);
             settlement.initializeSettlementTileTypes(generateTiles(width, height));
 
             /*possibleResources.add(tree.copyItem("Wood", 10));
@@ -272,6 +272,11 @@ public class World {
             }
         }
         return null;
+    }
+
+    public Faction randomFaction() {
+        int index = (int) (Math.random() * factions.size());
+        return factions.get(index);
     }
 
 }

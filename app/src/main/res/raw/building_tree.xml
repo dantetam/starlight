@@ -158,6 +158,16 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     jobtype="Research" 
     buildtime="180" 
     desc="A lab with many intricate tools, components, and machines.">
+        <impr 
+        id="91" 
+        name="Study" 
+        resourcelimit="50" 
+        cost="20 Wood, 20 Iron, 3 Component, 2 Electronics" 
+        production="" 
+        jobtype="Research" 
+        buildtime="180" 
+        desc="An improved study with electrical devices.">
+        </impr>
     </impr>
     
     <impr 
@@ -189,12 +199,24 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     name="Refinery" 
     resourcelimit="50" 
     cost="20 Wood, 25 Iron, 2 Component" 
-    production="5 Wheat > 1 Beer; 5 Potato > 1 Beer; 5 Sludge > 2 Fuel; 15 Wood > 1 Fuel; 3 Fuel, 1 Component, 1 Medicine > 1 Blackglass"
+    production="5 Wheat > 1 Beer; 5 Potato > 1 Beer; 5 Sludge > 2 Fuel; 15 Wood > 1 Fuel"
     jobtype="Crafting"
     buildtime="120"
     data-productionTimeForLump="30"
     data-lumpSize="5"
     desc="Purifies, distills, and processes chemicals and mixtures.">
+        <impr 
+        id="121" 
+        name="Drug Lab" 
+        resourcelimit="50" 
+        cost="10 Wood, 15 Iron, 2 Component" 
+        production="3 Fuel, 1 Component, 1 Medicine > 1 Blackglass; 10 Fairflower, 1 Component, 2 Medicine > 1 Axltx"
+        jobtype="Crafting"
+        buildtime="120"
+        data-productionTimeForLump="30"
+        data-lumpSize="5"
+        desc="Specialized chemical center for poisons and narcotics.">
+        </impr>
     </impr>
     
     <impr 
@@ -208,6 +230,18 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     data-productionTimeForLump="30"
     data-lumpSize="1"
     desc="A specialized lab for creating electronic parts and tools.">
+        <impr 
+        id="131" 
+        name="AI Facility" 
+        resourcelimit="30" 
+        cost="10 Wood, 40 Iron, 10 Titanium, 5 Electronics" 
+        production="10 Iron, 5 Titanium, 1 Electronics > 1 Synthetic Brain"
+        jobtype="Crafting" 
+        buildtime="120"
+        data-productionTimeForLump="30"
+        data-lumpSize="1"
+        desc="A specialized lab for creating electronic parts and tools.">
+    </impr>
     </impr>
     
 </imprroot>

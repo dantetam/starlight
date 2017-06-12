@@ -625,7 +625,13 @@ class StarlightSurfaceView extends SurfaceView {
             //((Button) context.findViewById(R.id.btnProduceTest)).setVisibility(VISIBLE);
             ((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(GONE);
 
-            ((TextView) context.findViewById(R.id.buildingName)).setText(hoverBuilding.name);
+            String nameString = hoverBuilding.name;
+            int numUpgrades = hoverBuilding.currentUpgrades.size();
+            if (numUpgrades > 0) {
+                nameString += " +" + hoverBuilding.currentUpgrades.get(numUpgrades - 1);
+            }
+
+            ((TextView) context.findViewById(R.id.buildingName)).setText(nameString);
             ((TextView) context.findViewById(R.id.buildingDesc)).setText(hoverBuilding.desc);
             //if (!building.getProductionRecipeString().equals("Nothing")) {
 
