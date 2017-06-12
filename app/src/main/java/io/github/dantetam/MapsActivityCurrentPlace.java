@@ -30,6 +30,7 @@ import com.example.currentplacedetailsonmap.R;
 import io.github.dantetam.android.BitmapHelper;
 import io.github.dantetam.jobs.ConstructionJob;
 import io.github.dantetam.jobs.Job;
+import io.github.dantetam.jobs.UpgradeJob;
 import io.github.dantetam.maps.MapResourceOverlay;
 import io.github.dantetam.person.Body;
 import io.github.dantetam.person.Faction;
@@ -538,10 +539,13 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         final Context context = this;
         final LinearLayout upgradesList = ((LinearLayout) findViewById(R.id.buildingUpgradesList));
 
-        Tile hover = surfaceView.getHoverTile();
+        final Tile hover = surfaceView.getHoverTile();
         if (hover == null || hover.getBuilding() == null) {
             return;
         }
+
+        upgradesList.setVisibility(View.VISIBLE);
+        upgradesList.removeAllViews();
 
         final Building building = hover.getBuilding();
 
@@ -568,7 +572,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                             if (currentSettlement.nexus.items.hasInventory(cost)) {
                                 currentSettlement.nexus.items.removeInventory(cost);
                                 String jobType = "Construction";
-                                Job upgradeJob = TODO
+                                Job upgradeJob = new UpgradeJob(currentSettlement, building, upgradeBuilding, hover, chosenCostRecipe);
                                 currentSettlement.availableJobsBySkill.get(jobType).add(upgradeJob);
                             }
                         }

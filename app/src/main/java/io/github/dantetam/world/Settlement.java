@@ -40,6 +40,8 @@ public class Settlement implements Serializable { //implements Parcelable {
     public CombatHandler combatHandler;
     public List<Person> visitors;
 
+    public ConstructionTree constructionTree;
+
     public Settlement(String name, Date foundDate, Vector2f realGeoCoord, Vector2f gameCoord, int r, int c, ConstructionTree tree) {
         this.name = name;
         this.foundDate = foundDate;
@@ -54,6 +56,7 @@ public class Settlement implements Serializable { //implements Parcelable {
         gold = 50;
         combatHandler = new CombatHandler(this, tree);
         visitors = new ArrayList<>();
+        this.constructionTree = tree;
     }
 
     public void initializeNeighbors() {
@@ -133,6 +136,26 @@ public class Settlement implements Serializable { //implements Parcelable {
         }
         person.tile = dest;
         dest.people.add(person);
+    }
+
+    public void upgradeBuilding(Building building, String upgradeName) {
+        Building upgrade = constructionTree.getBuildingByName(upgradeName);
+
+        building.possibleBuildingUpgrades = new ArrayList<>(upgrade.possibleBuildingUpgrades);
+        building.currentUpgrades.add(upgradeName);
+
+        for (Recipe recipe: upgrade.getProductionRecipes()) {
+            building.addProductionRecipe(recipe);
+        }
+    }
+
+    public void upgradeBuilding(Building building, Building upgrade) {
+        building.possibleBuildingUpgrades = new ArrayList<>(upgrade.possibleBuildingUpgrades);
+        building.currentUpgrades.add(upgrade.name);
+
+        for (Recipe recipe: upgrade.getProductionRecipes()) {
+            building.addProductionRecipe(recipe);
+        }
     }
 
 }

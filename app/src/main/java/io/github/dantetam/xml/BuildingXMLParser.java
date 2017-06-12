@@ -151,7 +151,13 @@ public class BuildingXMLParser {
                     //System.err.println("Passed in " + id + ", " + buildingName);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
-                stack.remove(stack.size() - 1);
+                /*for (Building building: stack) {
+                    System.err.println(building.name);
+                }
+                System.err.println("-------------");*/
+                if (stack.size() > 0) {
+                    stack.remove(stack.size() - 1);
+                }
                 stackCounter--;
             } else if (eventType == XmlPullParser.TEXT) {
 

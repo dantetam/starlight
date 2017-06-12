@@ -38,6 +38,8 @@ public class ConstructionTree implements Serializable {
         buildingsById = new HashMap<>();
         itemsByName = new HashMap<>();
         buildingsByName = new HashMap<>();
+        upgradedBuildingsById = new HashMap<>();
+        upgradedBuildingsByName = new HashMap<>();
         skills = new ArrayList<>();
         //customResourceGroups = new HashMap<>();
     }

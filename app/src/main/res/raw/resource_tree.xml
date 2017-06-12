@@ -297,6 +297,22 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
+    id="161" 
+    name="Eggs" 
+    maxhealth="10" 
+    marketvalue="0.9"
+    desc="Edible eggs from various animals.">
+    </resource>
+    
+    <resource 
+    id="162" 
+    name="Milk" 
+    maxhealth="10" 
+    marketvalue="0.8"
+    desc="Raw, nutritious animal milk.">
+    </resource>
+    
+    <resource 
     id="175" 
     name="Meal" 
     maxhealth="30" 
