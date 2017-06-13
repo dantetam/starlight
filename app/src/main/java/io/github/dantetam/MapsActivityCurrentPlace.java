@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +63,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -232,6 +234,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         world.factions.add(new Faction("Tribes"));
         world.factions.add(new Faction("Officers"));
         world.factions.add(new Faction("Settlers"));
+
+        discoveredSettlementMap = new HashMap<>();
     }
 
     /**
@@ -317,55 +321,62 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 float dLon = (float) (Math.random() - 0.5f);
                 LatLng randLoc = new LatLng(location.latitude + dLat, location.longitude + dLon);
 
-                Inventory resources = getMapResources(randLoc);
-
                 Faction faction;
-
                 do {
                     faction = world.randomFaction();
                 } while (faction.name.equals("Colonists"));
 
-                Calendar calendar = Calendar.getInstance();
-
-                Settlement settlement = world.createSettlement(
-                        faction.name, calendar.getTime(),
-                        new Vector2f(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()),
-                        faction,
-                        constructionTree, resources);
-
-                if (settlement == null) {
-                    continue;
-                }
-
-                Marker marker = mMap.addMarker(new MarkerOptions()
-                        .title("Settlement " + faction.name)
-                        .position(randLoc)
-                        .snippet(""));
-                settlementIndicesByMarker.put(marker, settlement);
-
-                //Initialize some first buildings
-                settlement.nexus = constructionTree.copyBuilding("Nexus");
-                settlement.getTile(settlement.rows / 2, settlement.cols / 2).addBuilding(settlement.nexus);
-                Building tent = constructionTree.copyBuilding("Tent");
-                settlement.getTile(settlement.rows / 2 + 1, settlement.cols / 2).addBuilding(tent);
-                settlement.nexus.items.addItem(constructionTree.copyItem("Wood", 300));
-                settlement.nexus.items.addItem(constructionTree.copyItem("Iron", 300));
-                settlement.nexus.items.addItem(constructionTree.copyItem("Meal", 50));
-
-                for (int i = 0; i < 20; i++) {
-                    Person person = new Person(nameStorage.randomName(), constructionTree.skills, faction);
-                    Body parsedHumanBody = BodyXmlParser.parseBodyTree(this, R.raw.human_body);
-                    person.initializeBody(parsedHumanBody);
-                    settlement.people.add(person);
-                    Tile randomTile = settlement.randomTile();
-                    settlement.movePerson(person, randomTile);
-                    person.weapon = constructionTree.copyItem("Wooden Bow", 1);
-                }
-
-                for (String skill: constructionTree.skills) {
-                    settlement.availableJobsBySkill.put(skill, new ArrayList<Job>());
-                }
+                createSettlement(randLoc, faction);
             }
+        }
+    }
+
+    private void createSettlement(LatLng location, Faction faction) {
+        Inventory resources = getMapResources(location);
+
+        Calendar calendar = Calendar.getInstance();
+
+        Settlement settlement = world.createSettlement(
+                faction.name, calendar.getTime(),
+                new Vector2f(location.latitude, location.longitude),
+                faction,
+                constructionTree, resources);
+
+        discoveredSettlementMap.put(settlement, true);
+
+        if (settlement == null) {
+            return;
+        }
+
+        Marker marker = mMap.addMarker(new MarkerOptions()
+                        .title("Settlement " + faction.name)
+                        .position(location)
+                        .snippet("")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+        );
+        settlementIndicesByMarker.put(marker, settlement);
+
+        //Initialize some first buildings
+        settlement.nexus = constructionTree.copyBuilding("Nexus");
+        settlement.getTile(settlement.rows / 2, settlement.cols / 2).addBuilding(settlement.nexus);
+        Building tent = constructionTree.copyBuilding("Tent");
+        settlement.getTile(settlement.rows / 2 + 1, settlement.cols / 2).addBuilding(tent);
+        settlement.nexus.items.addItem(constructionTree.copyItem("Wood", 300));
+        settlement.nexus.items.addItem(constructionTree.copyItem("Iron", 300));
+        settlement.nexus.items.addItem(constructionTree.copyItem("Meal", 50));
+
+        for (int i = 0; i < 20; i++) {
+            Person person = new Person(nameStorage.randomName(), constructionTree.skills, faction);
+            Body parsedHumanBody = BodyXmlParser.parseBodyTree(this, R.raw.human_body);
+            person.initializeBody(parsedHumanBody);
+            settlement.people.add(person);
+            Tile randomTile = settlement.randomTile();
+            settlement.movePerson(person, randomTile);
+            person.weapon = constructionTree.copyItem("Wooden Bow", 1);
+        }
+
+        for (String skill: constructionTree.skills) {
+            settlement.availableJobsBySkill.put(skill, new ArrayList<Job>());
         }
     }
 
@@ -385,7 +396,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 world.getFaction("Colonists"),
                 constructionTree, resources);
 
-        discoveredSettlementMap.put(settlement, false);
+        discoveredSettlementMap.put(settlement, true);
 
         if (settlement != null && gold.value() >= 35) {
             gold.set(gold.value() - 35);
@@ -768,6 +779,207 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }
     }
 
+    //TODO: Convert this trade menu dialog to a general function that takes in two inventories
+    public void showLocalTradeMenu(View v) {
+        final LinearLayout localTradeList = ((LinearLayout) findViewById(R.id.localTradeList));
+        final Context context = this;
+
+        localTradeList.setVisibility(View.VISIBLE);
+
+        if (currentSettlement != null) {
+            List<Settlement> settlements = world.findNearbySettlements(currentSettlement, 30000);
+
+            for (final Settlement settlement: settlements) {
+                if (settlement.equals(currentSettlement)) {
+                    continue;
+                }
+
+                Button button = new Button(this);
+                button.setText(settlement.name + " (" + settlement.faction.name + ")");
+                button.setOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                localTradeList.removeAllViews();
+
+                                LinearLayout priceLayout = new LinearLayout(context);
+                                priceLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+                                final TextView leftArrow = new TextView(context);
+                                leftArrow.setText("<");
+                                leftArrow.setBackgroundColor(Color.WHITE);
+                                priceLayout.addView(leftArrow);
+
+                                final TextView priceSilver = new TextView(context);
+                                priceSilver.setText("0");
+                                priceSilver.setBackgroundColor(Color.WHITE);
+                                priceLayout.addView(priceSilver);
+
+                                final TextView rightArrow = new TextView(context);
+                                rightArrow.setText(">");
+                                rightArrow.setBackgroundColor(Color.WHITE);
+                                priceLayout.addView(rightArrow);
+
+                                Button tradeFinalize = new Button(context);
+                                tradeFinalize.setText("Complete Trade");
+                                priceLayout.addView(tradeFinalize);
+
+                                localTradeList.addView(priceLayout);
+
+                                List<Item> items = currentSettlement.nexus.items.getItems();
+                                for (final Item item: items) {
+                                    LinearLayout itemLayout = new LinearLayout(context);
+                                    itemLayout.setVisibility(View.VISIBLE);
+                                    itemLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+                                    TextView itemName = new TextView(context);
+                                    itemName.setText(item.name + " (" + item.quantity + "), " + item.baseMarketPrice);
+                                    itemName.setBackgroundColor(Color.WHITE);
+                                    itemLayout.addView(itemName);
+                                    itemName.setPadding(5, 0, 5, 0);
+
+                                    Button itemBuy = new Button(context);
+                                    itemBuy.setText("+1");
+                                    itemLayout.addView(itemBuy);
+
+                                    final TextView itemBuySellQuantity = new TextView(context);
+                                    itemBuySellQuantity.setText("0");
+                                    itemBuySellQuantity.setBackgroundColor(Color.WHITE);
+                                    itemLayout.addView(itemBuySellQuantity);
+
+                                    Button itemSell = new Button(context);
+                                    itemSell.setText("-1");
+                                    itemLayout.addView(itemSell);
+
+                                    itemBuy.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            int quantity = Integer.parseInt(itemBuySellQuantity.getText().toString());
+                                            quantity++;
+                                            itemBuySellQuantity.setText("" + quantity);
+
+                                            float currentSilver = Float.parseFloat(priceSilver.getText().toString());
+                                            currentSilver -= item.baseMarketPrice;
+                                            priceSilver.setText(String.format("%.2f", currentSilver));
+
+                                            if (currentSilver > 0) {
+                                                leftArrow.setVisibility(View.VISIBLE);
+                                                rightArrow.setVisibility(View.INVISIBLE);
+                                            }
+                                            else {
+                                                rightArrow.setVisibility(View.VISIBLE);
+                                                leftArrow.setVisibility(View.INVISIBLE);
+                                            }
+                                        }
+                                    });
+
+                                    itemSell.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            int quantity = Integer.parseInt(itemBuySellQuantity.getText().toString());
+                                            if (-quantity - 1 <= item.quantity) {
+                                                quantity--;
+                                                itemBuySellQuantity.setText("" + quantity);
+                                            }
+
+                                            float currentSilver = Float.parseFloat(priceSilver.getText().toString());
+                                            currentSilver += item.baseMarketPrice;
+                                            priceSilver.setText(String.format("%.2f", currentSilver));
+
+                                            if (currentSilver > 0) {
+                                                leftArrow.setVisibility(View.VISIBLE);
+                                                rightArrow.setVisibility(View.INVISIBLE);
+                                            }
+                                            else {
+                                                rightArrow.setVisibility(View.VISIBLE);
+                                                leftArrow.setVisibility(View.INVISIBLE);
+                                            }
+                                        }
+                                    });
+                                    localTradeList.addView(itemLayout);
+                                }
+
+                                List<Item> otherItems = settlement.nexus.items.getItems();
+                                for (final Item item: otherItems) {
+                                    LinearLayout itemLayout = new LinearLayout(context);
+                                    itemLayout.setVisibility(View.VISIBLE);
+                                    itemLayout.setOrientation(LinearLayout.HORIZONTAL);
+                                    itemLayout.setGravity(Gravity.RIGHT);
+
+                                    Button itemBuy = new Button(context);
+                                    itemBuy.setText("+1");
+                                    itemLayout.addView(itemBuy);
+
+                                    final TextView itemBuySellQuantity = new TextView(context);
+                                    itemBuySellQuantity.setText("0");
+                                    itemBuySellQuantity.setBackgroundColor(Color.WHITE);
+                                    itemLayout.addView(itemBuySellQuantity);
+
+                                    Button itemSell = new Button(context);
+                                    itemSell.setText("-1");
+                                    itemLayout.addView(itemSell);
+
+                                    TextView itemName = new TextView(context);
+                                    itemName.setText(item.name + " (" + item.quantity + "), " + item.baseMarketPrice);
+                                    itemName.setBackgroundColor(Color.WHITE);
+                                    itemLayout.addView(itemName);
+                                    itemName.setPadding(5, 0, 5, 0);
+
+                                    itemBuy.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            int quantity = Integer.parseInt(itemBuySellQuantity.getText().toString());
+                                            quantity++;
+                                            itemBuySellQuantity.setText("" + quantity);
+
+                                            float currentSilver = Float.parseFloat(priceSilver.getText().toString());
+                                            currentSilver -= item.baseMarketPrice;
+                                            priceSilver.setText(String.format("%.2f", currentSilver));
+
+                                            if (currentSilver > 0) {
+                                                leftArrow.setVisibility(View.VISIBLE);
+                                                rightArrow.setVisibility(View.INVISIBLE);
+                                            }
+                                            else {
+                                                rightArrow.setVisibility(View.VISIBLE);
+                                                leftArrow.setVisibility(View.INVISIBLE);
+                                            }
+                                        }
+                                    });
+
+                                    itemSell.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            int quantity = Integer.parseInt(itemBuySellQuantity.getText().toString());
+                                            if (-quantity - 1 <= item.quantity) {
+                                                quantity--;
+                                                itemBuySellQuantity.setText("" + quantity);
+                                            }
+
+                                            float currentSilver = Float.parseFloat(priceSilver.getText().toString());
+                                            currentSilver += item.baseMarketPrice;
+                                            priceSilver.setText(String.format("%.2f", currentSilver));
+
+                                            if (currentSilver > 0) {
+                                                leftArrow.setVisibility(View.VISIBLE);
+                                                rightArrow.setVisibility(View.INVISIBLE);
+                                            }
+                                            else {
+                                                rightArrow.setVisibility(View.VISIBLE);
+                                                leftArrow.setVisibility(View.INVISIBLE);
+                                            }
+                                        }
+                                    });
+                                    localTradeList.addView(itemLayout);
+                                }
+                            }
+                        }
+                );
+                localTradeList.addView(button);
+            }
+        }
+    }
+
     /**
      * Manipulates the map when it's available.
      * This callback is triggered when the map is ready to be used.
@@ -1059,6 +1271,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         setContentView(R.layout.activity_settlement_live);
 
         surfaceView = (StarlightSurfaceView) ((ViewGroup) findViewById(R.id.tileDetailsLayout).getParent()).getChildAt(0);
+
+        surfaceView.setCurrentWorld(world);
 
         surfaceView.setSettlement(settlement);
         surfaceView.setVisibility(View.VISIBLE);

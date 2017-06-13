@@ -1,5 +1,7 @@
 package io.github.dantetam.util;
 
+import android.location.Location;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import java.text.DecimalFormat;
@@ -9,7 +11,7 @@ import java.text.DecimalFormat;
  */
 public class GeoUtil {
 
-    public static double calculateDistance(LatLng startP, LatLng endP) {
+    /*public static double calculateDistance(LatLng startP, LatLng endP) {
         int radius = 6371;// radius of earth in Km
         double lat1 = startP.latitude;
         double lat2 = endP.latitude;
@@ -29,6 +31,12 @@ public class GeoUtil {
         double meter = valueResult % 1000;
         int meterInDec = Integer.valueOf(newFormat.format(meter));
         return meterInDec;
+    }*/
+
+    public static double calculateDistance(LatLng startP, LatLng endP) {
+        float[] result = new float[1];
+        Location.distanceBetween(startP.latitude, startP.longitude, endP.latitude, endP.longitude, result);
+        return result[0];
     }
 
 }

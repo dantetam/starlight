@@ -30,6 +30,7 @@ import io.github.dantetam.tasks.Task;
 import io.github.dantetam.world.Building;
 import io.github.dantetam.world.Settlement;
 import io.github.dantetam.world.Tile;
+import io.github.dantetam.world.World;
 import io.github.dantetam.xml.BitmapManager;
 
 /**
@@ -42,6 +43,7 @@ class StarlightSurfaceView extends SurfaceView {
 
     private Canvas canvas;
 
+    private World world;
     private Settlement activeSettlement;
     private Tile hoverTile;
 
@@ -114,6 +116,10 @@ class StarlightSurfaceView extends SurfaceView {
         rainforestTile = BitmapHelper.findBitmapOrBuild(R.drawable.rainforest_texture);
         bitmapTiles = new Bitmap[]{seaTile, iceTile, taigaTile, desertTile, steppeTile, dryForestTile, forestTile, rainforestTile};
         androidTile = BitmapHelper.findBitmapOrBuild(R.drawable.coal);
+    }
+
+    public void setCurrentWorld(World world) {
+        this.world = world;
     }
 
     public void setSettlement(Settlement settlement) {
@@ -592,10 +598,12 @@ class StarlightSurfaceView extends SurfaceView {
         ((LinearLayout) context.findViewById(R.id.constructionBuildingList)).setVisibility(GONE);
         ((LinearLayout) context.findViewById(R.id.productionRecipesList)).setVisibility(GONE);
         ((LinearLayout) context.findViewById(R.id.buildingUpgradesList)).setVisibility(GONE);
+        ((LinearLayout) context.findViewById(R.id.localTradeList)).setVisibility(GONE);
 
         ((LinearLayout) context.findViewById(R.id.constructionBuildingList)).removeAllViews();
         ((LinearLayout) context.findViewById(R.id.productionRecipesList)).removeAllViews();
         ((LinearLayout) context.findViewById(R.id.buildingUpgradesList)).removeAllViews();
+        ((LinearLayout) context.findViewById(R.id.localTradeList)).removeAllViews();
 
         ((Button) context.findViewById(R.id.btnUpgradesList)).setVisibility(GONE);
 

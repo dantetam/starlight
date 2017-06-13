@@ -27,7 +27,7 @@ public class World {
 
     public List<Settlement> settlements;
     public ConstructionTree tree;
-    public static float MIN_SETTLEMENT_GEO_DIST = 50; //In meters
+    public static float MIN_SETTLEMENT_GEO_DIST = 500; //In meters
 
     public static Vector2f geoHome;
 
@@ -155,6 +155,10 @@ public class World {
         for (Settlement settlement : settlements) {
             LatLng newCoord = new LatLng(geoCoord.x, geoCoord.y);
             LatLng settlementCoord = new LatLng(settlement.realGeoCoord.x, settlement.realGeoCoord.y);
+            /*if (newCoord.equals(settlementCoord)) {
+                continue;
+            }*/
+            System.err.println(GeoUtil.calculateDistance(newCoord, settlementCoord));
             allowed = allowed && (GeoUtil.calculateDistance(newCoord, settlementCoord) >= MIN_SETTLEMENT_GEO_DIST);
         }
         return allowed;
@@ -179,6 +183,16 @@ public class World {
         }
         else
             return null;
+    }
+
+    public List<Settlement> findNearbySettlements(Settlement home, float metersDist) {
+        List<Settlement> results = new ArrayList<>();
+        for (Settlement settlement: this.settlements) {
+            if (GeoUtil.calculateDistance(new LatLng(settlement.realGeoCoord.x, settlement.realGeoCoord.y), new LatLng(home.realGeoCoord.x, home.realGeoCoord.y)) <= metersDist) {
+                results.add(settlement);
+            }
+        }
+        return results;
     }
 
     public Vector2f convertToGameCoord(Vector2f geoCoord) {

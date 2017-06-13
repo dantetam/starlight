@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Remember special classes:
+Metal -> Iron, Silver, Gold
+AllWood -> Wood, Tropical Wood
+RawFood -> Wheat, Potato, Apple, Cabbage
+-->
+<resourceroot>
+    <resource 
+    id="9999" 
+    name="Resource" 
+    maxhealth="-1" 
+    marketvalue="0"
+    desc="">
+    </resource>
+    
+    <resource 
+    id="-3" 
+    name="Metal" 
+    maxhealth="-1" 
+    marketvalue="0"
+    desc="">
+    </resource>
+    
+    <resource 
+    id="-2" 
+    name="AllWood" 
+    maxhealth="-1" 
+    marketvalue="0"
+    desc="">
+    </resource>
+    
+    <resource 
+    id="-1" 
+    name="RawFood" 
+    maxhealth="-1" 
+    marketvalue="0"
+    desc="">
+    </resource>
+    
+    <resource 
+    id="0" 
+    name="Wood" 
+    maxhealth="50" 
+    marketvalue="0.5"
+    desc="Generic organic matter.">
+    </resource>
+    
+    <resource 
+    id="1" 
+    name="Tropical Wood" 
+    maxhealth="70" 
+    marketvalue="0.9"
+    desc="Exotic organic matter.">
+    </resource>
+    
+    <resource 
+    id="5" 
+    name="Cotton" 
+    maxhealth="30" 
+    marketvalue="0.4"
+    desc="Fibers and balls of cotton and seed.">
+    </resource>
+    
+    <resource 
+    id="10" 
+    name="Iron" 
+    maxhealth="-1" 
+    marketvalue="1.5"
+    desc="Malleable iron chunks.">
+    </resource>
+  
+    <resource 
+    id="11" 
+    name="Titanium" 
+    maxhealth="-1" 
+    marketvalue="6"
+    desc="Strong, tensile metal alloy.">
+    </resource>
+  
+    <resource 
+    id="20" 
+    name="Silver" 
+    maxhealth="-1" 
+    marketvalue="1"
+    desc="A piece of silver.">
+    </resource>
+    
+    <resource 
+    id="21" 
+    name="Gold" 
+    maxhealth="-1" 
+    marketvalue="10"
+    desc="A shiny ounce of gold.">
+    </resource>
+    
+    <resource 
+    id="29" 
+    name="Fist" 
+    maxhealth="10" 
+    marketvalue="3"
+    data-combatmelee="3"
+    data-combatchance="0.60"
+    data-combattime="8"
+    desc="A forged iron sword.">
+    </resource>
+    
+    <resource 
+    id="30" 
+    name="Iron Sword" 
+    maxhealth="50" 
+    marketvalue="8"
+    data-combatmelee="14"
+    data-combatchance="0.80"
+    data-combattime="10"
+    desc="A forged iron sword.">
+    </resource>
+    
+    <resource 
+    id="31" 
+    name="Iron Shield" 
+    maxhealth="50" 
+    marketvalue="8"
+    data-combatmelee="6"
+    data-combatchance="0.90"
+    data-combattime="15"
+    desc="A hammered iron shield.">
+    </resource>
+    
+    <resource 
+    id="35" 
+    name="Wooden Bow" 
+    maxhealth="50" 
+    marketvalue="8.5"
+    data-combatmelee="6"
+    data-combatshot="12"
+    data-combatrange="10"
+    data-combatchance="0.60"
+    data-combattime="20"
+    desc="A strung, taut wooden bow.">
+    </resource>
+    
+    <resource 
+    id="36" 
+    name="Wooden Composite Bow" 
+    maxhealth="50" 
+    marketvalue="42"
+    data-combatmelee="6"
+    data-combatshot="17"
+    data-combatrange="14"
+    data-combatchance="0.65"
+    data-combattime="17"
+    desc="A complex composite bow with high power.">
+    </resource>
+    
+    <resource 
+    id="36" 
+    name="Pistol" 
+    maxhealth="50" 
+    marketvalue="42"
+    data-combatmelee="6"
+    data-combatshot="17"
+    data-combatrange="14"
+    data-combatchance="0.65"
+    data-combattime="17"
+    desc="A complex composite bow with high power.">
+    </resource>
+    
+    <resource 
+    id="60" 
+    name="Cloth Armor" 
+    maxhealth="50" 
+    marketvalue="15"
+    data-protection="15"
+    desc="Light, improvised padded armor with some protection against small threats.">
+    </resource>
+    
+    <resource 
+    id="61" 
+    name="Iron Armor" 
+    maxhealth="50" 
+    marketvalue="25"
+    data-protection="30"
+    desc="Heavy and inflexible armor with protection against most melee weapons.">
+    </resource>
+    
+    <resource 
+    id="80" 
+    name="Wooden Furniture" 
+    maxhealth="60" 
+    marketvalue="20"
+    desc="Chairs, beds, and tables made of wood.">
+    </resource>
+    
+    <resource 
+    id="81" 
+    name="Iron Furniture" 
+    maxhealth="80" 
+    marketvalue="32"
+    desc="Chairs, beds, and tables made of iron.">
+    </resource>
+    
+    <resource 
+    id="82" 
+    name="Leather Furniture" 
+    maxhealth="60" 
+    marketvalue="40"
+    desc="Chairs, beds, and tables made of leather.">
+    </resource>
+    
+    <resource 
+    id="89" 
+    name="Leather" 
+    maxhealth="30" 
+    marketvalue="2"
+    desc="Cut and dried pieces of animal leather.">
+    </resource>
+    
+    <resource 
+    id="90" 
+    name="Sludge" 
+    maxhealth="20" 
+    marketvalue="0.9"
+    desc="Some kind of swampy mess containing flammable compounds.">
+    </resource>
+    
+    <resource 
+    id="91" 
+    name="Stone" 
+    maxhealth="50" 
+    marketvalue="0.6"
+    desc="A pile of uncut stones of various sizes.">
+    </resource>
+    
+    <resource 
+    id="100" 
+    name="Fuel" 
+    maxhealth="25" 
+    marketvalue="5.5"
+    desc="A refined, pure, and flammable liquid fuel.">
+    </resource>
+    
+    <resource 
+    id="101" 
+    name="Component" 
+    maxhealth="-1" 
+    marketvalue="20"
+    desc="A set of carefully crafted small parts and pieces.">
+    </resource>
+    
+    <resource 
+    id="102" 
+    name="Electronics" 
+    maxhealth="40" 
+    marketvalue="20"
+    desc="A set of intricate, general-purpose electronic circuit parts, boards, etc.">
+    </resource>
+    
+    <resource 
+    id="110" 
+    name="Synthetic Brain" 
+    maxhealth="30" 
+    marketvalue="100"
+    desc="An electronic brain made of rare metals, circuits and AI.">
+    </resource>
+    
+    <resource 
+    id="140" 
+    name="Fairflower" 
+    maxhealth="20" 
+    marketvalue="1"
+    desc="A beautiful flower native to this planet.">
+    </resource>
+    
+    <resource 
+    id="150" 
+    name="Wheat" 
+    maxhealth="20" 
+    marketvalue="0.5"
+    desc="A small bundle of wheat.">
+    </resource>
+    
+    <resource 
+    id="151" 
+    name="Potato" 
+    maxhealth="20" 
+    marketvalue="0.5"
+    desc="A raw potato.">
+    </resource>
+    
+    <resource 
+    id="152" 
+    name="Fruit" 
+    maxhealth="20" 
+    marketvalue="0.5"
+    desc="Several small assorted fruits.">
+    </resource>
+    
+    <resource 
+    id="153" 
+    name="Greens" 
+    maxhealth="20" 
+    marketvalue="0.5"
+    desc="Some whole, leafy green vegetables.">
+    </resource>
+    
+    <resource 
+    id="160" 
+    name="Meat" 
+    maxhealth="20" 
+    marketvalue="1.5"
+    desc="Assorted protein and animal flesh.">
+    </resource>
+    
+    <resource 
+    id="161" 
+    name="Eggs" 
+    maxhealth="10" 
+    marketvalue="0.9"
+    desc="Edible eggs from various animals.">
+    </resource>
+    
+    <resource 
+    id="162" 
+    name="Milk" 
+    maxhealth="10" 
+    marketvalue="0.8"
+    desc="Raw, nutritious animal milk.">
+    </resource>
+    
+    <resource 
+    id="175" 
+    name="Meal" 
+    maxhealth="30" 
+    marketvalue="3"
+    desc="A single simple meal.">
+    </resource>
+    
+    <resource 
+    id="180" 
+    name="Beer" 
+    maxhealth="30" 
+    marketvalue="5"
+    desc="A homebrewed alcoholic drink.">
+    </resource>
+    
+    <resource 
+    id="181" 
+    name="Medicine" 
+    maxhealth="30" 
+    marketvalue="25"
+    desc="Medicine derived from wood acid and a single-use surgical kit.">
+    </resource>
+    
+    <resource 
+    id="182" 
+    name="Blackglass" 
+    maxhealth="30" 
+    marketvalue="60"
+    desc="A strong, homemade narcotic of distilled tar, acid, and fuel, formed into transparent rocks.">
+    </resource>
+    
+    <resource 
+    id="183" 
+    name="Axltx" 
+    maxhealth="20" 
+    marketvalue="85"
+    desc="An indigenous medicine purified by modern machinery.">
+    </resource>
+    
+    <resource 
+    id="200" 
+    name="Cloth Shirt" 
+    maxhealth="30" 
+    marketvalue="6"
+    desc="A shirt made out of cotton.">
+    </resource>
+    
+    <resource 
+    id="201" 
+    name="Cloth Pants" 
+    maxhealth="30" 
+    marketvalue="6"
+    desc="A pair of pants made out of cotton.">
+    </resource>
+    
+    <resource 
+    id="202" 
+    name="Coat" 
+    maxhealth="40" 
+    marketvalue="9"
+    desc="A nice coat made out of cotton.">
+    </resource>
+</resourceroot>

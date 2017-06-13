@@ -183,6 +183,13 @@
             android:orientation="vertical"
             android:visibility="gone">
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/localTradeList"
+            android:orientation="vertical"
+            android:visibility="gone">
+        </LinearLayout>
         <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -235,4 +242,19 @@
         android:paddingRight="5dp"
         android:onClick="toggleDraft"
         android:layout_alignParentBottom="true"/>
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:text="Local Trade"
+        android:id="@+id/btnTradeLocalSettlements"
+        android:background="#ffff1a7c"
+        android:textColor="#ffffffff"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:onClick="showLocalTradeMenu"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/btnToggleDraft"/>
 </RelativeLayout>

@@ -42,12 +42,14 @@ public class Settlement implements Serializable { //implements Parcelable {
     public List<Person> visitors;
 
     public ConstructionTree constructionTree;
+    public Faction faction;
 
     public Settlement(String name, Date foundDate, Vector2f realGeoCoord, Vector2f gameCoord, Faction faction, int r, int c, ConstructionTree tree) {
         this.name = name;
         this.foundDate = foundDate;
         this.realGeoCoord = realGeoCoord;
         this.gameCoord = gameCoord;
+        this.faction = faction;
         rows = r; cols = c;
         tiles = new Tile[r][c];
         people = new ArrayList<>();
@@ -157,6 +159,13 @@ public class Settlement implements Serializable { //implements Parcelable {
         for (Recipe recipe: upgrade.getProductionRecipes()) {
             building.addProductionRecipe(recipe);
         }
+    }
+
+    public boolean equals(Object other) {
+        if (!(other instanceof Settlement)) {
+            return false;
+        }
+        return this.realGeoCoord.equals(((Settlement) other).realGeoCoord);
     }
 
 }
