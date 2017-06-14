@@ -1,12 +1,13 @@
 package io.github.dantetam.person;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Dante on 6/9/2017.
  */
-public class Faction {
+public class Faction implements Serializable {
 
     public String name;
     public List<Person> people;

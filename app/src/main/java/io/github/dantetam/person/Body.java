@@ -1,12 +1,13 @@
 package io.github.dantetam.person;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by Dante on 6/8/2017.
  */
-public class Body {
+public class Body implements Serializable {
 
     private Map<String, BodyPart> bodyPartsByName;
     public BodyPart root;

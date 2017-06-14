@@ -1,12 +1,13 @@
 package io.github.dantetam.person;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Dante on 6/8/2017.
  */
-public class BodyPart {
+public class BodyPart implements Serializable {
 
     public String name, desc;
     private int health;

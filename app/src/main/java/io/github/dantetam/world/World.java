@@ -11,6 +11,7 @@ import io.github.dantetam.person.Person;
 import io.github.dantetam.tasks.Task;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -23,7 +24,9 @@ import io.github.dantetam.terrain.DiamondSquare;
 /**
  * Created by Dante on 5/18/2017.
  */
-public class World {
+public class World implements Serializable {
+
+    public String name;
 
     public List<Settlement> settlements;
     public ConstructionTree tree;
@@ -33,8 +36,9 @@ public class World {
 
     public List<Faction> factions;
 
-    public World(ConstructionTree tree) {
-        settlements = new ArrayList<Settlement>();
+    public World(String name, ConstructionTree tree) {
+        this.name = name;
+        settlements = new ArrayList<>();
         this.tree = tree;
         factions = new ArrayList<>();
     }
@@ -158,7 +162,7 @@ public class World {
             /*if (newCoord.equals(settlementCoord)) {
                 continue;
             }*/
-            System.err.println(GeoUtil.calculateDistance(newCoord, settlementCoord));
+            //System.err.println(GeoUtil.calculateDistance(newCoord, settlementCoord));
             allowed = allowed && (GeoUtil.calculateDistance(newCoord, settlementCoord) >= MIN_SETTLEMENT_GEO_DIST);
         }
         return allowed;

@@ -32,5 +32,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:10.0.1'
     compile 'com.google.android.gms:play-services-location:10.0.1'
     compile 'com.google.android.gms:play-services-places:10.0.1'
+    compile group: 'com.google.code.gson', name: 'gson', version: '1.7.2'
     testCompile 'junit:junit:4.12'
 }

@@ -68,11 +68,19 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -144,6 +152,11 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        assetManager = this.getAssets();
+
+        nameStorage = new NameStorage();
+        nameStorage.loadNames(assetManager, "male_names.txt", "female_names.txt", "world_names.txt");
+
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -171,7 +184,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         ItemXmlParser.parseResourceTree(constructionTree, this, R.raw.resource_tree);
         BuildingXMLParser.parseBuildingTree(constructionTree, this, R.raw.building_tree);
 
-        world = new World(constructionTree);
+        world = new World(nameStorage.randomWorldName(), constructionTree);
         gold = new VariableListener<Integer>(100) {
             @Override
             public void callback() {
@@ -197,11 +210,6 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         gold.set(100);
         distTravelled.set(0.0f);
-
-        assetManager = this.getAssets();
-
-        nameStorage = new NameStorage();
-        nameStorage.loadNames(assetManager, "male_names.txt", "female_names.txt");
 
         BitmapHelper.init(this);
 
@@ -314,11 +322,25 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     }
 
     public void initializeOtherSettlements(LatLng location) {
-        if (world.settlements.size() < 10) {
+        if (world.settlements.size() < 20) {
             int numCreate = 10 - world.settlements.size();
             for (int j = 0; j < numCreate; j++) {
                 float dLat = (float) (Math.random() - 0.5f);
                 float dLon = (float) (Math.random() - 0.5f);
+                LatLng randLoc = new LatLng(location.latitude + dLat, location.longitude + dLon);
+
+                Faction faction;
+                do {
+                    faction = world.randomFaction();
+                } while (faction.name.equals("Colonists"));
+
+                createSettlement(randLoc, faction);
+            }
+
+            numCreate = 20 - world.settlements.size();
+            for (int j = 0; j < numCreate; j++) {
+                float dLat = (float) (Math.random() / 5.0f - 0.1f);
+                float dLon = (float) (Math.random() / 5.0f - 0.1f);
                 LatLng randLoc = new LatLng(location.latitude + dLat, location.longitude + dLon);
 
                 Faction faction;
@@ -366,7 +388,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         settlement.nexus.items.addItem(constructionTree.copyItem("Meal", 50));
 
         for (int i = 0; i < 20; i++) {
-            Person person = new Person(nameStorage.randomName(), constructionTree.skills, faction);
+            Person person = new Person(nameStorage.randomPersonName(), constructionTree.skills, faction);
             Body parsedHumanBody = BodyXmlParser.parseBodyTree(this, R.raw.human_body);
             person.initializeBody(parsedHumanBody);
             settlement.people.add(person);
@@ -419,7 +441,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             settlement.nexus.items.addItem(constructionTree.copyItem("Meal", 50));
 
             for (int i = 0; i < 10; i++) {
-                Person person = new Person(nameStorage.randomName(), constructionTree.skills, world.getFaction("Colonists"));
+                Person person = new Person(nameStorage.randomPersonName(), constructionTree.skills, world.getFaction("Colonists"));
                 Body parsedHumanBody = BodyXmlParser.parseBodyTree(this, R.raw.human_body);
                 person.initializeBody(parsedHumanBody);
                 settlement.people.add(person);
@@ -429,7 +451,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             }
 
             for (int i = 0; i < 2; i++) {
-                Person person = new Person(nameStorage.randomName(), constructionTree.skills, world.getFaction("Pirates"));
+                Person person = new Person(nameStorage.randomPersonName(), constructionTree.skills, world.getFaction("Pirates"));
                 Body parsedHumanBody = BodyXmlParser.parseBodyTree(this, R.raw.human_body);
                 person.initializeBody(parsedHumanBody);
                 settlement.visitors.add(person);
@@ -800,183 +822,201 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                localTradeList.removeAllViews();
-
-                                LinearLayout priceLayout = new LinearLayout(context);
-                                priceLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-                                final TextView leftArrow = new TextView(context);
-                                leftArrow.setText("<");
-                                leftArrow.setBackgroundColor(Color.WHITE);
-                                priceLayout.addView(leftArrow);
-
-                                final TextView priceSilver = new TextView(context);
-                                priceSilver.setText("0");
-                                priceSilver.setBackgroundColor(Color.WHITE);
-                                priceLayout.addView(priceSilver);
-
-                                final TextView rightArrow = new TextView(context);
-                                rightArrow.setText(">");
-                                rightArrow.setBackgroundColor(Color.WHITE);
-                                priceLayout.addView(rightArrow);
-
-                                Button tradeFinalize = new Button(context);
-                                tradeFinalize.setText("Complete Trade");
-                                priceLayout.addView(tradeFinalize);
-
-                                localTradeList.addView(priceLayout);
-
-                                List<Item> items = currentSettlement.nexus.items.getItems();
-                                for (final Item item: items) {
-                                    LinearLayout itemLayout = new LinearLayout(context);
-                                    itemLayout.setVisibility(View.VISIBLE);
-                                    itemLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-                                    TextView itemName = new TextView(context);
-                                    itemName.setText(item.name + " (" + item.quantity + "), " + item.baseMarketPrice);
-                                    itemName.setBackgroundColor(Color.WHITE);
-                                    itemLayout.addView(itemName);
-                                    itemName.setPadding(5, 0, 5, 0);
-
-                                    Button itemBuy = new Button(context);
-                                    itemBuy.setText("+1");
-                                    itemLayout.addView(itemBuy);
-
-                                    final TextView itemBuySellQuantity = new TextView(context);
-                                    itemBuySellQuantity.setText("0");
-                                    itemBuySellQuantity.setBackgroundColor(Color.WHITE);
-                                    itemLayout.addView(itemBuySellQuantity);
-
-                                    Button itemSell = new Button(context);
-                                    itemSell.setText("-1");
-                                    itemLayout.addView(itemSell);
-
-                                    itemBuy.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            int quantity = Integer.parseInt(itemBuySellQuantity.getText().toString());
-                                            quantity++;
-                                            itemBuySellQuantity.setText("" + quantity);
-
-                                            float currentSilver = Float.parseFloat(priceSilver.getText().toString());
-                                            currentSilver -= item.baseMarketPrice;
-                                            priceSilver.setText(String.format("%.2f", currentSilver));
-
-                                            if (currentSilver > 0) {
-                                                leftArrow.setVisibility(View.VISIBLE);
-                                                rightArrow.setVisibility(View.INVISIBLE);
-                                            }
-                                            else {
-                                                rightArrow.setVisibility(View.VISIBLE);
-                                                leftArrow.setVisibility(View.INVISIBLE);
-                                            }
-                                        }
-                                    });
-
-                                    itemSell.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            int quantity = Integer.parseInt(itemBuySellQuantity.getText().toString());
-                                            if (-quantity - 1 <= item.quantity) {
-                                                quantity--;
-                                                itemBuySellQuantity.setText("" + quantity);
-                                            }
-
-                                            float currentSilver = Float.parseFloat(priceSilver.getText().toString());
-                                            currentSilver += item.baseMarketPrice;
-                                            priceSilver.setText(String.format("%.2f", currentSilver));
-
-                                            if (currentSilver > 0) {
-                                                leftArrow.setVisibility(View.VISIBLE);
-                                                rightArrow.setVisibility(View.INVISIBLE);
-                                            }
-                                            else {
-                                                rightArrow.setVisibility(View.VISIBLE);
-                                                leftArrow.setVisibility(View.INVISIBLE);
-                                            }
-                                        }
-                                    });
-                                    localTradeList.addView(itemLayout);
-                                }
-
-                                List<Item> otherItems = settlement.nexus.items.getItems();
-                                for (final Item item: otherItems) {
-                                    LinearLayout itemLayout = new LinearLayout(context);
-                                    itemLayout.setVisibility(View.VISIBLE);
-                                    itemLayout.setOrientation(LinearLayout.HORIZONTAL);
-                                    itemLayout.setGravity(Gravity.RIGHT);
-
-                                    Button itemBuy = new Button(context);
-                                    itemBuy.setText("+1");
-                                    itemLayout.addView(itemBuy);
-
-                                    final TextView itemBuySellQuantity = new TextView(context);
-                                    itemBuySellQuantity.setText("0");
-                                    itemBuySellQuantity.setBackgroundColor(Color.WHITE);
-                                    itemLayout.addView(itemBuySellQuantity);
-
-                                    Button itemSell = new Button(context);
-                                    itemSell.setText("-1");
-                                    itemLayout.addView(itemSell);
-
-                                    TextView itemName = new TextView(context);
-                                    itemName.setText(item.name + " (" + item.quantity + "), " + item.baseMarketPrice);
-                                    itemName.setBackgroundColor(Color.WHITE);
-                                    itemLayout.addView(itemName);
-                                    itemName.setPadding(5, 0, 5, 0);
-
-                                    itemBuy.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            int quantity = Integer.parseInt(itemBuySellQuantity.getText().toString());
-                                            quantity++;
-                                            itemBuySellQuantity.setText("" + quantity);
-
-                                            float currentSilver = Float.parseFloat(priceSilver.getText().toString());
-                                            currentSilver -= item.baseMarketPrice;
-                                            priceSilver.setText(String.format("%.2f", currentSilver));
-
-                                            if (currentSilver > 0) {
-                                                leftArrow.setVisibility(View.VISIBLE);
-                                                rightArrow.setVisibility(View.INVISIBLE);
-                                            }
-                                            else {
-                                                rightArrow.setVisibility(View.VISIBLE);
-                                                leftArrow.setVisibility(View.INVISIBLE);
-                                            }
-                                        }
-                                    });
-
-                                    itemSell.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            int quantity = Integer.parseInt(itemBuySellQuantity.getText().toString());
-                                            if (-quantity - 1 <= item.quantity) {
-                                                quantity--;
-                                                itemBuySellQuantity.setText("" + quantity);
-                                            }
-
-                                            float currentSilver = Float.parseFloat(priceSilver.getText().toString());
-                                            currentSilver += item.baseMarketPrice;
-                                            priceSilver.setText(String.format("%.2f", currentSilver));
-
-                                            if (currentSilver > 0) {
-                                                leftArrow.setVisibility(View.VISIBLE);
-                                                rightArrow.setVisibility(View.INVISIBLE);
-                                            }
-                                            else {
-                                                rightArrow.setVisibility(View.VISIBLE);
-                                                leftArrow.setVisibility(View.INVISIBLE);
-                                            }
-                                        }
-                                    });
-                                    localTradeList.addView(itemLayout);
-                                }
+                                initTradeMenu(currentSettlement, settlement);
                             }
                         }
                 );
                 localTradeList.addView(button);
             }
+        }
+    }
+
+    private void initTradeMenu(Settlement home, Settlement visitor) {
+        final LinearLayout localTradeList = ((LinearLayout) findViewById(R.id.localTradeList));
+        final Context context = this;
+
+        localTradeList.removeAllViews();
+
+        LinearLayout priceLayout = new LinearLayout(context);
+        priceLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+        final TextView leftArrow = new TextView(context);
+        leftArrow.setText("<");
+        leftArrow.setBackgroundColor(Color.WHITE);
+        priceLayout.addView(leftArrow);
+
+        final TextView priceSilver = new TextView(context);
+        priceSilver.setText("0");
+        priceSilver.setBackgroundColor(Color.WHITE);
+        priceLayout.addView(priceSilver);
+
+        final TextView rightArrow = new TextView(context);
+        rightArrow.setText(">");
+        rightArrow.setBackgroundColor(Color.WHITE);
+        priceLayout.addView(rightArrow);
+
+        Button tradeFinalize = new Button(context);
+        tradeFinalize.setText("Complete Trade");
+        priceLayout.addView(tradeFinalize);
+
+        tradeFinalize.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (localTradeList.getChildCount() > 2) {
+                    for (int i = 1; i < localTradeList.getChildCount(); i++) {
+                        LinearLayout row = (LinearLayout) localTradeList.getChildAt(i);
+                    }
+                }
+            }
+        });
+
+        localTradeList.addView(priceLayout);
+
+        List<Item> items = home.nexus.items.getItems();
+        for (final Item item: items) {
+            LinearLayout itemLayout = new LinearLayout(context);
+            itemLayout.setVisibility(View.VISIBLE);
+            itemLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+            TextView itemName = new TextView(context);
+            itemName.setText(item.name + " (" + item.quantity + "), " + item.baseMarketPrice);
+            itemName.setBackgroundColor(Color.WHITE);
+            itemLayout.addView(itemName);
+            itemName.setPadding(5, 0, 5, 0);
+
+            Button itemBuy = new Button(context);
+            itemBuy.setText("+1");
+            itemLayout.addView(itemBuy);
+
+            final TextView itemBuySellQuantity = new TextView(context);
+            itemBuySellQuantity.setText("0");
+            itemBuySellQuantity.setBackgroundColor(Color.WHITE);
+            itemLayout.addView(itemBuySellQuantity);
+
+            Button itemSell = new Button(context);
+            itemSell.setText("-1");
+            itemLayout.addView(itemSell);
+
+            itemBuy.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int quantity = Integer.parseInt(itemBuySellQuantity.getText().toString());
+                    quantity++;
+                    itemBuySellQuantity.setText("" + quantity);
+
+                    float currentSilver = Float.parseFloat(priceSilver.getText().toString());
+                    currentSilver -= item.baseMarketPrice;
+                    priceSilver.setText(String.format("%.2f", currentSilver));
+
+                    if (currentSilver > 0) {
+                        leftArrow.setVisibility(View.VISIBLE);
+                        rightArrow.setVisibility(View.INVISIBLE);
+                    }
+                    else {
+                        rightArrow.setVisibility(View.VISIBLE);
+                        leftArrow.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
+
+            itemSell.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int quantity = Integer.parseInt(itemBuySellQuantity.getText().toString());
+                    if (-quantity - 1 <= item.quantity) {
+                        quantity--;
+                        itemBuySellQuantity.setText("" + quantity);
+                    }
+
+                    float currentSilver = Float.parseFloat(priceSilver.getText().toString());
+                    currentSilver += item.baseMarketPrice;
+                    priceSilver.setText(String.format("%.2f", currentSilver));
+
+                    if (currentSilver > 0) {
+                        leftArrow.setVisibility(View.VISIBLE);
+                        rightArrow.setVisibility(View.INVISIBLE);
+                    }
+                    else {
+                        rightArrow.setVisibility(View.VISIBLE);
+                        leftArrow.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
+            localTradeList.addView(itemLayout);
+        }
+
+        List<Item> otherItems = visitor.nexus.items.getItems();
+        for (final Item item: otherItems) {
+            LinearLayout itemLayout = new LinearLayout(context);
+            itemLayout.setVisibility(View.VISIBLE);
+            itemLayout.setOrientation(LinearLayout.HORIZONTAL);
+            itemLayout.setGravity(Gravity.RIGHT);
+
+            Button itemBuy = new Button(context);
+            itemBuy.setText("+1");
+            itemLayout.addView(itemBuy);
+
+            final TextView itemBuySellQuantity = new TextView(context);
+            itemBuySellQuantity.setText("0");
+            itemBuySellQuantity.setBackgroundColor(Color.WHITE);
+            itemLayout.addView(itemBuySellQuantity);
+
+            Button itemSell = new Button(context);
+            itemSell.setText("-1");
+            itemLayout.addView(itemSell);
+
+            TextView itemName = new TextView(context);
+            itemName.setText(item.name + " (" + item.quantity + "), " + item.baseMarketPrice);
+            itemName.setBackgroundColor(Color.WHITE);
+            itemLayout.addView(itemName);
+            itemName.setPadding(5, 0, 5, 0);
+
+            itemBuy.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int quantity = Integer.parseInt(itemBuySellQuantity.getText().toString());
+                    quantity++;
+                    itemBuySellQuantity.setText("" + quantity);
+
+                    float currentSilver = Float.parseFloat(priceSilver.getText().toString());
+                    currentSilver -= item.baseMarketPrice;
+                    priceSilver.setText(String.format("%.2f", currentSilver));
+
+                    if (currentSilver > 0) {
+                        leftArrow.setVisibility(View.VISIBLE);
+                        rightArrow.setVisibility(View.INVISIBLE);
+                    }
+                    else {
+                        rightArrow.setVisibility(View.VISIBLE);
+                        leftArrow.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
+
+            itemSell.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int quantity = Integer.parseInt(itemBuySellQuantity.getText().toString());
+                    if (-quantity - 1 <= item.quantity) {
+                        quantity--;
+                        itemBuySellQuantity.setText("" + quantity);
+                    }
+
+                    float currentSilver = Float.parseFloat(priceSilver.getText().toString());
+                    currentSilver += item.baseMarketPrice;
+                    priceSilver.setText(String.format("%.2f", currentSilver));
+
+                    if (currentSilver > 0) {
+                        leftArrow.setVisibility(View.VISIBLE);
+                        rightArrow.setVisibility(View.INVISIBLE);
+                    }
+                    else {
+                        rightArrow.setVisibility(View.VISIBLE);
+                        leftArrow.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
+            localTradeList.addView(itemLayout);
         }
     }
 
@@ -1023,6 +1063,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         initializeOtherSettlements(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
 
         mMap.setOnMarkerClickListener(this);
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(mLastKnownLocation.getLatitude(),
+                        mLastKnownLocation.getLongitude()), 9));
     }
 
     /**
@@ -1203,6 +1247,51 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             mLastKnownLocation = null;
         }
     }
+
+    /*private boolean locationIsWater(Location location) {
+        if (mMap == null) {
+            return false;
+        }
+        mMap.
+    }*/
+
+    public void buttonSaveWorld(View v) {
+        ((Button) findViewById(R.id.btnSaveWorld)).setText("Saving...");
+        saveWorld(world);
+        ((Button) findViewById(R.id.btnSaveWorld)).setText("Save World");
+    }
+
+    public void buttonLoadWorld(View v) {
+        File file = this.getFilesDir();
+        File[] files = file.listFiles();
+        for (File child: files) {
+            System.err.println(child.toString());
+        }
+    }
+
+    private void saveWorld(World world) {
+        String filename = world.name + ".txt";
+        FileOutputStream fileOutputStream;
+
+        try {
+            fileOutputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+
+            ObjectOutputStream objectStream = new ObjectOutputStream(fileOutputStream);
+            objectStream.writeObject(world);
+            objectStream.close();
+
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*private void saveWorld(World world) {
+        String jsonJake = new Gson().toJson(world);
+        System.out.println("Json: \n"+jsonJake);
+        World loadedWorld = new Gson().fromJson(jsonJake, World.class);
+        System.out.println("Object:"+loadedWorld.toString());
+    }*/
 
     protected ArrayList<String> findAddress(float lat, float lon) {
         String errorMessage = "";

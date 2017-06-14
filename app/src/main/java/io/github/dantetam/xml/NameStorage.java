@@ -15,13 +15,17 @@ import java.util.List;
 public class NameStorage {
 
     private List<String> maleNames, femaleNames;
+    private List<String> worldNames;
 
     public NameStorage() {
         maleNames = new ArrayList<>();
         femaleNames = new ArrayList<>();
+        worldNames = new ArrayList<>();
+        //TODO: V Testing purposes only
+        worldNames.add("TestName");
     }
 
-    public void loadNames(AssetManager assetManager, String maleFileName, String femaleFileName) {
+    public void loadNames(AssetManager assetManager, String maleFileName, String femaleFileName, String worldFileName) {
         try {
             InputStream maleInputStream = assetManager.open(maleFileName);
             BufferedReader reader = new BufferedReader(new InputStreamReader(maleInputStream));
@@ -37,12 +41,21 @@ public class NameStorage {
                 femaleNames.add(line);
             }
             reader.close();
+
+            InputStream worldInputStream = assetManager.open(worldFileName);
+            reader = new BufferedReader(new InputStreamReader(worldInputStream));
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().length() > 0) {
+                    worldNames.add(line);
+                }
+            }
+            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public String randomName() {
+    public String randomPersonName() {
         if (Math.random() < 0.5) {
             return randomMaleName();
         }
@@ -59,6 +72,11 @@ public class NameStorage {
     public String randomFemaleName() {
         int index = (int) (Math.random() * femaleNames.size());
         return femaleNames.get(index);
+    }
+
+    public String randomWorldName() {
+        int index = (int) (Math.random() * worldNames.size());
+        return worldNames.get(index);
     }
 
 }
