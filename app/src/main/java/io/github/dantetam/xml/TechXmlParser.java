@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2012 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
- *//*
-
-
 package io.github.dantetam.xml;
 
 import android.content.Context;
@@ -28,18 +13,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.dantetam.utilmath.Vector2f;
-import io.github.dantetam.world.action.Ability;
-import io.github.dantetam.world.entity.Clan;
-import io.github.dantetam.world.entity.ItemType;
-import io.github.dantetam.world.entity.Tech;
-import io.github.dantetam.world.entity.TechTree;
+import io.github.dantetam.world.Tech;
+import io.github.dantetam.world.TechTree;
 
-*/
-/**
+/*
  * Given an InputStream representation of a feed, it returns a List of entries,
  * where each list element represents a single entry (post) in the XML feed.
- *//*
+*/
 
 public class TechXmlParser {
     private static final String ns = null;
@@ -61,17 +41,15 @@ public class TechXmlParser {
         return result;
     }
 
-    */
-/*
-    This method parses an XML document, line by line. It individually searches tags,
+    /*This method parses an XML document, line by line. It individually searches tags,
     where <techroot>...</techroot> marks the first technology, and all its children
     are future techs linked to the parent tech.
 
     This builds the tech tree with the help of a stack, where a <tech> tag
     pushes a new tech to the stack and sets the parent if it exists, and a </tech>
     tag pops a tech off the stack. The stackCounter int represents distance from
-    the tech root, where -1 indicates no tech has been parsed.
-     *//*
+    the tech root, where -1 indicates no tech has been parsed.*/
+
 
     public static TechTree parseTechTree(TechTree tree, InputStream inputStream)
             throws XmlPullParserException, IOException {
@@ -185,9 +163,8 @@ public class TechXmlParser {
         for (Map.Entry<String, String> entry: addRequirementsNames.entrySet()) {
             Tech subject = tree.techMap.get(entry.getKey());
             Tech requirement = tree.techMap.get(entry.getValue());
-            */
-/*if (requirement == null)
-                System.out.println(entry.getKey() + "<<<<" + entry.getValue());*//*
+            if (requirement == null)
+                System.out.println(entry.getKey() + "<<<<" + entry.getValue());
 
             subject.extraReqs.add(requirement);
         }
@@ -243,12 +220,11 @@ public class TechXmlParser {
             eventType = xpp.next();
         }
 
-        */
-/*tree.globalOffsetX = minX; tree.globalOffsetY = minY;
+tree.globalOffsetX = minX; tree.globalOffsetY = minY;
         tree.globalOffsetMaxY = maxY;
 
         tree.hardGlobalMinimum = new Vector2f(minX, minY);
-        tree.hardGlobalMaximum = new Vector2f(maxX - 4, maxY);*//*
+        tree.hardGlobalMaximum = new Vector2f(maxX - 4, maxY);
 
 
         tree.minX = minX; tree.minY = minY;
@@ -259,4 +235,3 @@ public class TechXmlParser {
     }
 
 }
-*/
