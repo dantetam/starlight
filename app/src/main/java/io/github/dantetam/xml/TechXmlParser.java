@@ -24,15 +24,15 @@ import io.github.dantetam.world.TechTree;
 public class TechXmlParser {
     private static final String ns = null;
 
-    public static TechTree parseTechTree(TechTree tree, Context context, int resourceId, int secondResourceId) {
+    public static TechTree parseTechTree(TechTree techTree, ConstructionTree constructionTree, Context context, int resourceId, int secondResourceId) {
         final InputStream techStream = context.getResources().openRawResource(
                 resourceId);
         final InputStream techLocationStream = context.getResources().openRawResource(
                 secondResourceId);
         TechTree result = null;
         try {
-            result = parseTechTree(tree, techStream);
-            parseTechLocationTree(result, techLocationStream);
+            result = parseTechTree(techTree, constructionTree, techStream);
+            //parseTechLocationTree(result, techLocationStream);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -51,7 +51,7 @@ public class TechXmlParser {
     the tech root, where -1 indicates no tech has been parsed.*/
 
 
-    public static TechTree parseTechTree(TechTree tree, InputStream inputStream)
+    public static TechTree parseTechTree(TechTree techTree, ConstructionTree constructionTree, InputStream inputStream)
             throws XmlPullParserException, IOException {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(false);
@@ -61,7 +61,7 @@ public class TechXmlParser {
         xpp.setInput(inputStream, null);
         int stackCounter = -1;
         List<Tech> stack = new ArrayList<>();
-        tree.techMap = new HashMap<>();
+        techTree.techMap = new HashMap<>();
         HashMap<String, String> addRequirementsNames = new HashMap<>();
         int eventType = xpp.getEventType();
 
@@ -76,7 +76,7 @@ public class TechXmlParser {
                     //System.out.println(techName + " " + workNeeded);
                     Tech newTech = new Tech(techName, 0, workNeeded);
                     if (xpp.getName().equals("techroot")) {
-                        tree.root = newTech;
+                        techTree.setRoot(newTech);
                     }
                     stack.add(newTech);
                     if (stackCounter >= 0) {
@@ -86,62 +86,20 @@ public class TechXmlParser {
                     stackCounter++;
 
                     String unlockBuilding = xpp.getAttributeValue(null, "building");
-                    String unlockRevealResource = xpp.getAttributeValue(null, "resource_reveal");
-                    String unlockHarvestResource = xpp.getAttributeValue(null, "resource_harvest");
-                    String unlockUnit = xpp.getAttributeValue(null, "unit");
-                    //String unlockUnits = xpp.getAttributeValue(null, "units");
-                    String unlockSpecialAbility = xpp.getAttributeValue(null, "specialAbility");
 
                     if (unlockBuilding != null) {
                         String[] buildingsToUnlock;
-                        if (unlockBuilding.contains("/")) {
-                            buildingsToUnlock = unlockBuilding.split("/");
-                            for (String stringy: buildingsToUnlock) {
-                                if (tree.clan.unitTree.personTypes.get(stringy) == null) {
-                                    System.err.println("Could not find building " + stringy + " within " + unlockUnit);
-                                }
-                                newTech.unlockedBuildings.add(tree.clan.buildingTree.buildingTypes.get(stringy));
+                        buildingsToUnlock = unlockBuilding.split("/");
+                        for (String buildingString: buildingsToUnlock) {
+                            if (constructionTree.copyBuilding(buildingString) == null) {
+                                System.err.println("Could not find building " + stringy + " within " + buildingString);
                             }
+                            newTech.unlockedBuildings.add(buildingString);
                         }
-                        else {
-                            if (tree.clan.unitTree.personTypes.get(unlockBuilding) == null) {
-                                System.err.println("Could not find building " + unlockBuilding);
-                            }
-                            newTech.unlockedBuildings.add(tree.clan.buildingTree.buildingTypes.get(unlockBuilding));
-                        }
-                    }
-                    if (unlockRevealResource != null) {
-                        if (TechTree.itemTypes.get(unlockHarvestResource) == null) {
-                            System.err.println("Could not find unit " + unlockHarvestResource);
-                        }
-                        newTech.revealResources.add(TechTree.itemTypes.get(unlockHarvestResource));
-                    }
-                    if (unlockHarvestResource != null) {
-                        newTech.harvestableResources.add(TechTree.itemTypes.get(unlockHarvestResource));
-                    }
-                    if (unlockUnit != null) {
-                        String[] unitsToUnlock;
-                        if (unlockUnit.contains("/")) {
-                            unitsToUnlock = unlockUnit.split("/");
-                            for (String stringy: unitsToUnlock) {
-                                if (tree.clan.unitTree.personTypes.get(stringy) == null) {
-                                    System.err.println("Could not find unit " + stringy + " within " + unlockUnit);
-                                }
-                                newTech.unlockedUnits.add(tree.clan.unitTree.personTypes.get(stringy));
-                            }
-                        }
-                        else {
-                            if (tree.clan.unitTree.personTypes.get(unlockUnit) == null) {
-                                System.err.println("Could not find unit " + unlockUnit);
-                            }
-                            newTech.unlockedUnits.add(tree.clan.unitTree.personTypes.get(unlockUnit));
-                        }
-                    }
-                    if (unlockSpecialAbility != null) {
-                        newTech.unlockedSpecialAbilities.add(new Ability(unlockSpecialAbility, "", "")); //TODO: <---
                     }
 
-                    tree.techMap.put(techName, newTech);
+                    techTree.techMap.put(techName, newTech);
+
                     //A forward declaration for requirements?
                     String extraRequirement = xpp.getAttributeValue(null, "requirement");
                     if (extraRequirement != null) {
@@ -161,19 +119,19 @@ public class TechXmlParser {
         }
 
         for (Map.Entry<String, String> entry: addRequirementsNames.entrySet()) {
-            Tech subject = tree.techMap.get(entry.getKey());
-            Tech requirement = tree.techMap.get(entry.getValue());
+            Tech subject = techTree.techMap.get(entry.getKey());
+            Tech requirement = techTree.techMap.get(entry.getValue());
             if (requirement == null)
                 System.out.println(entry.getKey() + "<<<<" + entry.getValue());
 
             subject.extraReqs.add(requirement);
         }
         //System.out.println("End document");
-        return tree;
+        return techTree;
     }
 
     //Mutate a tech tree by setting all the render positions
-    public static void parseTechLocationTree(TechTree tree, InputStream inputStream)
+    /*public static void parseTechLocationTree(TechTree tree, InputStream inputStream)
             throws XmlPullParserException, IOException {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(false);
@@ -220,7 +178,7 @@ public class TechXmlParser {
             eventType = xpp.next();
         }
 
-tree.globalOffsetX = minX; tree.globalOffsetY = minY;
+        tree.globalOffsetX = minX; tree.globalOffsetY = minY;
         tree.globalOffsetMaxY = maxY;
 
         tree.hardGlobalMinimum = new Vector2f(minX, minY);
@@ -232,6 +190,6 @@ tree.globalOffsetX = minX; tree.globalOffsetY = minY;
 
         tree.screenCenterX = 0;
         tree.screenCenterY = 0;
-    }
+    }*/
 
 }
