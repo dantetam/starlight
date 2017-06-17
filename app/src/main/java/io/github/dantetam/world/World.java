@@ -32,6 +32,8 @@ public class World implements Serializable {
     public ConstructionTree tree;
     public static float MIN_SETTLEMENT_GEO_DIST = 500; //In meters
 
+    public List<QuestLocation> questLocations;
+
     public static Vector2f geoHome;
 
     public List<Faction> factions;
@@ -39,6 +41,7 @@ public class World implements Serializable {
     public World(String name, ConstructionTree tree) {
         this.name = name;
         settlements = new ArrayList<>();
+        questLocations = new ArrayList<>();
         this.tree = tree;
         factions = new ArrayList<>();
     }

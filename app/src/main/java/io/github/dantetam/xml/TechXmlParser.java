@@ -92,7 +92,7 @@ public class TechXmlParser {
                         buildingsToUnlock = unlockBuilding.split("/");
                         for (String buildingString: buildingsToUnlock) {
                             if (constructionTree.copyBuilding(buildingString) == null) {
-                                System.err.println("Could not find building " + stringy + " within " + buildingString);
+                                System.err.println("Could not find building " + buildingString + " within " + buildingString);
                             }
                             newTech.unlockedBuildings.add(buildingString);
                         }
@@ -121,9 +121,6 @@ public class TechXmlParser {
         for (Map.Entry<String, String> entry: addRequirementsNames.entrySet()) {
             Tech subject = techTree.techMap.get(entry.getKey());
             Tech requirement = techTree.techMap.get(entry.getValue());
-            if (requirement == null)
-                System.out.println(entry.getKey() + "<<<<" + entry.getValue());
-
             subject.extraReqs.add(requirement);
         }
         //System.out.println("End document");
