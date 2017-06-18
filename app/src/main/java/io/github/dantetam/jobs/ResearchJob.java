@@ -5,10 +5,13 @@ import java.util.List;
 
 import io.github.dantetam.tasks.CookingTask;
 import io.github.dantetam.tasks.MoveTask;
+import io.github.dantetam.tasks.ResearchTask;
 import io.github.dantetam.tasks.Task;
 import io.github.dantetam.world.Building;
 import io.github.dantetam.world.Item;
 import io.github.dantetam.world.Settlement;
+import io.github.dantetam.world.Tech;
+import io.github.dantetam.world.TechTree;
 import io.github.dantetam.world.Tile;
 
 /**
@@ -18,13 +21,13 @@ public class ResearchJob extends Job {
 
     public Building lab;
     public TechTree techTree;
-    public Tech researchingTech;
+    public int researchSpeed;
 
-    public ResearchJob(Settlement settlement, Building building, TechTree techTree, Tech researchingTech) {
+    public ResearchJob(Settlement settlement, Building building, TechTree techTree, int researchSpeed) {
         super(settlement, building.getTile());
         this.lab = building;
         this.techTree = techTree;
-        this.researchingTech = researchingTech;
+        this.researchSpeed = researchSpeed;
         //List<Item> possibleFood = kitchen.items.getItems();
     }
 
@@ -48,13 +51,13 @@ public class ResearchJob extends Job {
         }
 
         List<Task> tasks = new ArrayList<>();
-        tasks.add(new ResearchTask((int) researchingTech.getResearchTime(), settlement, techTree, researchingTech));
+        tasks.add(new ResearchTask(-1, settlement, techTree, 1));
         return tasks;
     }
 
     @Override
     public boolean doneCondition() {
-        return techTree.researched(researchingTech);
+        return false;
     }
 
     @Override

@@ -27,8 +27,7 @@ public class TechXmlParser {
     public static TechTree parseTechTree(TechTree techTree, ConstructionTree constructionTree, Context context, int resourceId, int secondResourceId) {
         final InputStream techStream = context.getResources().openRawResource(
                 resourceId);
-        final InputStream techLocationStream = context.getResources().openRawResource(
-                secondResourceId);
+        //final InputStream techLocationStream = context.getResources().openRawResource(secondResourceId);
         TechTree result = null;
         try {
             result = parseTechTree(techTree, constructionTree, techStream);

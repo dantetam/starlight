@@ -44,6 +44,8 @@ public class Settlement implements Serializable { //implements Parcelable {
     public ConstructionTree constructionTree;
     public Faction faction;
 
+    public TechTree homeTechTree;
+
     public Settlement(String name, Date foundDate, Vector2f realGeoCoord, Vector2f gameCoord, Faction faction, int r, int c, ConstructionTree tree) {
         this.name = name;
         this.foundDate = foundDate;
@@ -60,6 +62,7 @@ public class Settlement implements Serializable { //implements Parcelable {
         combatHandler = new CombatHandler(this, tree);
         visitors = new ArrayList<>();
         this.constructionTree = tree;
+        homeTechTree = new TechTree(faction, this);
     }
 
     public void initializeNeighbors() {

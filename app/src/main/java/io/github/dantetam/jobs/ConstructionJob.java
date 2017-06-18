@@ -50,7 +50,7 @@ public class ConstructionJob extends Job {
         }
 
         List<Task> tasks = new ArrayList<>();
-        tasks.add(new ConstructionTask(building.buildTime, settlement, building, tile));
+        tasks.add(new ConstructionTask(building.buildTime, settlement, building, tile, settlement.homeTechTree));
         return tasks;
     }
 

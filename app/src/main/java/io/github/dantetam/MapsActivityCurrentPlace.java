@@ -52,6 +52,7 @@ import io.github.dantetam.world.Item;
 import io.github.dantetam.world.QuestLocation;
 import io.github.dantetam.world.Recipe;
 import io.github.dantetam.world.Settlement;
+import io.github.dantetam.world.TechTree;
 import io.github.dantetam.world.Tile;
 import io.github.dantetam.world.World;
 import io.github.dantetam.xml.BodyXmlParser;
@@ -59,6 +60,7 @@ import io.github.dantetam.xml.BuildingXMLParser;
 import io.github.dantetam.xml.ConstructionTree;
 import io.github.dantetam.xml.ItemXmlParser;
 import io.github.dantetam.xml.NameStorage;
+import io.github.dantetam.xml.TechXmlParser;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -371,8 +373,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         if (world.questLocations.size() < 20) {
             int numCreate = 20 - world.questLocations.size();
             for (int j = 0; j < numCreate; j++) {
-                float dLat = (float) (Math.random() - 0.1f);
-                float dLon = (float) (Math.random() - 0.1f);
+                float dLat = (float) (Math.random() / 5.0f - 0.1f);
+                float dLon = (float) (Math.random() / 5.0f - 0.1f);
                 LatLng randLoc = new LatLng(location.latitude + dLat, location.longitude + dLon);
 
                 Faction faction;
@@ -418,6 +420,9 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         settlement.nexus.items.addItem(constructionTree.copyItem("Wood", 300));
         settlement.nexus.items.addItem(constructionTree.copyItem("Iron", 300));
         settlement.nexus.items.addItem(constructionTree.copyItem("Meal", 50));
+
+        //TODO: V
+        //TechXmlParser.parseTechTree(settlement.homeTechTree, constructionTree, this, R.raw.tech_tree, R.raw.tech_tree_layout);
 
         for (int i = 0; i < 20; i++) {
             Person person = new Person(nameStorage.randomPersonName(), constructionTree.skills, faction);
@@ -1131,6 +1136,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         getDeviceLocation();
 
         initializeOtherSettlements(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
+        initializeQuestLocations(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
 
         mMap.setOnMarkerClickListener(this);
 

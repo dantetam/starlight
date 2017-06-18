@@ -37,6 +37,7 @@ public class QuestLocation {
         people = new ArrayList<>();
         SimpleDateFormat df = new SimpleDateFormat("MM dd yyyy");
         formattedDate = df.format(foundDate);
+        this.quests = new ArrayList<>();
     }
 
 }
