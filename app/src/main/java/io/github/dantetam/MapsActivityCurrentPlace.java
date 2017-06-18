@@ -2,17 +2,23 @@ package io.github.dantetam;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -36,11 +42,14 @@ import io.github.dantetam.maps.MapResourceOverlay;
 import io.github.dantetam.person.Body;
 import io.github.dantetam.person.Faction;
 import io.github.dantetam.person.Person;
+import io.github.dantetam.quests.OverworldQuest;
+import io.github.dantetam.quests.PictureOverworldQuest;
 import io.github.dantetam.util.VariableListener;
 import io.github.dantetam.util.Vector2f;
 import io.github.dantetam.world.Building;
 import io.github.dantetam.world.Inventory;
 import io.github.dantetam.world.Item;
+import io.github.dantetam.world.QuestLocation;
 import io.github.dantetam.world.Recipe;
 import io.github.dantetam.world.Settlement;
 import io.github.dantetam.world.Tile;
@@ -81,9 +90,11 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -136,11 +147,13 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
     private World world;
     private Settlement currentSettlement;
+    private QuestLocation currentQuestLocation;
     private VariableListener<Integer> gold;
     private VariableListener<Float> distTravelled;
 
     private Map<Marker, Settlement> settlementIndicesByMarker;
     private Map<Settlement, Boolean> discoveredSettlementMap;
+    private Map<Marker, QuestLocation> questLocationsByMarker;
 
     private ConstructionTree constructionTree;
     private AssetManager assetManager;
@@ -204,6 +217,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         };
 
         settlementIndicesByMarker = new HashMap<>();
+        questLocationsByMarker = new HashMap<>();
 
         mHandler = new Handler();
         startRepeatingTask();
@@ -353,6 +367,24 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }
     }
 
+    public void initializeQuestLocations(LatLng location) {
+        if (world.questLocations.size() < 20) {
+            int numCreate = 20 - world.questLocations.size();
+            for (int j = 0; j < numCreate; j++) {
+                float dLat = (float) (Math.random() - 0.1f);
+                float dLon = (float) (Math.random() - 0.1f);
+                LatLng randLoc = new LatLng(location.latitude + dLat, location.longitude + dLon);
+
+                Faction faction;
+                do {
+                    faction = world.randomFaction();
+                } while (faction.name.equals("Colonists"));
+
+                createQuestLocation(randLoc, faction);
+            }
+        }
+    }
+
     private void createSettlement(LatLng location, Faction faction) {
         Inventory resources = getMapResources(location);
 
@@ -399,6 +431,44 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         for (String skill: constructionTree.skills) {
             settlement.availableJobsBySkill.put(skill, new ArrayList<Job>());
+        }
+    }
+
+    private void createQuestLocation(LatLng location, Faction faction) {
+
+        Calendar calendar = Calendar.getInstance();
+
+        QuestLocation questLocation = world.createQuestLocation(
+                faction.name,
+                calendar.getTime(),
+                new Vector2f(location.latitude, location.longitude),
+                faction);
+
+        if (questLocation == null) {
+            return;
+        }
+
+        Marker marker = mMap.addMarker(new MarkerOptions()
+                        .title("Quest Location: " + faction.name)
+                        .position(location)
+                        .snippet("")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+        );
+        questLocationsByMarker.put(marker, questLocation);
+
+        for (int i = 0; i < 20; i++) {
+            Person person = new Person(nameStorage.randomPersonName(), constructionTree.skills, faction);
+            Body parsedHumanBody = BodyXmlParser.parseBodyTree(this, R.raw.human_body);
+            person.initializeBody(parsedHumanBody);
+            questLocation.people.add(person);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            float dLat = (float) (Math.random() - 0.1f);
+            float dLon = (float) (Math.random() - 0.1f);
+            LatLng randLoc = new LatLng(location.latitude + dLat, location.longitude + dLon);
+            OverworldQuest quest = new PictureOverworldQuest("Quest " + i, "Take a picture near the following location.", 0, randLoc);
+            questLocation.quests.add(quest);
         }
     }
 
@@ -1344,32 +1414,125 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     @Override
     public boolean onMarkerClick(final Marker marker) {
         Settlement settlement = settlementIndicesByMarker.get(marker);
-        currentSettlement = settlement;
+        QuestLocation questLocation = questLocationsByMarker.get(marker);
+        final Context context = this;
 
-        /*Intent i = new Intent();
-        Bundle b = new Bundle();
-        b.putSerializable("settlementData", settlement);
-        ArrayList<String> addrList = findAddress(settlement.realGeoCoord.x, settlement.realGeoCoord.y);
-        if (addrList != null) {
-            b.putSerializable("settlementAddress", addrList);
+        if (settlement != null) {
+            currentSettlement = settlement;
+            currentQuestLocation = null;
+
+            /*Intent i = new Intent();
+            Bundle b = new Bundle();
+            b.putSerializable("settlementData", settlement);
+            ArrayList<String> addrList = findAddress(settlement.realGeoCoord.x, settlement.realGeoCoord.y);
+            if (addrList != null) {
+                b.putSerializable("settlementAddress", addrList);
+            }
+            i.putExtras(b);
+            i.setClass(this, SettlementDetailsActivity.class);
+            startActivity(i);*/
+
+            setContentView(R.layout.activity_settlement_live);
+
+            surfaceView = (StarlightSurfaceView) ((ViewGroup) findViewById(R.id.tileDetailsLayout).getParent()).getChildAt(0);
+
+            surfaceView.setCurrentWorld(world);
+
+            surfaceView.setSettlement(settlement);
+            surfaceView.setVisibility(View.VISIBLE);
+
+            surfaceView.drawSettlement();
         }
-        i.putExtras(b);
-        i.setClass(this, SettlementDetailsActivity.class);
-        startActivity(i);*/
+        else if (questLocation != null) {
+            currentSettlement = null;
+            currentQuestLocation = questLocation;
 
-        setContentView(R.layout.activity_settlement_live);
+            setContentView(R.layout.activity_quest_live);
 
-        surfaceView = (StarlightSurfaceView) ((ViewGroup) findViewById(R.id.tileDetailsLayout).getParent()).getChildAt(0);
+            ((TextView) findViewById(R.id.questLocationName)).setText(questLocation.name);
 
-        surfaceView.setCurrentWorld(world);
+            final LinearLayout questsLayout = ((LinearLayout) findViewById(R.id.availableQuestsLayout));
+            questsLayout.removeAllViews();
 
-        surfaceView.setSettlement(settlement);
-        surfaceView.setVisibility(View.VISIBLE);
-
-        surfaceView.drawSettlement();
-
+            for (final OverworldQuest quest: questLocation.quests) {
+                final Button questButton = new Button(context);
+                questButton.setText(quest.name + ": " + quest.desc);
+                questButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (quest instanceof PictureOverworldQuest) {
+                            dispatchTakePictureIntent();
+                        }
+                        questsLayout.removeAllViews();
+                        setContentView(R.layout.activity_maps);
+                    }
+                });
+                questsLayout.addView(questButton);
+            }
+        }
         return false;
     }
+
+    //Photo processing code
+
+    String mCurrentPhotoPath;
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    static final int REQUEST_TAKE_PHOTO_FOR_QUEST = 1;
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException e) {
+                // Error occurred while creating the File
+                e.printStackTrace();
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO_FOR_QUEST);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_TAKE_PHOTO_FOR_QUEST && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            processImageBitmap(imageBitmap);
+            //mImageView.setImageBitmap(imageBitmap);
+        }
+    }
+
+    private void processImageBitmap(Bitmap imageBitmap) {
+        System.err.println("Processing image successfully");
+    }
+
+    //Game looping and updating code
 
     private Location prevLocation;
     private void updateDistance() {
@@ -1410,6 +1573,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 }
 
                 world.updateWorld();
+                if (mLastKnownLocation != null)
+                    world.updateQuests(mLastKnownLocation);
                 updateDistance();
                 //((TextView) findViewById(R.id.mapDistDisplay)).setText(String.format("Distance Travelled: %.2f m", distTravelled.value()));
                 //((TextView) findViewById(R.id.mapGoldDisplay)).setText("Omnigold: " + gold.value());

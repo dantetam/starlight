@@ -1,7 +1,10 @@
 package io.github.dantetam.world;
 
+import android.location.Location;
+
 import io.github.dantetam.jobs.CombatJob;
 import io.github.dantetam.person.Faction;
+import io.github.dantetam.quests.OverworldQuest;
 import io.github.dantetam.xml.ConstructionTree;
 import io.github.dantetam.util.GeoUtil;
 import io.github.dantetam.util.MapUtil;
@@ -157,6 +160,22 @@ public class World implements Serializable {
         }
     }
 
+    public void updateQuests(Location location) {
+        for (QuestLocation questLocation: questLocations) {
+            if (GeoUtil.calculateDistance(
+                    questLocation.realGeoCoord.x,
+                    questLocation.realGeoCoord.y,
+                    location.getLatitude(),
+                    location.getLongitude()
+            ) > OverworldQuest.METERS_INTERACT) {
+               continue;
+            }
+            for (OverworldQuest quest: questLocation.quests) {
+                quest.tick(location);
+            }
+        }
+    }
+
     public boolean canCreateSettlement(Vector2f geoCoord) {
         boolean allowed = true;
         for (Settlement settlement : settlements) {
@@ -200,6 +219,12 @@ public class World implements Serializable {
             }
         }
         return results;
+    }
+
+    public QuestLocation createQuestLocation(String name, Date foundDate, Vector2f realGeoCoord, Faction faction) {
+        QuestLocation questLocation = new QuestLocation(name, foundDate, realGeoCoord, convertToGameCoord(realGeoCoord), faction);
+        questLocations.add(questLocation);
+        return questLocation;
     }
 
     public Vector2f convertToGameCoord(Vector2f geoCoord) {

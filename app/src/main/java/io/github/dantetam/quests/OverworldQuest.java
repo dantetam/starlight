@@ -11,6 +11,8 @@ import io.github.dantetam.world.Inventory;
  */
 public abstract class OverworldQuest {
 
+    public static final int METERS_INTERACT = 1000;
+
     public String name, desc;
     public Inventory reward;
 

@@ -125,7 +125,7 @@ public class Erosion {
 		return inProgress;
 	}
 
-	public class Location {public int r; public int c; Location(int x, int y) {r = x; c = y;}}
+    private class Location {public int r; public int c; Location(int x, int y) {r = x; c = y;}}
 
 	public ArrayList<Location> checkLower(int r, int c)
 	{
@@ -187,7 +187,7 @@ public class Erosion {
 	}
 
 	//Wrapper class
-	public class Droplet
+	private class Droplet
 	{
 		public double water; public double maxSoil; public double soil;
 		public double speed; public boolean tick = false;

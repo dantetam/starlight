@@ -33,7 +33,13 @@ public class GeoUtil {
         return meterInDec;
     }*/
 
-    public static double calculateDistance(LatLng startP, LatLng endP) {
+    public static double calculateDistance(double x1, double y1, double x2, double y2) {
+        float[] result = new float[1];
+        Location.distanceBetween(x1, y1, x2, y2, result);
+        return result[0];
+    }
+
+    public static float calculateDistance(LatLng startP, LatLng endP) {
         float[] result = new float[1];
         Location.distanceBetween(startP.latitude, startP.longitude, endP.latitude, endP.longitude, result);
         return result[0];
