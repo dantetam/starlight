@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -1095,6 +1096,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }
     }
 
+    public void showOverworld(View v) {
+
+    }
+
     /**
      * Manipulates the map when it's available.
      * This callback is triggered when the map is ready to be used.
@@ -1470,7 +1475,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                             dispatchTakePictureIntent();
                         }
                         questsLayout.removeAllViews();
-                        setContentView(R.layout.activity_maps);
+                        //setContentView(R.layout.activity_maps);
                     }
                 });
                 questsLayout.addView(questButton);
@@ -1500,6 +1505,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     }
 
     static final int REQUEST_TAKE_PHOTO_FOR_QUEST = 1;
+    private static String currentPhotoPath;
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -1518,6 +1524,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 Uri photoURI = FileProvider.getUriForFile(this,
                         "com.example.android.fileprovider",
                         photoFile);
+                currentPhotoPath = photoFile.getPath();
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO_FOR_QUEST);
             }
@@ -1527,10 +1534,15 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO_FOR_QUEST && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            //Bundle extras = data.getExtras();
+            //Bitmap imageBitmap = (Bitmap) extras.get(MediaStore.EXTRA_OUTPUT);
+            BitmapFactory.Options bmpFactoryOptions = new BitmapFactory.Options();
+            bmpFactoryOptions.inJustDecodeBounds = false;
+            Bitmap imageBitmap = BitmapFactory.decodeFile(currentPhotoPath, bmpFactoryOptions);
+
             processImageBitmap(imageBitmap);
-            //mImageView.setImageBitmap(imageBitmap);
+
+
         }
     }
 
