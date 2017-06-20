@@ -118,6 +118,15 @@ class StarlightSurfaceView extends SurfaceView {
         androidTile = BitmapHelper.findBitmapOrBuild(R.drawable.coal);
     }
 
+    //The two methods below are provided to handle orientation changes
+    public void updateAspectHeightWidth() {
+        aspectRatio = (float) getHeight() / (float) getWidth();
+    }
+
+    public void updateAspectWidthHeight() {
+        aspectRatio = (float) getWidth() / (float) getHeight();
+    }
+
     public void setCurrentWorld(World world) {
         this.world = world;
     }

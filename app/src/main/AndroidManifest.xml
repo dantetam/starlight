@@ -35,6 +35,7 @@
 
         <activity
             android:name="io.github.dantetam.MapsActivityCurrentPlace"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_maps" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,7 +43,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
+        <!--<activity
             android:name="io.github.dantetam.SettlementDetailsActivity"
             android:label="@string/title_activity_settlement_details" >
         </activity>
@@ -53,7 +54,7 @@
         <activity
             android:name="io.github.dantetam.SettlementBuildingsActivity"
             android:label="@string/title_activity_settlement_buildings" >
-        </activity>
+        </activity>-->
     </application>
 
 </manifest>

@@ -53,7 +53,10 @@ public class Item implements Serializable {
     }
 
     public String toString() {
-        return quantity + " " + name;
+        if (health >= maxHealth) {
+            return quantity + " " + name;
+        }
+        return quantity + " " + name + " (" + health + "/" + maxHealth + ")";
     }
 
     public boolean equals(Object other) {

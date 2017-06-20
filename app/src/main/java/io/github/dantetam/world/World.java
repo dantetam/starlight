@@ -180,7 +180,7 @@ public class World implements Serializable {
     }
 
     public void rewardQuest(QuestLocation questLocation, OverworldQuest quest) {
-        quest.finishQuest();
+        quest.onQuestCompletion();
         questLocation.heldItems.addInventory(quest.getReward());
     }
 

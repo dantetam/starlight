@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -330,6 +331,19 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             showCurrentPlace();
         }
         return true;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration config) {
+        super.onConfigurationChanged(config);
+        if (surfaceView != null) {
+            if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                surfaceView.updateAspectWidthHeight();
+            }
+            else {
+                surfaceView.updateAspectWidthHeight();
+            }
+        }
     }
 
     public boolean addressOfCurrentLocationButton(View v) {
@@ -1510,6 +1524,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             });
             questsLayout.addView(questButton);
         }
+
+        TextView inventory = new TextView(this);
+        inventory.setText("Stored: " + questLocation.heldItems.toString());
+        questsLayout.addView(inventory);
     }
 
     //Photo processing code
@@ -1594,8 +1612,9 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             // if less than 10 metres, do not record
             if (distanceToLast < 4.00) {
 
-            } else
+            } else if (prevLocation.getAccuracy() < 20 && mLastKnownLocation.getAccuracy() < 20) { //
                 distTravelled.set(distTravelled.value() + distanceToLast);
+            }
         }
         prevLocation = mLastKnownLocation;
     }
@@ -1638,6 +1657,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 if (surfaceView != null) {
                     surfaceView.drawSettlement();
                 }
+
+                if (mLastKnownLocation != null)
+                    System.err.println(mLastKnownLocation.getAccuracy());
+
             } finally {
                 mHandler.postDelayed(mStatusChecker, mInterval);
             }
