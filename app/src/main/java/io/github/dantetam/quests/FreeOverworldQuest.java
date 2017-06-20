@@ -21,4 +21,7 @@ public class FreeOverworldQuest extends OverworldQuest {
         return true;
     }
 
+    @Override
+    public void onQuestCompletion() {}
+
 }

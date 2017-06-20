@@ -47,6 +47,9 @@ public class PictureOverworldQuest extends OverworldQuest {
         return tookPicture;
     }
 
+    @Override
+    public void onQuestCompletion() {}
+
     public void finishQuest(Location location, Bitmap bitmap) {
         tookPicture = true;
     }

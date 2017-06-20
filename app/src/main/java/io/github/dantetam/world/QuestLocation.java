@@ -1,5 +1,6 @@
 package io.github.dantetam.world;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,7 +16,7 @@ import io.github.dantetam.util.Vector2f;
 /**
  * Created by Dante on 6/17/2017.
  */
-public class QuestLocation {
+public class QuestLocation implements Serializable {
 
     public Vector2f realGeoCoord, gameCoord;
     public List<Person> people;
@@ -25,6 +26,8 @@ public class QuestLocation {
     public String formattedDate;
 
     public Faction faction;
+
+    public Inventory heldItems;
 
     public List<OverworldQuest> quests;
 
@@ -37,6 +40,7 @@ public class QuestLocation {
         people = new ArrayList<>();
         SimpleDateFormat df = new SimpleDateFormat("MM dd yyyy");
         formattedDate = df.format(foundDate);
+        this.heldItems = new Inventory();
         this.quests = new ArrayList<>();
     }
 

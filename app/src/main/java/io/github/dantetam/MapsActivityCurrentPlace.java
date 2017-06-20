@@ -43,6 +43,7 @@ import io.github.dantetam.maps.MapResourceOverlay;
 import io.github.dantetam.person.Body;
 import io.github.dantetam.person.Faction;
 import io.github.dantetam.person.Person;
+import io.github.dantetam.quests.FreeOverworldQuest;
 import io.github.dantetam.quests.OverworldQuest;
 import io.github.dantetam.quests.PictureOverworldQuest;
 import io.github.dantetam.util.VariableListener;
@@ -153,6 +154,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     private QuestLocation currentQuestLocation;
     private VariableListener<Integer> gold;
     private VariableListener<Float> distTravelled;
+
+    private OverworldQuest currentQuest;
 
     private Map<Marker, Settlement> settlementIndicesByMarker;
     private Map<Settlement, Boolean> discoveredSettlementMap;
@@ -1343,6 +1346,12 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }
     }
 
+    //Game closing and saving
+
+    public void onPause() {
+        super.onPause();
+    }
+
     /*private boolean locationIsWater(Location location) {
         if (mMap == null) {
             return false;
@@ -1449,10 +1458,12 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             displaySettlement(settlement);
         }
         else if (questLocation != null) {
-            currentSettlement = null;
-            currentQuestLocation = questLocation;
+            if (world.canAccessQuestLocation(questLocation, mLastKnownLocation)) {
+                currentSettlement = null;
+                currentQuestLocation = questLocation;
 
-            displayQuestLocation(questLocation);
+                displayQuestLocation(questLocation);
+            }
         }
         return false;
     }
@@ -1489,6 +1500,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             questButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    currentQuest = quest;
                     if (quest instanceof PictureOverworldQuest) {
                         dispatchTakePictureIntent();
                     }
@@ -1563,7 +1575,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     }
 
     private void processImageBitmap(Bitmap imageBitmap) {
-        System.err.println("Processing image successfully");
+        //System.err.println("Processing image successfully");
+        if (currentQuest != null) {
+            ((PictureOverworldQuest) currentQuest).finishQuest(mLastKnownLocation, imageBitmap);
+        }
     }
 
     //Game looping and updating code
@@ -1607,8 +1622,16 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 }
 
                 world.updateWorld();
-                if (mLastKnownLocation != null)
-                    world.updateQuests(mLastKnownLocation);
+                if (mLastKnownLocation != null) {
+                    if (currentQuestLocation != null && currentQuest != null) {
+                        world.updateQuest(currentQuest, mLastKnownLocation);
+                        if (currentQuest.doneCondition()) {
+                            world.rewardQuest(currentQuestLocation, currentQuest);
+                            currentQuest = null;
+                        }
+                    }
+                }
+
                 updateDistance();
                 //((TextView) findViewById(R.id.mapDistDisplay)).setText(String.format("Distance Travelled: %.2f m", distTravelled.value()));
                 //((TextView) findViewById(R.id.mapGoldDisplay)).setText("Omnigold: " + gold.value());

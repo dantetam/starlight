@@ -36,4 +36,7 @@ public class VisitOverworldQuest extends OverworldQuest {
         return ticksReceieved >= ticksNeeded;
     }
 
+    @Override
+    public void onQuestCompletion() {}
+
 }

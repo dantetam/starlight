@@ -160,20 +160,28 @@ public class World implements Serializable {
         }
     }
 
-    public void updateQuests(Location location) {
-        for (QuestLocation questLocation: questLocations) {
-            if (GeoUtil.calculateDistance(
-                    questLocation.realGeoCoord.x,
-                    questLocation.realGeoCoord.y,
-                    location.getLatitude(),
-                    location.getLongitude()
-            ) > OverworldQuest.METERS_INTERACT) {
-               continue;
-            }
-            for (OverworldQuest quest: questLocation.quests) {
-                quest.tick(location);
-            }
+    public boolean canAccessQuestLocation(QuestLocation questLocation, Location location) {
+        if (location == null) {
+            return false;
         }
+        if (GeoUtil.calculateDistance(
+                questLocation.realGeoCoord.x,
+                questLocation.realGeoCoord.y,
+                location.getLatitude(),
+                location.getLongitude()
+        ) > OverworldQuest.METERS_INTERACT) {
+            return false;
+        }
+        return true;
+    }
+
+    public void updateQuest(OverworldQuest quest, Location location) {
+        quest.tick(location);
+    }
+
+    public void rewardQuest(QuestLocation questLocation, OverworldQuest quest) {
+        quest.finishQuest();
+        questLocation.heldItems.addInventory(quest.getReward());
     }
 
     public boolean canCreateSettlement(Vector2f geoCoord) {
