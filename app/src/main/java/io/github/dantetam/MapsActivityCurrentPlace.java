@@ -173,6 +173,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         nameStorage = new NameStorage();
         nameStorage.loadNames(assetManager, "male_names.txt", "female_names.txt", "world_names.txt");
 
+        BitmapHelper.init(this);
+
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -227,8 +229,6 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         gold.set(100);
         distTravelled.set(0.0f);
-
-        BitmapHelper.init(this);
 
         mapResourceOverlays = new ArrayList<>();
 
@@ -1097,7 +1097,21 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     }
 
     public void showOverworld(View v) {
+        if (currentSettlement != null) {
+            surfaceView = null;
 
+            //System.err.println(findViewById(R.id.map));
+            findViewById(R.id.majorLayoutSettlement).setVisibility(View.GONE);
+        }
+        else if (currentQuestLocation != null) {
+            findViewById(R.id.majorLayoutQuest).setVisibility(View.GONE);
+        }
+        findViewById(R.id.majorLayoutMaps).setVisibility(View.VISIBLE);
+
+        currentSettlement = null;
+        currentQuestLocation = null;
+
+        //setContentView(R.layout.activity_maps);
     }
 
     /**
@@ -1432,56 +1446,58 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             currentSettlement = settlement;
             currentQuestLocation = null;
 
-            /*Intent i = new Intent();
-            Bundle b = new Bundle();
-            b.putSerializable("settlementData", settlement);
-            ArrayList<String> addrList = findAddress(settlement.realGeoCoord.x, settlement.realGeoCoord.y);
-            if (addrList != null) {
-                b.putSerializable("settlementAddress", addrList);
-            }
-            i.putExtras(b);
-            i.setClass(this, SettlementDetailsActivity.class);
-            startActivity(i);*/
-
-            setContentView(R.layout.activity_settlement_live);
-
-            surfaceView = (StarlightSurfaceView) ((ViewGroup) findViewById(R.id.tileDetailsLayout).getParent()).getChildAt(0);
-
-            surfaceView.setCurrentWorld(world);
-
-            surfaceView.setSettlement(settlement);
-            surfaceView.setVisibility(View.VISIBLE);
-
-            surfaceView.drawSettlement();
+            displaySettlement(settlement);
         }
         else if (questLocation != null) {
             currentSettlement = null;
             currentQuestLocation = questLocation;
 
-            setContentView(R.layout.activity_quest_live);
-
-            ((TextView) findViewById(R.id.questLocationName)).setText(questLocation.name);
-
-            final LinearLayout questsLayout = ((LinearLayout) findViewById(R.id.availableQuestsLayout));
-            questsLayout.removeAllViews();
-
-            for (final OverworldQuest quest: questLocation.quests) {
-                final Button questButton = new Button(context);
-                questButton.setText(quest.name + ": " + quest.desc);
-                questButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (quest instanceof PictureOverworldQuest) {
-                            dispatchTakePictureIntent();
-                        }
-                        questsLayout.removeAllViews();
-                        //setContentView(R.layout.activity_maps);
-                    }
-                });
-                questsLayout.addView(questButton);
-            }
+            displayQuestLocation(questLocation);
         }
         return false;
+    }
+
+    private void displaySettlement(Settlement settlement) {
+        findViewById(R.id.majorLayoutMaps).setVisibility(View.GONE);
+        findViewById(R.id.majorLayoutSettlement).setVisibility(View.VISIBLE);
+        //setContentView(R.layout.activity_settlement_live);
+
+        surfaceView = (StarlightSurfaceView) ((ViewGroup) findViewById(R.id.tileDetailsLayout).getParent()).getChildAt(0);
+
+        surfaceView.setCurrentWorld(world);
+
+        surfaceView.setSettlement(settlement);
+        surfaceView.setVisibility(View.VISIBLE);
+
+        surfaceView.drawSettlement();
+    }
+
+    private void displayQuestLocation(QuestLocation questLocation) {
+        final Context context = this;
+
+        findViewById(R.id.majorLayoutMaps).setVisibility(View.GONE);
+        findViewById(R.id.majorLayoutQuest).setVisibility(View.VISIBLE);
+
+        ((TextView) findViewById(R.id.questLocationName)).setText(questLocation.name);
+
+        final LinearLayout questsLayout = ((LinearLayout) findViewById(R.id.availableQuestsLayout));
+        questsLayout.removeAllViews();
+
+        for (final OverworldQuest quest: questLocation.quests) {
+            final Button questButton = new Button(context);
+            questButton.setText(quest.name + ": " + quest.desc);
+            questButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (quest instanceof PictureOverworldQuest) {
+                        dispatchTakePictureIntent();
+                    }
+                    questsLayout.removeAllViews();
+                    //setContentView(R.layout.activity_maps);
+                }
+            });
+            questsLayout.addView(questButton);
+        }
     }
 
     //Photo processing code
@@ -1542,7 +1558,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
             processImageBitmap(imageBitmap);
 
-
+            displayQuestLocation(currentQuestLocation);
         }
     }
 
