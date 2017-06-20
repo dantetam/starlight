@@ -70,6 +70,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.PlaceDetectionApi;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
@@ -82,6 +85,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.gson.Gson;
 
 import org.w3c.dom.Text;
@@ -112,6 +116,8 @@ import java.util.Set;
 public class MapsActivityCurrentPlace extends AppCompatActivity
         implements OnMapReadyCallback,
                 GoogleMap.OnMarkerClickListener,
+                GoogleMap.OnMapClickListener,
+                GoogleMap.OnPoiClickListener,
                 GoogleApiClient.ConnectionCallbacks,
                 GoogleApiClient.OnConnectionFailedListener {
 
@@ -1175,6 +1181,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         initializeQuestLocations(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
 
         mMap.setOnMarkerClickListener(this);
+        mMap.setOnMapClickListener(this);
+        mMap.setOnPoiClickListener(this);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(mLastKnownLocation.getLatitude(),
@@ -1270,11 +1278,11 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                     mLikelyPlaceLatLngs = new LatLng[mMaxEntries];
                     for (PlaceLikelihood placeLikelihood : likelyPlaces) {
                         // Build a list of likely places to show the user. Max 5.
-                        mLikelyPlaceNames[i] = (String) placeLikelihood.getPlace().getName();
-                        mLikelyPlaceAddresses[i] = (String) placeLikelihood.getPlace().getAddress();
-                        mLikelyPlaceAttributions[i] = (String) placeLikelihood.getPlace()
-                                .getAttributions();
-                        mLikelyPlaceLatLngs[i] = placeLikelihood.getPlace().getLatLng();
+                        Place place = placeLikelihood.getPlace();
+                        mLikelyPlaceNames[i] = (String) place.getName();
+                        mLikelyPlaceAddresses[i] = (String) place.getAddress();
+                        mLikelyPlaceAttributions[i] = (String) place.getAttributions();
+                        mLikelyPlaceLatLngs[i] = place.getLatLng();
 
                         i++;
                         if (i > (mMaxEntries - 1)) {
@@ -1291,10 +1299,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             });
         } else {
             // Add a default marker, because the user hasn't selected a place.
-            mMap.addMarker(new MarkerOptions()
+            /*mMap.addMarker(new MarkerOptions()
                     .title(getString(R.string.default_info_title))
                     .position(mDefaultLocation)
-                    .snippet(getString(R.string.default_info_snippet)));
+                    .snippet(getString(R.string.default_info_snippet)));*/
         }
     }
 
@@ -1482,6 +1490,32 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         return false;
     }
 
+    @Override
+    public void onMapClick(LatLng latLng) {
+        System.err.println(latLng);
+
+    }
+
+    @Override
+    public void onPoiClick(PointOfInterest pointOfInterest) {
+        System.err.println(pointOfInterest.placeId);
+
+        Places.GeoDataApi.getPlaceById(mGoogleApiClient, pointOfInterest.placeId)
+                .setResultCallback(new ResultCallback<PlaceBuffer>() {
+                    @Override
+                    public void onResult(PlaceBuffer places) {
+                        if (places.getStatus().isSuccess() && places.getCount() > 0) {
+                            final Place myPlace = places.get(0);
+                            Log.i(TAG, "Place found: " + myPlace.getName());
+                        } else {
+                            Log.e(TAG, "Place not found");
+                        }
+                        places.release();
+                    }
+                });
+
+    }
+
     private void displaySettlement(Settlement settlement) {
         findViewById(R.id.majorLayoutMaps).setVisibility(View.GONE);
         findViewById(R.id.majorLayoutSettlement).setVisibility(View.VISIBLE);
@@ -1657,9 +1691,6 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 if (surfaceView != null) {
                     surfaceView.drawSettlement();
                 }
-
-                if (mLastKnownLocation != null)
-                    System.err.println(mLastKnownLocation.getAccuracy());
 
             } finally {
                 mHandler.postDelayed(mStatusChecker, mInterval);
