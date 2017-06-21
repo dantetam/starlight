@@ -122,6 +122,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 GoogleMap.OnMarkerClickListener,
                 GoogleMap.OnMapClickListener,
                 GoogleMap.OnPoiClickListener,
+                GoogleMap.OnInfoWindowClickListener,
                 GoogleApiClient.ConnectionCallbacks,
                 GoogleApiClient.OnConnectionFailedListener {
 
@@ -172,11 +173,15 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     private Map<Settlement, Boolean> discoveredSettlementMap;
     private Map<Marker, QuestLocation> questLocationsByMarker;
 
+    private Map<Marker, Uri> poiWebsitesByMarker;
+
     private ConstructionTree constructionTree;
     private AssetManager assetManager;
     private NameStorage nameStorage;
     private List<MapResourceOverlay> mapResourceOverlays;
     private List<Inventory> worldPossibleResources;
+
+    private String lastSelectedPoiId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,6 +242,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         settlementIndicesByMarker = new HashMap<>();
         questLocationsByMarker = new HashMap<>();
+        poiWebsitesByMarker = new HashMap<>();
 
         mHandler = new Handler();
         startRepeatingTask();
@@ -1192,6 +1198,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
         mMap.setOnPoiClickListener(this);
+        mMap.setOnInfoWindowClickListener(this);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(mLastKnownLocation.getLatitude(),
@@ -1218,12 +1225,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                         new LatLng(place.getLatLng().latitude,
                                 place.getLatLng().longitude), mMap.getCameraPosition().zoom));
 
-                Marker marker = mMap.addMarker(new MarkerOptions()
-                                .title(place.getName().toString())
-                                .position(new LatLng(place.getLatLng().latitude, place.getLatLng().longitude))
-                                .snippet("")
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
-                );
+                addMarkerAtPoi(place);
             }
 
             @Override
@@ -1233,6 +1235,46 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             }
         });
 
+    }
+
+    private void addMarkerAtPoi(Place place) {
+        String snippet = "";
+        if (place.getAddress() != null) {
+            //Process the address and only display the street and city
+            String addrString = place.getAddress().toString();
+            String[] tokens = addrString.split(",");
+
+            if (tokens.length > 1) {
+                snippet = tokens[0] + "," + tokens[1] + "\n";
+            }
+            else {
+                snippet = addrString + "\n";
+            }
+        }
+        if (place.getWebsiteUri() != null) {
+            snippet += "Website available";
+        }
+        Marker marker = mMap.addMarker(new MarkerOptions()
+                        .title(place.getName().toString())
+                        .position(new LatLng(place.getLatLng().latitude, place.getLatLng().longitude))
+                        .snippet(snippet)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+        );
+        poiWebsitesByMarker.put(marker, place.getWebsiteUri());
+    }
+
+    public void openWebPage(Uri webpage) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+    public void openWebPage(String url) {
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
     /**
@@ -1557,8 +1599,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     }
 
     @Override
-    public void onPoiClick(PointOfInterest pointOfInterest) {
-        System.err.println(pointOfInterest.placeId);
+    public void onPoiClick(final PointOfInterest pointOfInterest) {
+        //System.err.println(pointOfInterest.placeId);
 
         Places.GeoDataApi.getPlaceById(mGoogleApiClient, pointOfInterest.placeId)
                 .setResultCallback(new ResultCallback<PlaceBuffer>() {
@@ -1566,7 +1608,13 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                     public void onResult(PlaceBuffer places) {
                         if (places.getStatus().isSuccess() && places.getCount() > 0) {
                             final Place myPlace = places.get(0);
-                            Log.i(TAG, "Place found: " + myPlace.getName());
+                            //Log.i(TAG, "Place found: " + myPlace.getName());
+
+                            if (pointOfInterest.placeId != null && pointOfInterest.placeId.equals(lastSelectedPoiId)) {
+                                addMarkerAtPoi(myPlace);
+                            }
+                            lastSelectedPoiId = pointOfInterest.placeId;
+
                         } else {
                             Log.e(TAG, "Place not found");
                         }
@@ -1575,6 +1623,15 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 });
 
     }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Uri possiblePlace = poiWebsitesByMarker.get(marker);
+        if (possiblePlace != null) {
+            openWebPage(possiblePlace);
+        }
+    }
+
 
     private void displaySettlement(Settlement settlement) {
         findViewById(R.id.majorLayoutMaps).setVisibility(View.GONE);
