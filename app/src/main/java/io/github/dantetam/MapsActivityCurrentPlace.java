@@ -86,6 +86,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
@@ -353,6 +354,11 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 surfaceView.updateAspectWidthHeight();
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.showOverworld(null);
     }
 
     public boolean addressOfCurrentLocationButton(View v) {
@@ -1191,17 +1197,33 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 new LatLng(mLastKnownLocation.getLatitude(),
                         mLastKnownLocation.getLongitude()), 9));
 
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+        final PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        autocompleteFragment.getView().setBackgroundColor(Color.WHITE);
+
+        autocompleteFragment.getView().setVisibility(View.GONE);
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                Log.i(TAG, "Place: " + place.getName());
+                //Bias results towards the user's current location
+                /*autocompleteFragment.setBoundsBias(new LatLngBounds(
+                        new LatLng(place.getLatLng().latitude, place.getLatLng().longitude),
+                        new LatLng(place.getLatLng().latitude, place.getLatLng().longitude)));*/
+
+                //Get info about the selected place.
+                //Log.i(TAG, "Place: " + place.getName());
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                         new LatLng(place.getLatLng().latitude,
-                                place.getLatLng().longitude), 9));
+                                place.getLatLng().longitude), mMap.getCameraPosition().zoom));
+
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                                .title(place.getName().toString())
+                                .position(new LatLng(place.getLatLng().latitude, place.getLatLng().longitude))
+                                .snippet("")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+                );
             }
 
             @Override
@@ -1389,6 +1411,20 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             mMap.setMyLocationEnabled(false);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mLastKnownLocation = null;
+        }
+    }
+
+    public void toggleSearchFragmentVisible(View v) {
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        View fragmentView = autocompleteFragment.getView();
+        if (fragmentView != null) {
+            if (fragmentView.getVisibility() == View.VISIBLE) {
+                fragmentView.setVisibility(View.GONE);
+            }
+            else {
+                fragmentView.setVisibility(View.VISIBLE);
+            }
         }
     }
 

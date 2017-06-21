@@ -58,7 +58,8 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:background="@android:color/white"
-            android:layout_below="@id/btnCreateSettlement"/>
+            android:layout_toRightOf="@id/btnCreateSettlement"
+            android:layout_alignParentTop="true"/>
         <TextView
             android:text="@string/hello_world"
             android:id="@+id/mapDistDisplay"
@@ -69,13 +70,24 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:background="@android:color/white"
+            android:layout_alignLeft="@id/mapGoldDisplay"
             android:layout_below="@id/mapGoldDisplay"/>
+        <ImageButton
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_search_black_24dp"
+            android:background="#ffffffff"
+            android:id="@+id/btnToggleAutocomplete"
+            android:onClick="toggleSearchFragmentVisible"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/btnCreateSettlement"/>
         <fragment
             android:id="@+id/place_autocomplete_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-            android:layout_below="@id/mapDistDisplay"
+            android:layout_below="@id/btnCreateSettlement"
             android:layout_alignParentLeft="true"/>
         <Button
             style="?android:attr/buttonStyleSmall"

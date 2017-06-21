@@ -32,7 +32,7 @@ public class Settlement implements Serializable { //implements Parcelable {
     public String formattedDate;
 
     public Map<String, List<Job>> availableJobsBySkill;
-    public List<Job> inProgressJobs;
+    //public List<Job> inProgressJobs;
 
     public Building nexus; //Where resources are stored
 
