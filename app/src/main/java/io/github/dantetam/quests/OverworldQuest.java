@@ -17,6 +17,7 @@ public abstract class OverworldQuest implements Serializable {
 
     public String name, desc;
 
+    public int omnigold = 0;
     public Inventory reward;
 
     public OverworldQuest(String name, String desc) {

@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "23.0.1"
     defaultConfig {
-        applicationId "com.example.currentplacedetailsonmap"
+        applicationId "io.github.dantetam"
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1

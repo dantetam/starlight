@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.currentplacedetailsonmap.R;
+import io.github.dantetam.R;
 
 import io.github.dantetam.world.Settlement;
 

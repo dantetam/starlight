@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.currentplacedetailsonmap.R;
+import io.github.dantetam.R;
 
 import io.github.dantetam.world.Settlement;
 

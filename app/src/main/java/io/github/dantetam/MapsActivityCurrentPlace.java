@@ -34,7 +34,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.currentplacedetailsonmap.R;
+import io.github.dantetam.R;
 
 import io.github.dantetam.android.BitmapHelper;
 import io.github.dantetam.jobs.ConstructionJob;
@@ -48,6 +48,7 @@ import io.github.dantetam.person.Person;
 import io.github.dantetam.quests.FreeOverworldQuest;
 import io.github.dantetam.quests.OverworldQuest;
 import io.github.dantetam.quests.PictureOverworldQuest;
+import io.github.dantetam.quests.QuestFactory;
 import io.github.dantetam.util.VariableListener;
 import io.github.dantetam.util.Vector2f;
 import io.github.dantetam.world.Building;
@@ -518,8 +519,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         for (int i = 0; i < 10; i++) {
             float dLat = (float) (Math.random() - 0.1f);
             float dLon = (float) (Math.random() - 0.1f);
-            LatLng randLoc = new LatLng(location.latitude + dLat, location.longitude + dLon);
-            OverworldQuest quest = new PictureOverworldQuest("Quest " + i, "Take a picture near the following location.", 0, randLoc);
+            //LatLng randLoc = new LatLng(location.latitude + dLat, location.longitude + dLon);
+            OverworldQuest quest = QuestFactory.randomQuest(location);
             questLocation.quests.add(quest);
         }
     }
@@ -1492,14 +1493,42 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     }*/
 
     public void buttonToggleMapHistory(View v) {
+        LinearLayout historyList = (LinearLayout) findViewById(R.id.mapHistoryDetailsList);
+
         if (currentMapHistDisplay != null) {
             currentMapHistDisplay.remove();
             currentMapHistDisplay = null;
+
+            historyList.setVisibility(View.GONE);
         }
-        currentMapHistDisplay = mMap.addPolyline(new PolylineOptions()
-                .addAll(mapHistory.getHistoryInOrder())
-                .width(5)
-                .color(Color.BLUE));
+        else {
+            currentMapHistDisplay = mMap.addPolyline(new PolylineOptions()
+                    .addAll(mapHistory.getHistoryInOrder())
+                    .width(5)
+                    .color(Color.BLUE));
+
+            historyList.setVisibility(View.VISIBLE);
+            historyList.removeAllViews();
+
+            MapHistory.PlaceSummary history = mapHistory.getPlacesSummary();
+            if (history.size == 0) {
+                TextView textView = new TextView(this);
+                textView.setText("No recorded history");
+                historyList.addView(textView);
+            }
+            else {
+                for (int i = 0; i < history.size; i++) {
+                    //LatLng latLng = history.locations.get(i);
+                    String placeName = history.placeNames.get(i);
+                    Date date = history.dates.get(i);
+
+                    TextView textView = new TextView(this);
+                    textView.setText(placeName + " " + date.toString());
+
+                    historyList.addView(textView);
+                }
+            }
+        }
     }
 
     public void buttonSaveWorld(View v) {
@@ -1793,9 +1822,40 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
     private void updateMapHistory() {
         if (mLastKnownLocation != null) {
-            Calendar calendar = Calendar.getInstance();
-            mapHistory.addData(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), calendar.getTime());
-            //TODO: show map history on special screen/display
+            final Calendar calendar = Calendar.getInstance();
+
+            if (mMap == null) {
+                return;
+            }
+
+            if (mLocationPermissionGranted) {
+                @SuppressWarnings("MissingPermission")
+                PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
+                        .getCurrentPlace(mGoogleApiClient, null);
+                result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
+                    @Override
+                    public void onResult(@NonNull PlaceLikelihoodBuffer likelyPlaces) {
+                        String placeName = null;
+                        for (PlaceLikelihood placeLikelihood : likelyPlaces) {
+                            // Build a list of likely places to show the user. Max 5.
+                            Place place = placeLikelihood.getPlace();
+                            if (placeName == null) {
+                                placeName = (String) place.getName();
+                                if (placeLikelihood.getLikelihood() < 0.5) {
+                                    placeName = "Near " + placeName;
+                                }
+                            }
+                        }
+                        if (placeName == null) {
+                            placeName = "";
+                        }
+                        mapHistory.addData(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), placeName, calendar.getTime());
+                        // Release the place likelihood buffer, to avoid memory leaks.
+                        likelyPlaces.release();
+                    }
+                });
+            }
+
         }
     }
 

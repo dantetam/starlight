@@ -19,10 +19,12 @@ public class MapHistory {
     public int historyLength;
 
     private List<LatLng> historyLocations;
+    private List<String> historyPlaceNames;
     private List<Date> historyDates;
 
     public MapHistory(int historyLength) {
         historyLocations = new ArrayList<>();
+        historyPlaceNames = new ArrayList<>();
         historyDates = new ArrayList<>();
         this.historyLength = historyLength;
     }
@@ -31,7 +33,7 @@ public class MapHistory {
         return historyLocations;
     }
 
-    public void addData(LatLng addLatLng, Date timeAtLocation) {
+    public void addData(LatLng addLatLng, String placeName, Date timeAtLocation) {
         LatLng mostRecent = null;
         if (historyLocations.size() > 0) {
             mostRecent = historyLocations.get(historyLocations.size() - 1);
@@ -41,6 +43,7 @@ public class MapHistory {
 
             //SimpleDateFormat df = new SimpleDateFormat("MM dd yyyy");
             //String formattedDate = df.format(timeAtLocation);
+            historyPlaceNames.add(placeName);
             historyDates.add(timeAtLocation);
 
             if (historyLocations.size() > historyLength) {
@@ -52,25 +55,35 @@ public class MapHistory {
 
     public PlaceSummary getPlacesSummary() { //TODO: Use this in the main map activity UI
         List<LatLng> resultLocations = new ArrayList<>();
+        List<String> resultNames = new ArrayList<>();
         List<Date> resultDates = new ArrayList<>();
         LatLng anchor = null;
         for (int i = 0; i < historyDates.size(); i++) {
             LatLng latLng = historyLocations.get(i);
+            String placeName = historyPlaceNames.get(i);
             Date date = historyDates.get(i);
             if (anchor == null || GeoUtil.calculateDistance(anchor, latLng) >= METERS_DISTINCT_PLACE) {
                 anchor = latLng;
                 resultLocations.add(latLng);
+                resultNames.add(placeName);
                 resultDates.add(date);
             }
         }
-        return new PlaceSummary(resultLocations, resultDates);
+        return new PlaceSummary(resultLocations, resultNames, resultDates);
     }
 
     public class PlaceSummary {
         public List<LatLng> locations;
+        public List<String> placeNames;
         public List<Date> dates;
-        public PlaceSummary(List<LatLng> locations, List<Date> dates) {
+        public int size;
+        public PlaceSummary(List<LatLng> locations, List<String> placeNames, List<Date> dates) {
+            if (locations.size() != dates.size()) {
+                throw new IllegalArgumentException("Map history data not aligned in pairs");
+            }
+            size = locations.size();
             this.locations = locations;
+            this.placeNames = placeNames;
             this.dates = dates;
         }
     }
