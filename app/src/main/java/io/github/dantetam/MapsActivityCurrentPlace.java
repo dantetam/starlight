@@ -40,6 +40,7 @@ import io.github.dantetam.android.BitmapHelper;
 import io.github.dantetam.jobs.ConstructionJob;
 import io.github.dantetam.jobs.Job;
 import io.github.dantetam.jobs.UpgradeJob;
+import io.github.dantetam.maps.MapHistory;
 import io.github.dantetam.maps.MapResourceOverlay;
 import io.github.dantetam.person.Body;
 import io.github.dantetam.person.Faction;
@@ -90,6 +91,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 
 import org.w3c.dom.Text;
@@ -175,6 +178,9 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
     private Map<Marker, Uri> poiWebsitesByMarker;
 
+    private MapHistory mapHistory;
+    private Polyline currentMapHistDisplay;
+
     private ConstructionTree constructionTree;
     private AssetManager assetManager;
     private NameStorage nameStorage;
@@ -217,6 +223,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
         geocoder = new Geocoder(this, Locale.getDefault());
 
+        mapHistory = new MapHistory(50);
+
         constructionTree = new ConstructionTree();
         ItemXmlParser.parseResourceTree(constructionTree, this, R.raw.resource_tree);
         BuildingXMLParser.parseBuildingTree(constructionTree, this, R.raw.building_tree);
@@ -245,7 +253,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         poiWebsitesByMarker = new HashMap<>();
 
         mHandler = new Handler();
-        startRepeatingTask();
+        startRepeatingTasks();
 
         gold.set(100);
         distTravelled.set(0.0f);
@@ -1483,6 +1491,17 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         mMap.
     }*/
 
+    public void buttonToggleMapHistory(View v) {
+        if (currentMapHistDisplay != null) {
+            currentMapHistDisplay.remove();
+            currentMapHistDisplay = null;
+        }
+        currentMapHistDisplay = mMap.addPolyline(new PolylineOptions()
+                .addAll(mapHistory.getHistoryInOrder())
+                .width(5)
+                .color(Color.BLUE));
+    }
+
     public void buttonSaveWorld(View v) {
         ((Button) findViewById(R.id.btnSaveWorld)).setText("Saving...");
         saveWorld(world);
@@ -1770,17 +1789,25 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         prevLocation = mLastKnownLocation;
     }
 
-    private int mInterval = 20; // in milliseconds, 5 seconds by default, can be changed later
+    private void updateMapHistory() {
+        if (mLastKnownLocation != null) {
+            mapHistory.addData(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
+            //TODO: show map history on special screen/display
+        }
+    }
+
+    private int mMainInterval = 20; // in milliseconds, 5 seconds by default, can be changed later
+    private int mMinuteInterval = 3 * 1000;
     private Handler mHandler;
     private int frameModulo = 0;
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopRepeatingTask();
+        stopRepeatingTasks();
     }
 
-    Runnable mStatusChecker = new Runnable() {
+    Runnable mMainStatusChecker = new Runnable() {
         @Override
         public void run() {
             try {
@@ -1810,17 +1837,30 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 }
 
             } finally {
-                mHandler.postDelayed(mStatusChecker, mInterval);
+                mHandler.postDelayed(mMainStatusChecker, mMainInterval);
             }
         }
     };
 
-    private void startRepeatingTask() {
-        mStatusChecker.run();
+    Runnable mMinuteChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                updateMapHistory();
+            } finally {
+                mHandler.postDelayed(mMinuteChecker, mMinuteInterval);
+            }
+        }
+    };
+
+    private void startRepeatingTasks() {
+        mMainStatusChecker.run();
+        mMinuteChecker.run();
     }
 
-    private void stopRepeatingTask() {
-        mHandler.removeCallbacks(mStatusChecker);
+    private void stopRepeatingTasks() {
+        mHandler.removeCallbacks(mMainStatusChecker);
+        mHandler.removeCallbacks(mMinuteChecker);
     }
 
 }
