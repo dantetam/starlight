@@ -633,11 +633,14 @@ class StarlightSurfaceView extends SurfaceView {
             ((TextView) context.findViewById(R.id.buildingTileResource)).setText("Resources: " + tile.resources.toString());
         }
 
+        //TODO: Work on making layout beautiful and useful and informative, also scroll views go through buttons at bottom (draft, trade, overworld)
+
         if (hoverBuilding != null) {
             ((TextView) context.findViewById(R.id.buildingName)).setVisibility(VISIBLE);
             ((TextView) context.findViewById(R.id.buildingDesc)).setVisibility(VISIBLE);
             ((TextView) context.findViewById(R.id.buildingItemsList)).setVisibility(VISIBLE);
             ((TextView) context.findViewById(R.id.buildingHousingNum)).setVisibility(VISIBLE);
+
             ((TextView) context.findViewById(R.id.buildingProduction)).setVisibility(VISIBLE);
             //((Button) context.findViewById(R.id.btnProduceTest)).setVisibility(VISIBLE);
             ((Button) context.findViewById(R.id.btnConstructionBuilding)).setVisibility(GONE);
@@ -666,9 +669,11 @@ class StarlightSurfaceView extends SurfaceView {
                 }
             });*/
 
-            ((Button) context.findViewById(R.id.btnProductionList)).setVisibility(VISIBLE);
+            if (hoverBuilding.getProductionRecipes().size() > 0)
+                ((Button) context.findViewById(R.id.btnProductionList)).setVisibility(VISIBLE);
 
-            ((Button) context.findViewById(R.id.btnUpgradesList)).setVisibility(VISIBLE);
+            if (hoverBuilding.possibleBuildingUpgrades.size() > 0)
+                ((Button) context.findViewById(R.id.btnUpgradesList)).setVisibility(VISIBLE);
 
             if (hoverBuilding.name.equals("Nexus")) {
                 ((Button) context.findViewById(R.id.btnTradeResources)).setVisibility(VISIBLE);

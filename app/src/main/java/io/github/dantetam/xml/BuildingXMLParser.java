@@ -38,8 +38,6 @@ import java.util.List;
 public class BuildingXMLParser {
     private static final String ns = null;
 
-    //TODO: Impl. this class.
-
     public static void parseBuildingTree(ConstructionTree tree, Context context, int resourceId) {
         final InputStream inputStream = context.getResources().openRawResource(
                 resourceId);

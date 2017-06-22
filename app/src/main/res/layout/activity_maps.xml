@@ -300,34 +300,54 @@
                 android:onClick="openTradeResources"
                 android:visibility="gone"
                 android:layout_alignParentBottom="true"/>
-            <LinearLayout
+            <ScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/constructionBuildingList"
-                android:orientation="vertical"
-                android:visibility="gone">
-            </LinearLayout>
-            <LinearLayout
+                android:id="@+id/scrollConstructionBuildingList">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/constructionBuildingList"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                </LinearLayout>
+            </ScrollView>
+            <ScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/productionRecipesList"
-                android:orientation="vertical"
-                android:visibility="gone">
-            </LinearLayout>
-            <LinearLayout
+                android:id="@+id/scrollProductionRecipesList">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/productionRecipesList"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                </LinearLayout>
+            </ScrollView>
+            <ScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/buildingUpgradesList"
-                android:orientation="vertical"
-                android:visibility="gone">
-            </LinearLayout>
-            <LinearLayout
+                android:id="@+id/scrollBuildingUpgradesList">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buildingUpgradesList"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                </LinearLayout>
+            </ScrollView>
+            <ScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/localTradeList"
-                android:orientation="vertical"
-                android:visibility="gone">
-            </LinearLayout>
+                android:id="@+id/scrollLocalTradeList">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/localTradeList"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                </LinearLayout>
+            </ScrollView>
             <ScrollView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"

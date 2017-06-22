@@ -377,7 +377,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
     public boolean addressOfCurrentLocationButton(View v) {
         getDeviceLocation();
-        List<String> addressFragments = findAddress(mLastKnownLocation);
+        List<String> addressFragments = findAddressFromLocation(mLastKnownLocation);
         for (String addressFragment: addressFragments) {
             System.err.println(addressFragment);
         }
@@ -1540,7 +1540,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         System.out.println("Object:"+loadedWorld.toString());
     }*/
 
-    protected ArrayList<String> findAddress(float lat, float lon) {
+    protected ArrayList<String> findAddressFromCoord(float lat, float lon) {
         String errorMessage = "";
 
         List<Address> addresses = null;
@@ -1580,12 +1580,14 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 addressFragments.add(mLastKnownAddress.getAddressLine(i));
             }
             Log.i(TAG, "Found address");
+            Log.i(TAG, mLastKnownAddress.getAddressLine(0));
+            Log.i(TAG, mLastKnownAddress.getFeatureName());
             return addressFragments;
         }
         return null;
     }
-    protected List<String> findAddress(Location location) {
-        return findAddress((float) location.getLatitude(), (float) location.getLongitude());
+    protected List<String> findAddressFromLocation(Location location) {
+        return findAddressFromCoord((float) location.getLatitude(), (float) location.getLongitude());
     }
 
     @Override
@@ -1614,7 +1616,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
     @Override
     public void onMapClick(LatLng latLng) {
         System.err.println(latLng);
-
+        findAddressFromCoord((float) latLng.latitude, (float) latLng.longitude);
     }
 
     @Override
@@ -1791,13 +1793,14 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
     private void updateMapHistory() {
         if (mLastKnownLocation != null) {
-            mapHistory.addData(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
+            Calendar calendar = Calendar.getInstance();
+            mapHistory.addData(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), calendar.getTime());
             //TODO: show map history on special screen/display
         }
     }
 
     private int mMainInterval = 20; // in milliseconds, 5 seconds by default, can be changed later
-    private int mMinuteInterval = 3 * 1000;
+    private int mMinuteInterval = 60 * 1000;
     private Handler mHandler;
     private int frameModulo = 0;
 
