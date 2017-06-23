@@ -441,7 +441,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         Calendar calendar = Calendar.getInstance();
 
         Settlement settlement = world.createSettlement(
-                faction.name, calendar.getTime(),
+                nameStorage.randomWorldName(), calendar.getTime(),
                 new Vector2f(location.latitude, location.longitude),
                 faction,
                 constructionTree, resources);
@@ -453,7 +453,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }
 
         Marker marker = mMap.addMarker(new MarkerOptions()
-                        .title("Settlement " + faction.name)
+                        .title("Settlement of " + settlement.name)
                         .position(location)
                         .snippet("")
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
@@ -492,7 +492,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         Calendar calendar = Calendar.getInstance();
 
         QuestLocation questLocation = world.createQuestLocation(
-                faction.name,
+                nameStorage.randomWorldName(),
                 calendar.getTime(),
                 new Vector2f(location.latitude, location.longitude),
                 faction);
@@ -502,7 +502,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }
 
         Marker marker = mMap.addMarker(new MarkerOptions()
-                        .title("Quest Location: " + faction.name)
+                        .title("Quest Location: " + questLocation.name)
                         .position(location)
                         .snippet("")
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
@@ -1217,9 +1217,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
         autocompleteFragment.getView().setBackgroundColor(Color.WHITE);
-
         autocompleteFragment.getView().setVisibility(View.GONE);
-
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
@@ -1244,6 +1242,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
             }
         });
 
+        updateMapHistory();
     }
 
     private void addMarkerAtPoi(Place place) {
@@ -1521,9 +1520,11 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                     //LatLng latLng = history.locations.get(i);
                     String placeName = history.placeNames.get(i);
                     Date date = history.dates.get(i);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy, h:mm a", Locale.US);
+                    String formattedDate = simpleDateFormat.format(date);
 
                     TextView textView = new TextView(this);
-                    textView.setText(placeName + " " + date.toString());
+                    textView.setText(placeName + " | " + formattedDate);
 
                     historyList.addView(textView);
                 }
@@ -1569,7 +1570,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         System.out.println("Object:"+loadedWorld.toString());
     }*/
 
-    protected ArrayList<String> findAddressFromCoord(float lat, float lon) {
+    protected List<String> findAddressFromCoord(float lat, float lon) {
         String errorMessage = "";
 
         List<Address> addresses = null;
@@ -1835,20 +1836,32 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
                     @Override
                     public void onResult(@NonNull PlaceLikelihoodBuffer likelyPlaces) {
+                        String addressString = "";
+                        List<String> possibleAddress = findAddressFromLocation(mLastKnownLocation);
+                        if (possibleAddress == null || possibleAddress.size() <= 1) {
+                            addressString = "Unknown address";
+                        }
+                        else {
+                            addressString = "Near " + possibleAddress.get(0) + ", " + possibleAddress.get(1);
+                        }
+
                         String placeName = null;
                         for (PlaceLikelihood placeLikelihood : likelyPlaces) {
                             // Build a list of likely places to show the user. Max 5.
                             Place place = placeLikelihood.getPlace();
                             if (placeName == null) {
-                                placeName = (String) place.getName();
-                                if (placeLikelihood.getLikelihood() < 0.5) {
-                                    placeName = "Near " + placeName;
+                                if (placeLikelihood.getLikelihood() < 0.6) {
+                                    placeName = addressString;
+                                }
+                                else {
+                                    placeName = addressString + ", near " + place.getName();
                                 }
                             }
                         }
                         if (placeName == null) {
                             placeName = "";
                         }
+
                         mapHistory.addData(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), placeName, calendar.getTime());
                         // Release the place likelihood buffer, to avoid memory leaks.
                         likelyPlaces.release();
@@ -1877,9 +1890,6 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 frameModulo++;
                 frameModulo %= 6;
                 //this function can change value of mInterval.
-                if (frameModulo == 5) {
-
-                }
 
                 world.updateWorld();
                 if (mLastKnownLocation != null) {
@@ -1887,9 +1897,14 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                         world.updateQuest(currentQuest, mLastKnownLocation);
                         if (currentQuest.doneCondition()) {
                             world.rewardQuest(currentQuestLocation, currentQuest);
+                            gold.set(gold.value() + currentQuest.omnigold);
                             currentQuest = null;
                         }
                     }
+                }
+
+                if (frameModulo == 5) {
+                    world.customGameTime.advanceHour(); TODO < Display this time in a UI
                 }
 
                 updateDistance();

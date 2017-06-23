@@ -28,6 +28,7 @@ public class Person implements Serializable {
     private Map<String, Integer> sortedSkillPrioritiesDes;
     public static int MAX_PRIORITY = 1, MIN_PRIORITY = 4, NO_PRIORITY = 5;
     transient public Body body;
+    public int nutrition = 10;
 
     public Item weapon;
     public boolean isDrafted = false;

@@ -22,7 +22,7 @@ public class NameStorage {
         femaleNames = new ArrayList<>();
         worldNames = new ArrayList<>();
         //TODO: V Testing purposes only
-        worldNames.add("TestName");
+        //worldNames.add("TestName");
     }
 
     public void loadNames(AssetManager assetManager, String maleFileName, String femaleFileName, String worldFileName) {

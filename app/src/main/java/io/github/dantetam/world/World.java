@@ -41,12 +41,15 @@ public class World implements Serializable {
 
     public List<Faction> factions;
 
+    public CustomGameTime customGameTime;
+
     public World(String name, ConstructionTree tree) {
         this.name = name;
         settlements = new ArrayList<>();
         questLocations = new ArrayList<>();
         this.tree = tree;
         factions = new ArrayList<>();
+        customGameTime = new CustomGameTime(2150);
     }
 
     public void updateWorld() {
@@ -97,6 +100,8 @@ public class World implements Serializable {
                         }
                     }
                 }
+
+                if (person.)
 
                 //The person may or may not have been assigned a job
                 if (person.currentJob != null) {

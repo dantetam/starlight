@@ -277,6 +277,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     name="Wheat" 
     maxhealth="20" 
     marketvalue="0.5"
+    data-nutrition="1"
     desc="A small bundle of wheat.">
     </resource>
     
@@ -285,6 +286,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     name="Potato" 
     maxhealth="20" 
     marketvalue="0.5"
+    data-nutrition="1"
     desc="A raw potato.">
     </resource>
     
@@ -293,6 +295,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     name="Fruit" 
     maxhealth="20" 
     marketvalue="0.5"
+    data-nutrition="1"
     desc="Several small assorted fruits.">
     </resource>
     
@@ -301,6 +304,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     name="Greens" 
     maxhealth="20" 
     marketvalue="0.5"
+    data-nutrition="1"
     desc="Some whole, leafy green vegetables.">
     </resource>
     
@@ -309,6 +313,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     name="Meat" 
     maxhealth="20" 
     marketvalue="1.5"
+    data-nutrition="3"
     desc="Assorted protein and animal flesh.">
     </resource>
     
@@ -317,6 +322,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     name="Eggs" 
     maxhealth="10" 
     marketvalue="0.9"
+    data-nutrition="1"
     desc="Edible eggs from various animals.">
     </resource>
     
@@ -325,6 +331,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     name="Milk" 
     maxhealth="10" 
     marketvalue="0.8"
+    data-nutrition="1"
     desc="Raw, nutritious animal milk.">
     </resource>
     
@@ -333,6 +340,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     name="Meal" 
     maxhealth="30" 
     marketvalue="3"
+    data-nutrition="10"
     desc="A single simple meal.">
     </resource>
     
@@ -341,6 +349,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     name="Beer" 
     maxhealth="30" 
     marketvalue="5"
+    data-nutrition="0.5"
     desc="A homebrewed alcoholic drink.">
     </resource>
     

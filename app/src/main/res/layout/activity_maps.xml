@@ -131,7 +131,9 @@
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@id/btnTogglePolylineHistory">
+            android:layout_above="@id/btnTogglePolylineHistory"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp">
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
