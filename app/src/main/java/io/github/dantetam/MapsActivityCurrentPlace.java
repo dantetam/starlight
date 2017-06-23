@@ -1243,6 +1243,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         });
 
         updateMapHistory();
+        updateCustonTimeUI();
     }
 
     private void addMarkerAtPoi(Place place) {
@@ -1872,6 +1873,15 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }
     }
 
+    private void updateCustonTimeUI() {
+        View view = findViewById(R.id.timeDisplay);
+        if (view != null && view.getVisibility() == View.VISIBLE) {
+            ((TextView) findViewById(R.id.timeDisplayYear)).setText("Year " + world.customGameTime.year);
+            ((TextView) findViewById(R.id.timeDisplaySeason)).setText(world.customGameTime.getSeasonName());
+            ((TextView) findViewById(R.id.timeDisplayHour)).setText("Day " + (world.customGameTime.day + 1) + ", " + world.customGameTime.hour + "h");
+        }
+    }
+
     private int mMainInterval = 20; // in milliseconds, 5 seconds by default, can be changed later
     private int mMinuteInterval = 60 * 1000;
     private Handler mHandler;
@@ -1888,7 +1898,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         public void run() {
             try {
                 frameModulo++;
-                frameModulo %= 6;
+                frameModulo %= 250;
                 //this function can change value of mInterval.
 
                 world.updateWorld();
@@ -1903,8 +1913,18 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                     }
                 }
 
-                if (frameModulo == 5) {
-                    world.customGameTime.advanceHour(); TODO < Display this time in a UI
+                if (frameModulo == 250 - 1) {
+                    world.customGameTime.advanceHour();
+                    //TODO: Move this to the world update class
+                    for (Settlement settlement: world.settlements) {
+                        if (settlement.faction.name.equals("Colonists")) {
+                            for (Person person: settlement.people) {
+                                person.nutrition--;
+                                person.rest--;
+                            }
+                        }
+                    }
+                    updateCustonTimeUI();
                 }
 
                 updateDistance();

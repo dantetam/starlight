@@ -65,4 +65,11 @@ public class CustomGameTime {
         }
     }
 
+    public String getSeasonName() {
+        if (season == 0) return "Winter";
+        else if (season == 1) return "Spring";
+        else if (season == 2) return "Summer";
+        else return "Fall";
+    }
+
 }

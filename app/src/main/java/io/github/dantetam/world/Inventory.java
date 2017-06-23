@@ -145,6 +145,29 @@ public class Inventory implements Serializable {
         }
     }
 
+    public boolean hasNutrition(float nutrition) {
+        return findNutrition(nutrition) != null;
+    }
+    public Inventory findNutrition(float nutrition) {
+        Inventory result = new Inventory();
+        for (int i = 0; i < items.size(); i++) {
+            Item heldItem = items.get(i);
+            if (heldItem.hasItemData("nutrition")) {
+                int eatQuantity = Math.min(heldItem.quantity, (int) Math.ceil(nutrition / heldItem.getItemData("nutrition")));
+                nutrition -= eatQuantity * heldItem.getItemData("nutrition");
+                Item foundItem = new Item(heldItem, eatQuantity);
+                /*if (nutrition < 0) {
+                    foundItem.quantity -= nutrition / heldItem.getItemData("nutrition");
+                }*/
+                result.addItem(foundItem);
+                if (nutrition <= 0) {
+                    return result;
+                }
+            }
+        }
+        return null;
+    }
+
     public int size() {
         return items.size();
     }

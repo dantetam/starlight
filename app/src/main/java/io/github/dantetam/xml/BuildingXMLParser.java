@@ -165,9 +165,10 @@ public class BuildingXMLParser {
 
         //Temporary until this code can be added programmatically
         tree.skills.add("Construction");
-        tree.skills.add("Deonstruction");
+        tree.skills.add("Deconstruction");
         tree.skills.add("Transporting");
         tree.skills.add("Shooting");
+        tree.skills.add("Essential");
 
         tree.getItemByName("Iron").superClassId = -3;
         tree.getItemByName("Silver").superClassId = -3;

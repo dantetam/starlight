@@ -69,7 +69,7 @@ public class ItemXmlParser {
 
                     Item item = new Item(id, itemName, maxHealth, marketValue);
 
-                    String[] customData = new String[]{"combatmelee", "combatshot", "combatrange", "combatchance", "combattime"};
+                    String[] customData = new String[]{"combatmelee", "combatshot", "combatrange", "combatchance", "combattime", "nutrition"};
                     for (String customAttr: customData) {
                         String attr = xpp.getAttributeValue(null, "data-" + customAttr);
                         if (attr == null) {

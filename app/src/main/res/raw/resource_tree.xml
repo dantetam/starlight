@@ -340,7 +340,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     name="Meal" 
     maxhealth="30" 
     marketvalue="3"
-    data-nutrition="10"
+    data-nutrition="24"
     desc="A single simple meal.">
     </resource>
     

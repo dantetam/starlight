@@ -3,6 +3,7 @@ package io.github.dantetam.world;
 import android.location.Location;
 
 import io.github.dantetam.jobs.CombatJob;
+import io.github.dantetam.jobs.EatJob;
 import io.github.dantetam.person.Faction;
 import io.github.dantetam.quests.OverworldQuest;
 import io.github.dantetam.xml.ConstructionTree;
@@ -55,6 +56,10 @@ public class World implements Serializable {
     public void updateWorld() {
         //Look for jobs
         for (Settlement settlement: settlements) {
+            if (!settlement.faction.name.equals("Colonists")) {
+                continue;
+            }
+
             for (Person person : settlement.people) {
                 if (person.isDead()) {
                     continue;
@@ -101,7 +106,16 @@ public class World implements Serializable {
                     }
                 }
 
-                if (person.)
+                if (person.nutrition <= 2 && !(person.currentJob instanceof EatJob)) {
+                    Building foodBuilding = settlement.nexus; //TODO: Find nearest building with food programmatically
+                    if (foodBuilding.items.hasNutrition(Person.MAX_NUTRITION)) {
+                        EatJob eatJob = new EatJob(settlement, person, foodBuilding);
+                        person.currentJob = eatJob;
+                    }
+                    else {
+
+                    }
+                }
 
                 //The person may or may not have been assigned a job
                 if (person.currentJob != null) {
@@ -151,6 +165,41 @@ public class World implements Serializable {
                 }
             }
         }*/
+
+        //Look for jobs for visitors
+        for (Settlement settlement: settlements) {
+            if (!settlement.faction.name.equals("Colonists")) {
+                continue;
+            }
+
+            for (Person person : settlement.visitors) {
+                if (person.isDead()) {
+                    continue;
+                }
+                //Assign a job, combat or non-combat
+                if (person.isDrafted) {
+                    Map<Person, Float> peopleByDist = new HashMap<>();
+                    for (Person visitor : settlement.people) {
+                        peopleByDist.put(visitor, person.tile.trueEuclideanDist(visitor.tile));
+                    }
+
+                    Map<Person, Float> sortedDists = MapUtil.sortByValueAscending(peopleByDist);
+                    Collection<Person> sortedVisitors = sortedDists.keySet();
+
+                    for (Person visitor : sortedVisitors) {
+                        if (visitor.isDead()) {
+                            continue;
+                        }
+                        if (factionsHostile(person.faction, visitor.faction)) {
+                            Job attackJob = new CombatJob(settlement, person, visitor);
+                            person.currentJob = attackJob;
+                            //attackJob.reservedPerson = person;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
 
         for (Settlement settlement: settlements) {
             for (Person person: settlement.people) {

@@ -45,9 +45,6 @@ public class ConstructionTask extends Task {
             else if (building.getJobType().equals("Cooking")) {
                 settlement.availableJobsBySkill.get(building.getJobType()).add(new CookingJob(settlement, building, 30));
             }
-            else if (building.getJobType().equals("Farming")) {
-                settlement.availableJobsBySkill.get(building.getJobType()).add(new FarmingJob(settlement, building));
-            }
             else if (building.getJobType().equals("Research")) {
                 //TODO: Change speed of this, based on person's skill and body
                 settlement.availableJobsBySkill.get(building.getJobType()).add(new ResearchJob(settlement, building, techTree, 1));
