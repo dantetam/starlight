@@ -57,6 +57,8 @@ public class Tile implements Serializable, Traversable<Tile> {
         return 1.1f;
     }
 
+    public boolean neighbors(Tile tile) {return Math.abs(tile.row - row) <= 1 && Math.abs(tile.col - col) <= 1;}
+
     public float trueManhattanDist(Tile tile) {
         return Math.abs(tile.row - row) + Math.abs(tile.col - col);
     }

@@ -578,6 +578,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
             for (int i = 0; i < 2; i++) {
                 Person person = new Person(nameStorage.randomPersonName(), constructionTree.skills, world.getFaction("Pirates"));
+                person.isDrafted = true;
                 Body parsedHumanBody = BodyXmlParser.parseBodyTree(this, R.raw.human_body);
                 person.initializeBody(parsedHumanBody);
                 settlement.visitors.add(person);
@@ -1246,7 +1247,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         });
 
         updateMapHistory();
-        updateCustonTimeUI();
+        updateCustomTimeUI();
     }
 
     private void addMarkerAtPoi(Place place) {
@@ -1444,10 +1445,12 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                     }
                 };
 
+        String[] aboutText = {"Starlight - Strategy Exploration", "Dante Tam, UC Berkeley '18", "Construction, management simulation", "Integrated with Google Maps"};
+
         // Display the dialog.
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("About Starlight")
-                .setItems(mLikelyPlaceNames, listener)
+                .setTitle("Starlight")
+                .setItems(aboutText, listener)
                 .show();
     }
 
@@ -1647,7 +1650,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         QuestLocation questLocation = questLocationsByMarker.get(marker);
         final Context context = this;
 
-        if (settlement != null) {
+        if (settlement != null && settlement.faction.name.equals("Colonists")) {
             currentSettlement = settlement;
             currentQuestLocation = null;
 
@@ -1718,6 +1721,8 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         surfaceView.setVisibility(View.VISIBLE);
 
         surfaceView.drawSettlement();
+
+        surfaceView.updateInGameCustomTimeUI();
     }
 
     private void displayQuestLocation(QuestLocation questLocation) {
@@ -1893,7 +1898,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         }
     }
 
-    private void updateCustonTimeUI() {
+    private void updateCustomTimeUI() {
         View view = findViewById(R.id.timeDisplay);
         if (view != null && view.getVisibility() == View.VISIBLE) {
             ((TextView) findViewById(R.id.timeDisplayYear)).setText("Year " + world.customGameTime.year);
@@ -1950,7 +1955,10 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                             }
                         }
                     }
-                    updateCustonTimeUI();
+                    updateCustomTimeUI();
+                    if (surfaceView != null) {
+                        surfaceView.updateInGameCustomTimeUI();
+                    }
                 }
 
                 updateDistance();

@@ -202,7 +202,41 @@ public class World implements Serializable {
         }
 
         for (Settlement settlement: settlements) {
+            for (Person person: settlement.visitors) {
+                if (person.currentJob != null) {
+                    if (person.currentJob.doneCondition()) {
+                        person.currentJob.reservedPerson = null;
+                        person.currentJob = null;
+                    }
+                    else {
+                        if (person.queueTasks.size() == 0) {
+                            List<Task> newTasks = person.currentJob.createTasks();
+                            for (Task newTask: newTasks) {
+                                person.queueTasks.add(newTask);
+                            }
+                        }
+                        else {
+                            //Do nothing, the job is still going on.
+                            //Later, process the person's queue of tasks,
+                            //which may or may not be associated with the job.
+                            //Note that a job does not override in progress/queued tasks
+                        }
+                    }
+                }
+            }
+        }
+
+        for (Settlement settlement: settlements) {
             for (Person person: settlement.people) {
+                if (person.queueTasks.size() > 0) {
+                    Task task = person.queueTasks.get(0);
+                    task.tick();
+                    if (task.ticksLeft < 0) {
+                        person.queueTasks.remove(0);
+                    }
+                }
+            }
+            for (Person person: settlement.visitors) {
                 if (person.queueTasks.size() > 0) {
                     Task task = person.queueTasks.get(0);
                     task.tick();

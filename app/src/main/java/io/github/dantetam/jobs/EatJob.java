@@ -36,7 +36,7 @@ public class EatJob extends Job {
     public List<Task> createTasks() {
         List<Task> tasks = new ArrayList<>();
 
-        if (reservedPerson.tile.trueManhattanDist(target.getTile()) == 1) {
+        if (reservedPerson.tile.neighbors(target.getTile())) {
             tasks.add(new EatTask(15, settlement, reservedPerson, target));
             return tasks;
         }

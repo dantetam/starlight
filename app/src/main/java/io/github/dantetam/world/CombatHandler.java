@@ -29,16 +29,13 @@ public class CombatHandler implements Serializable {
             weapon = tree.copyItem("Fists", 1);
         }
         if (rand < weapon.getItemData("combatchance")) {
-            BodyPart randBodyPart = target.body.randomBodyPart();
-            if (randBodyPart.getHealth() > 0) {
-                float damage = 0;
-                if (attacker.tile.trueManhattanDist(target.tile) == 1) {
-                    damage = weapon.getItemData("combatmelee");
-                }
-                damage += new Random().nextGaussian() * (damage / 4.0f);
-                if (damage > 0) {
-                    randBodyPart.injure(new Injury("MeleeInjury", (int) damage, damage / 20.0f, true));
-                }
+            float damage = 0;
+            if (attacker.tile.neighbors(target.tile)) {
+                damage = weapon.getItemData("combatmelee");
+            }
+            damage += new Random().nextGaussian() * (damage / 4.0f);
+            if (damage > 0) {
+                target.giveRandomInjury(new Injury("MeleeInjury", (int) damage, damage / 20.0f, true));
             }
         }
     }
@@ -49,17 +46,13 @@ public class CombatHandler implements Serializable {
             return;
         }
         if (rand < attacker.weapon.getItemData("combatchance")) {
-            BodyPart randBodyPart = target.body.randomBodyPart();
-            if (randBodyPart.getHealth() > 0) {
-                float damage = 0;
-                if (attacker.tile.trueManhattanDist(target.tile) > 1 && attacker.weapon.hasItemData("combatshot")) {
-                    damage = attacker.weapon.getItemData("combatshot");
-                }
-                damage += new Random().nextGaussian() * (damage / 4.0f);
-                if (damage > 0) {
-                    randBodyPart.injure(new Injury("RangedInjury", (int) damage, damage / 20.0f, true));
-                }
-                //System.err.println("Dealt " + damage + " damage to " + target.name + ".");
+            float damage = 0;
+            if (!attacker.tile.neighbors(target.tile) && attacker.weapon.hasItemData("combatshot")) {
+                damage = attacker.weapon.getItemData("combatshot");
+            }
+            damage += new Random().nextGaussian() * (damage / 4.0f);
+            if (damage > 0) {
+                target.giveRandomInjury(new Injury("RangedInjury", (int) damage, damage / 20.0f, true));
             }
         }
     }

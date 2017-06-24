@@ -28,7 +28,7 @@ public class Person implements Serializable {
     private Map<String, Integer> sortedSkillPrioritiesDes;
     public static int MAX_PRIORITY = 1, MIN_PRIORITY = 4, NO_PRIORITY = 5;
 
-    transient public Body body;
+    transient private Body body;
 
     public int nutrition = 2;
     public static final int MAX_NUTRITION = 24;
@@ -86,6 +86,13 @@ public class Person implements Serializable {
         return body.root.getHealth() <= 0;
     }
 
+    public void kill() {
+        if (this.currentJob != null) {
+            this.currentJob.reservedPerson = null;
+            this.currentJob = null;
+        }
+    }
+
     //Sort the skills' priorities only when changed
     public Map<String, Integer> getSortedSkillPrioritiesDes() {
         return sortedSkillPrioritiesDes;
@@ -110,6 +117,24 @@ public class Person implements Serializable {
 
     public boolean isAsleep() {
         return asleep;
+    }
+
+    public void giveRandomInjury(Injury injury) {
+        BodyPart randBodyPart = body.randomBodyPart();
+        if (randBodyPart.getHealth() > 0) {
+            randBodyPart.injure(injury);
+        }
+        if (body.getHealth() <= 0) {
+            kill();
+        }
+    }
+
+    public int getHealth() {
+        return body.getHealth();
+    }
+
+    public int getMaxHealth() {
+        return body.maxHealth();
     }
 
 }

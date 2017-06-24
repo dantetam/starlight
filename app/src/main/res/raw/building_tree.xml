@@ -110,11 +110,22 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     name="Blacksmith" 
     resourcelimit="50" 
     cost="35 Wood, 10 Iron" 
-    production="15 Iron > 1 Iron Sword; 15 Iron > 1 Iron Shield; 15 Wood > 1 Wooden Bow; 15 Tropical Wood, 1 Component > 1 Wooden Composite Bow" 
+    production="15 Iron > 1 Iron Sword; 15 Iron > 1 Iron Shield; 15 Iron > 1 Iron Spear; 15 Wood > 1 Wooden Bow; 15 Tropical Wood, 1 Component > 1 Wooden Composite Bow" 
     jobtype="Crafting" 
     buildtime="180" 
     data-craftTime="30"
     desc="A house containing an anvil, small forge, and tools.">
+        <imprupgrade 
+        id="51" 
+        name="Metalworker" 
+        resourcelimit="50" 
+        cost="25 Wood, 15 Iron, 2 Component" 
+        production="15 Iron, 5 Titanium > 1 Titanium Sword; 15 Iron, 5 Titanium > 1 Titanium Shield; 15 Iron, 5 Titanium > 1 Titanium Spear" 
+        jobtype="Crafting" 
+        buildtime="180" 
+        data-craftTime="45"
+        desc="A specialized house for handling precious metals.">
+        </imprupgrade>
     </impr>
     
     <impr 
@@ -151,6 +162,18 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     buildtime="180" 
     data-craftTime="30"
     desc="A designated place to create special items.">
+    </impr>
+    
+    <impr 
+    id="81" 
+    name="Gunsmith" 
+    resourcelimit="50" 
+    cost="35 Wood, 10 Iron, 2 Component, 1 Electronics" 
+    production="15 Iron, 5 Titanium, 1 Component > 1 Pistol" 
+    jobtype="Crafting" 
+    buildtime="180" 
+    data-craftTime="45"
+    desc="A special facility for building firearms.">
     </impr>
     
     <impr 

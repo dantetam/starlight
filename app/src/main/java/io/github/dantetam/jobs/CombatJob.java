@@ -42,11 +42,11 @@ public class CombatJob extends Job {
             time = (int) reservedPerson.weapon.getItemData("combattime");
         }
 
-        if (reservedPerson.tile.trueManhattanDist(target.tile) == 1) {
+        if (reservedPerson.tile.neighbors(target.tile)) {
             tasks.add(new CombatMeleeTask(time, settlement, reservedPerson, target));
             return tasks;
         }
-        else if (reservedPerson.weapon.hasItemData("combatshot")) {
+        else if (reservedPerson.weapon != null && reservedPerson.weapon.hasItemData("combatshot")) {
             float l2Dist = reservedPerson.tile.trueEuclideanDist(target.tile);
             if (l2Dist <= reservedPerson.weapon.getItemData("combatrange")) {
                 tasks.add(new CombatRangedTask(time, settlement, reservedPerson, target));
@@ -60,7 +60,7 @@ public class CombatJob extends Job {
             for (Tile tile: path) {
                 Task localMoveTask = new MoveTask(reservedPerson.tileMoveSpeed(), reservedPerson, settlement, tile);
                 tasks.add(localMoveTask);
-                if (reservedPerson.weapon.hasItemData("combatshot")) {
+                if (reservedPerson.weapon != null && reservedPerson.weapon.hasItemData("combatshot")) {
                     if (tile.trueEuclideanDist(target.tile) <= reservedPerson.weapon.getItemData("combatrange")) {
                         break;
                     }

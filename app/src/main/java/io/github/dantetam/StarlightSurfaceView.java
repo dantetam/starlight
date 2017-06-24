@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.VelocityTracker;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ import io.github.dantetam.tasks.CombatRangedTask;
 import io.github.dantetam.tasks.MoveTask;
 import io.github.dantetam.tasks.Task;
 import io.github.dantetam.world.Building;
+import io.github.dantetam.world.CustomGameTime;
 import io.github.dantetam.world.Settlement;
 import io.github.dantetam.world.Tile;
 import io.github.dantetam.world.World;
@@ -299,7 +301,7 @@ class StarlightSurfaceView extends SurfaceView {
                         bmpIcon = BitmapHelper.findBitmapOrBuild(R.drawable.pirate);
                     }
 
-                    float healthPercent = (float) person.body.root.getHealth() / (float) person.body.root.maxHealth;
+                    float healthPercent = (float) person.getHealth() / (float) person.getMaxHealth();
 
                     if (person.queueTasks.size() > 0) {
                         Task firstTask = person.queueTasks.get(0);
@@ -691,7 +693,7 @@ class StarlightSurfaceView extends SurfaceView {
             ((TextView) context.findViewById(R.id.personHealth)).setVisibility(VISIBLE);
 
             ((TextView) context.findViewById(R.id.personName)).setText(hoverPerson.name + " of " + hoverPerson.faction.name);
-            ((TextView) context.findViewById(R.id.personHealth)).setText("Health: " + hoverPerson.body.getHealth() + "/" + hoverPerson.body.maxHealth());
+            ((TextView) context.findViewById(R.id.personHealth)).setText("Health: " + hoverPerson.getHealth() + "/" + hoverPerson.getMaxHealth());
         }
         else {
             //Do nothing, the UI should have been cleared
@@ -704,6 +706,15 @@ class StarlightSurfaceView extends SurfaceView {
 
     public Settlement getActiveSettlement() {
         return activeSettlement;
+    }
+
+    public void updateInGameCustomTimeUI() {
+        View view = context.findViewById(R.id.inGameTimeDisplay);
+        if (view != null && view.getVisibility() == View.VISIBLE) {
+            ((TextView) context.findViewById(R.id.inGameTimeDisplayYear)).setText("Year " + world.customGameTime.year);
+            ((TextView) context.findViewById(R.id.inGameTimeDisplaySeason)).setText(world.customGameTime.getSeasonName());
+            ((TextView) context.findViewById(R.id.inGameTimeDisplayHour)).setText("Day " + (world.customGameTime.day + 1) + ", " + world.customGameTime.hour + "h");
+        }
     }
 
 }

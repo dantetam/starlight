@@ -96,13 +96,13 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     
     <resource 
     id="29" 
-    name="Fist" 
+    name="Fists" 
     maxhealth="10" 
     marketvalue="3"
     data-combatmelee="3"
     data-combatchance="0.60"
     data-combattime="8"
-    desc="A forged iron sword.">
+    desc="Human fists.">
     </resource>
     
     <resource 
@@ -128,7 +128,51 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
+    id="32" 
+    name="Iron Spear" 
+    maxhealth="50" 
+    marketvalue="8"
+    data-combatmelee="10"
+    data-combatchance="0.90"
+    data-combattime="12"
+    desc="A forged iron sword.">
+    </resource>
+    
+    <resource 
+    id="33" 
+    name="Titanium Sword" 
+    maxhealth="50" 
+    marketvalue="40"
+    data-combatmelee="21"
+    data-combatchance="0.80"
+    data-combattime="10"
+    desc="A forged iron sword.">
+    </resource>
+    
+    <resource 
+    id="34" 
+    name="Titanium Shield" 
+    maxhealth="50" 
+    marketvalue="40"
+    data-combatmelee="8"
+    data-combatchance="0.90"
+    data-combattime="15"
+    desc="A hammered iron shield.">
+    </resource>
+    
+    <resource 
     id="35" 
+    name="Titanium Spear" 
+    maxhealth="50" 
+    marketvalue="40"
+    data-combatmelee="15"
+    data-combatchance="0.90"
+    data-combattime="12"
+    desc="A forged iron sword.">
+    </resource>
+    
+    <resource 
+    id="38" 
     name="Wooden Bow" 
     maxhealth="50" 
     marketvalue="8.5"
@@ -141,7 +185,7 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
-    id="36" 
+    id="39" 
     name="Wooden Composite Bow" 
     maxhealth="50" 
     marketvalue="42"
@@ -154,16 +198,42 @@ RawFood -> Wheat, Potato, Apple, Cabbage
     </resource>
     
     <resource 
-    id="36" 
+    id="40" 
     name="Pistol" 
+    maxhealth="40" 
+    marketvalue="50"
+    data-combatmelee="3"
+    data-combatshot="15"
+    data-combatrange="10"
+    data-combatchance="0.75"
+    data-combattime="11"
+    desc="A basic firearm.">
+    </resource>
+    
+    <resource 
+    id="41" 
+    name="Rifle" 
     maxhealth="50" 
-    marketvalue="42"
-    data-combatmelee="6"
-    data-combatshot="17"
-    data-combatrange="14"
-    data-combatchance="0.65"
-    data-combattime="17"
-    desc="A complex composite bow with high power.">
+    marketvalue="80"
+    data-combatmelee="5"
+    data-combatshot="24"
+    data-combatrange="18"
+    data-combatchance="0.92"
+    data-combattime="18"
+    desc="A bolt action rifle.">
+    </resource>
+    
+    <resource 
+    id="42" 
+    name="Carbine" 
+    maxhealth="50" 
+    marketvalue="100"
+    data-combatmelee="5"
+    data-combatshot="21"
+    data-combatrange="16"
+    data-combatchance="0.82"
+    data-combattime="11"
+    desc="A semi-automatic rifle.">
     </resource>
     
     <resource 
