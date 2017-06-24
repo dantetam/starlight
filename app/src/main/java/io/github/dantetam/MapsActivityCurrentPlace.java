@@ -355,6 +355,9 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         if (item.getItemId() == R.id.option_get_place) {
             showCurrentPlace();
         }
+        else if (item.getItemId() == R.id.option_author) {
+            showAuthorDialog();
+        }
         return true;
     }
 
@@ -1432,6 +1435,22 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 .show();
     }
 
+    private void showAuthorDialog() {
+        DialogInterface.OnClickListener listener =
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                };
+
+        // Display the dialog.
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("About Starlight")
+                .setItems(mLikelyPlaceNames, listener)
+                .show();
+    }
+
     /**
      * Updates the map's UI settings based on whether the user has granted location permission.
      */
@@ -1526,6 +1545,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
 
                     TextView textView = new TextView(this);
                     textView.setText(placeName + " | " + formattedDate);
+                    textView.setBackgroundColor(Color.WHITE);
 
                     historyList.addView(textView);
                 }
@@ -1920,7 +1940,13 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                         if (settlement.faction.name.equals("Colonists")) {
                             for (Person person: settlement.people) {
                                 person.nutrition--;
-                                person.rest--;
+                                if (person.isAsleep()) {
+                                    person.rest += 2;
+                                    person.rest = Math.min(person.rest, Person.MAX_REST);
+                                }
+                                else {
+                                    person.rest--;
+                                }
                             }
                         }
                     }

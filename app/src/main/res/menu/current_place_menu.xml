@@ -16,4 +16,8 @@
         android:id="@+id/option_get_place"
         android:title="@string/option_get_place"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/option_author"
+        android:title="@string/option_author"
+        app:showAsAction="always"/>
 </menu>

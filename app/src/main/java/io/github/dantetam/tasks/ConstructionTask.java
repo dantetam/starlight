@@ -1,5 +1,6 @@
 package io.github.dantetam.tasks;
 
+import io.github.dantetam.jobs.CraftingJob;
 import io.github.dantetam.jobs.ResearchJob;
 import io.github.dantetam.world.Building;
 import io.github.dantetam.world.Settlement;
@@ -44,6 +45,9 @@ public class ConstructionTask extends Task {
             }
             else if (building.getJobType().equals("Cooking")) {
                 settlement.availableJobsBySkill.get(building.getJobType()).add(new CookingJob(settlement, building, 30));
+            }
+            else if (building.getJobType().equals("Crafting")) {
+                settlement.availableJobsBySkill.get(building.getJobType()).add(new CraftingJob(settlement, building));
             }
             else if (building.getJobType().equals("Research")) {
                 //TODO: Change speed of this, based on person's skill and body

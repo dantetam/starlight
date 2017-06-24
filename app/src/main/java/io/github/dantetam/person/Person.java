@@ -27,10 +27,14 @@ public class Person implements Serializable {
     private Map<String, Integer> skillPriorities;
     private Map<String, Integer> sortedSkillPrioritiesDes;
     public static int MAX_PRIORITY = 1, MIN_PRIORITY = 4, NO_PRIORITY = 5;
+
     transient public Body body;
+
     public int nutrition = 2;
     public static final int MAX_NUTRITION = 24;
     public int rest = 8;
+    public static final int MAX_REST = 16;
+    private boolean asleep = false;
 
     public Item weapon;
     public boolean isDrafted = false;
@@ -94,6 +98,18 @@ public class Person implements Serializable {
     public void changeSkillPriority(String skillName, int newValue) {
         skillPriorities.put(skillName, newValue);
         sortSkillPriorities();
+    }
+
+    public void sleep() {
+        asleep = true;
+    }
+
+    public void wakeUp() {
+        asleep = false;
+    }
+
+    public boolean isAsleep() {
+        return asleep;
     }
 
 }

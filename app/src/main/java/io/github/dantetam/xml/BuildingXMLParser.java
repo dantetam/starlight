@@ -116,7 +116,7 @@ public class BuildingXMLParser {
                         }
                     }
 
-                    String[] customData = new String[]{"productionTimeForLump", "lumpSize"};
+                    String[] customData = new String[]{"productionTimeForLump", "craftTime", "lumpSize"};
                     for (String customAttr: customData) {
                         String attr = xpp.getAttributeValue(null, "data-" + customAttr);
                         if (attr == null) {

@@ -147,8 +147,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/timeDisplay"
             android:orientation="vertical"
-            android:layout_above="@id/btnLoadWorld"
-            android:layout_alignLeft="@id/btnLoadWorld">
+            android:layout_below="@id/btnToggleAutocomplete"
+            android:layout_alignLeft="@id/btnSaveWorld">
             <TextView
                 android:id="@+id/timeDisplayYear"
                 android:layout_width="wrap_content"

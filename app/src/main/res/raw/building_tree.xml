@@ -111,8 +111,9 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     resourcelimit="50" 
     cost="35 Wood, 10 Iron" 
     production="15 Iron > 1 Iron Sword; 15 Iron > 1 Iron Shield; 15 Wood > 1 Wooden Bow; 15 Tropical Wood, 1 Component > 1 Wooden Composite Bow" 
-    jobtype="Smithing" 
+    jobtype="Crafting" 
     buildtime="180" 
+    data-craftTime="30"
     desc="A house containing an anvil, small forge, and tools.">
     </impr>
     
@@ -124,6 +125,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     production="5 Wood, 5 Iron > 1 Component; 15 Wood > 1 Wooden Furniture; 15 Iron, 5 Wood > 1 Iron Furniture; 15 Leather, 5 Wood > 1 Leather Furniture" 
     jobtype="Crafting" 
     buildtime="180" 
+    data-craftTime="30"
     desc="A workshop containing tools and small parts.">
     </impr>
     
@@ -135,6 +137,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     production="10 Cotton > 1 Cloth Shirt; 10 Cotton > 1 Cloth Pants; 15 Cotton > 1 Coat; 15 Cotton, 10 Wood > 1 Cloth Armor; 15 Iron > 1 Iron Armor" 
     jobtype="Tailoring" 
     buildtime="180" 
+    data-craftTime="30"
     desc="A workshop for weaving and stitching clothing.">
     </impr>
     
@@ -146,6 +149,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     production="" 
     jobtype="Crafting" 
     buildtime="180" 
+    data-craftTime="30"
     desc="A designated place to create special items.">
     </impr>
     
@@ -203,6 +207,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     jobtype="Crafting"
     buildtime="120"
     data-productionTimeForLump="30"
+    data-craftTime="30"
     data-lumpSize="5"
     desc="Purifies, distills, and processes chemicals and mixtures.">
         <imprupgrade 
