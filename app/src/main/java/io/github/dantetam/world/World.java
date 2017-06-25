@@ -106,7 +106,7 @@ public class World implements Serializable {
                     }
                 }
 
-                if (person.nutrition <= 2 && !(person.currentJob instanceof EatJob)) {
+                if (person.nutrition <= 2 && !(person.currentJob instanceof EatJob) && !person.isDrafted) {
                     Building foodBuilding = settlement.nexus; //TODO: Find nearest building with food programmatically
                     if (foodBuilding.items.hasNutrition(Person.MAX_NUTRITION)) {
                         EatJob eatJob = new EatJob(settlement, person, foodBuilding);
@@ -136,6 +136,27 @@ public class World implements Serializable {
 
                         person.currentJob.reservedPerson = null;
                         person.currentJob = null;
+
+                        //Find and assign a new hob immediately to fix the walking stutter
+                        findJobLoop:
+                        for (Map.Entry<String, Integer> entry: person.getSortedSkillPrioritiesDes().entrySet()) {
+                            String newSkillName = entry.getKey();
+                            List<Job> jobsInSkill = settlement.availableJobsBySkill.get(newSkillName);
+                            for (int i = 0; i < jobsInSkill.size(); i++) {
+                                Job assignedJob = jobsInSkill.get(i);
+                                if (assignedJob.reservedPerson == null) {
+                                    person.currentJob = assignedJob;
+                                    assignedJob.reservedPerson = person;
+                                    if (person.queueTasks.size() == 0) {
+                                        List<Task> newTasks = person.currentJob.createTasks();
+                                        for (Task newTask: newTasks) {
+                                            person.queueTasks.add(newTask);
+                                        }
+                                    }
+                                    break findJobLoop;
+                                }
+                            }
+                        }
                     }
                     else {
                         if (person.queueTasks.size() == 0) {

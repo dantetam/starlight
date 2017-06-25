@@ -91,7 +91,7 @@ public class BodyXmlParser {
                     body.getBodyPartsByName().put(name, bodyPart);
 
                     if (xpp.getName().equals("bodyroot")) {
-                        body.root = bodyPart;
+                        body.setRoot(bodyPart);
                     }
                     stack.add(bodyPart);
                     if (stackCounter >= 0) {

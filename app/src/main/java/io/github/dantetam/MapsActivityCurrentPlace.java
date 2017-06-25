@@ -32,6 +32,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import io.github.dantetam.R;
@@ -1163,6 +1165,39 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
         currentQuestLocation = null;
 
         //setContentView(R.layout.activity_maps);
+    }
+
+    public void toggleJobsMenu(View v) {
+        if (currentSettlement != null) {
+            View view = findViewById(R.id.jobPrioritiesScrollLayout);
+            if (view.getVisibility() == View.INVISIBLE) {
+                List<String> allSkills = constructionTree.skills;
+
+                view.setVisibility(View.VISIBLE);
+
+                TableLayout tableLayout = (TableLayout) findViewById(R.id.jobPrioritiesTable);
+                tableLayout.removeAllViews();
+
+                TODO: Debug this
+
+                for (Person person: currentSettlement.people) {
+                    TableRow tableRow = new TableRow(this);
+
+                    for (String skill: allSkills) {
+                        int skillLevel = person.getSortedSkillPrioritiesDes().get(skill);
+
+                        TextView textView = new TextView(this);
+                        textView.setBackgroundColor(Color.WHITE);
+                        textView.setText(skillLevel + " SKILL");
+                    }
+
+                    tableLayout.addView(tableRow);
+                }
+            }
+            else {
+                view.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 
     /**

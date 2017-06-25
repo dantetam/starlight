@@ -306,6 +306,7 @@ class StarlightSurfaceView extends SurfaceView {
                     if (person.queueTasks.size() > 0) {
                         Task firstTask = person.queueTasks.get(0);
                         float percentageCompleted = 1.0f - (float) firstTask.ticksLeft / (float) firstTask.originalTicksLeft;
+                        //percentageCompleted -= 0.5f / (float) firstTask.originalTicksLeft;
                         if (!(firstTask instanceof MoveTask)) {
                             //Draw the person standing still,
                             canvas.drawBitmap(bmpIcon, null, new Rect(

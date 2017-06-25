@@ -151,7 +151,7 @@ Semicolons indicate separate paths i.e. "1 Wood; 1 Food" -> 1 Wood or 1 Food
     data-craftTime="30"
     desc="A workshop for weaving and stitching clothing.">
     </impr>
-    
+     
     <impr 
     id="80" 
     name="Workshop" 

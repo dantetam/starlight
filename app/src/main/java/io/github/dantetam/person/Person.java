@@ -23,7 +23,9 @@ public class Person implements Serializable {
     public Tile tile;
     public List<Task> queueTasks;
     public Job currentJob;
-    public Map<String, Integer> skills;
+    public Map<String, Integer> skillLevels;
+    public Map<String, Integer> skillExperiences;
+    public static final int[] skillLevelsExpTotal = {0, 1000, 2100, 3300, 4600, 6000, 7500, 9100, 10800, 12600, 14500, 16500, 18600, 20800, 23100, 25500, 28000, 9999999};
     private Map<String, Integer> skillPriorities;
     private Map<String, Integer> sortedSkillPrioritiesDes;
     public static int MAX_PRIORITY = 1, MIN_PRIORITY = 4, NO_PRIORITY = 5;
@@ -45,14 +47,19 @@ public class Person implements Serializable {
         this.name = name;
         this.items = new Inventory();
         queueTasks = new ArrayList<>();
-        skills = new HashMap<>();
+        skillLevels = new HashMap<>();
         skillPriorities = new HashMap<>();
 
         for (String skill: possibleSkills) {
-            int initialLevel = (int) (Math.random() * 12);
-            skills.put(skill, initialLevel);
-            int initialPriority = (int) (Math.random() * 5) + 1;
+            int initialLevel = (int) (Math.random() * 15);
+            skillLevels.put(skill, initialLevel);
+
+            int initialPriority = 5 - (int) ((float) initialLevel / 15.0 * 5.0);
+            initialPriority = Math.min(initialPriority, NO_PRIORITY);
+            initialPriority = Math.max(initialPriority, MAX_PRIORITY);
             skillPriorities.put(skill, initialPriority);
+
+            skillExperiences.put(skill, (skillLevelsExpTotal[initialLevel] + skillLevelsExpTotal[initialLevel + 1]) / 2);
         }
         sortSkillPriorities();
 
@@ -83,7 +90,7 @@ public class Person implements Serializable {
     }
 
     public boolean isDead() {
-        return body.root.getHealth() <= 0;
+        return body.getHealth() <= 0;
     }
 
     public void kill() {
@@ -107,6 +114,37 @@ public class Person implements Serializable {
         sortSkillPriorities();
     }
 
+    public int[] reportExpForSkill(String skillName) {
+        int skillLevel = skillLevels.get(skillName);
+        int baseExp = skillLevelsExpTotal[skillLevel];
+        int nextLevelExp = skillLevelsExpTotal[skillLevel + 1];
+        int currentExp = skillExperiences.get(skillName);
+        return new int[]{currentExp - baseExp, nextLevelExp - baseExp};
+    }
+
+    public void addExperience(String skillName, int addExp) {
+        int skillLevel = skillLevels.get(skillName);
+        //int baseExp = skillLevelsExpTotal[skillLevel];
+        int nextLevelExp = skillLevelsExpTotal[skillLevel + 1];
+        int currentExp = skillExperiences.get(skillName);
+        skillExperiences.put(skillName, currentExp + addExp);
+
+        if (currentExp + addExp >= nextLevelExp) {
+            skillLevels.put(skillName, skillLevel + 1);
+        }
+    }
+
+    public void removeExperience(String skillName, int addExp) {
+        int skillLevel = skillLevels.get(skillName);
+        int baseExp = skillLevelsExpTotal[skillLevel];
+        int currentExp = skillExperiences.get(skillName);
+        skillExperiences.put(skillName, currentExp - addExp);
+
+        if (currentExp - addExp < baseExp) {
+            skillLevels.put(skillName, skillLevel - 1);
+        }
+    }
+
     public void sleep() {
         asleep = true;
     }
@@ -120,13 +158,18 @@ public class Person implements Serializable {
     }
 
     public void giveRandomInjury(Injury injury) {
-        BodyPart randBodyPart = body.randomBodyPart();
-        if (randBodyPart.getHealth() > 0) {
-            randBodyPart.injure(injury);
-        }
+        body.giveRandomInjury(injury);
         if (body.getHealth() <= 0) {
             kill();
         }
+    }
+
+    public void treatRandomInjury() {
+
+    }
+
+    public boolean hasNoUntreatedInjuries() {
+        return body.hasNoUntreatedInjuries();
     }
 
     public int getHealth() {

@@ -194,11 +194,71 @@
             android:elevation="0dp"
             tools:context="io.github.dantetam.MapsActivityCurrentPlace"
             android:visibility="gone"/>
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="Draft/Undraft All"
+            android:id="@+id/btnToggleDraft"
+            android:background="#ffff1a7c"
+            android:textColor="#ffffffff"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:onClick="toggleDraft"
+            android:layout_alignParentBottom="true"/>
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="Local Trade"
+            android:id="@+id/btnTradeLocalSettlements"
+            android:background="#ffff1a7c"
+            android:textColor="#ffffffff"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:onClick="showLocalTradeMenu"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/btnToggleDraft"/>
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="Overworld"
+            android:id="@+id/btnOverworld"
+            android:background="#ffff1a7c"
+            android:textColor="#ffffffff"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:onClick="showOverworld"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/btnTradeLocalSettlements"/>
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="Jobs"
+            android:id="@+id/btnToggleJobsMenu"
+            android:background="#ffff1a7c"
+            android:textColor="#ffffffff"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:onClick="toggleJobsMenu"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/btnOverworld"/>
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/tileDetailsLayout"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_above="@id/btnToggleDraft">
             <TextView
                 android:text=""
                 android:id="@+id/buildingLocation"
@@ -403,6 +463,32 @@
                     android:orientation="vertical">
                 </LinearLayout>
             </ScrollView>
+
+            <ScrollView
+                android:id="@+id/jobPrioritiesScrollLayout"
+                android:layout_height="fill_parent"
+                android:scrollbars="horizontal|vertical"
+                android:layout_width="fill_parent"
+                android:layout_marginTop="5dip"
+                android:scrollbarStyle="outsideInset"
+                android:fillViewport="true"
+                android:visibility="gone">
+
+                <HorizontalScrollView
+                    android:id="@+id/horizontalView"
+                    android:layout_height="fill_parent"
+                    android:scrollbars="horizontal|vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_marginTop="5dip">
+
+                    <TableLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/jobPrioritiesTable" >
+                    </TableLayout>
+                </HorizontalScrollView>
+            </ScrollView>
+
             <TextView
                 android:text=""
                 android:id="@+id/personName"
@@ -428,50 +514,6 @@
                 android:visibility="gone"
                 android:elevation="10dp"/>
         </LinearLayout>
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="Draft/Undraft All"
-            android:id="@+id/btnToggleDraft"
-            android:background="#ffff1a7c"
-            android:textColor="#ffffffff"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:onClick="toggleDraft"
-            android:layout_alignParentBottom="true"/>
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="Local Trade"
-            android:id="@+id/btnTradeLocalSettlements"
-            android:background="#ffff1a7c"
-            android:textColor="#ffffffff"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:onClick="showLocalTradeMenu"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@id/btnToggleDraft"/>
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="Overworld"
-            android:id="@+id/btnOverworld"
-            android:background="#ffff1a7c"
-            android:textColor="#ffffffff"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:onClick="showOverworld"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@id/btnTradeLocalSettlements"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

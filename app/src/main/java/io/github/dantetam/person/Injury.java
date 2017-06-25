@@ -8,11 +8,13 @@ public class Injury {
     public int bodyPartDamage;
     public float bloodLossPercentTick;
     public boolean fixable;
+    public boolean treated;
 
     public Injury(String injuryType, int bodyPartDamage, float bloodLossPercentTick, boolean fixable) {
         this.injuryType = injuryType;
         this.bodyPartDamage = bodyPartDamage;
         this.bloodLossPercentTick = bloodLossPercentTick;
         this.fixable = fixable;
+        this.treated = true;
     }
 }

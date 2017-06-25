@@ -169,6 +169,7 @@ public class BuildingXMLParser {
         tree.skills.add("Transporting");
         tree.skills.add("Combat");
         tree.skills.add("Essential");
+        tree.skills.add("Medical");
 
         tree.getItemByName("Iron").superClassId = -3;
         tree.getItemByName("Silver").superClassId = -3;
