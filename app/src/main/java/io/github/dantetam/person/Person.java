@@ -49,8 +49,11 @@ public class Person implements Serializable {
         queueTasks = new ArrayList<>();
         skillLevels = new HashMap<>();
         skillPriorities = new HashMap<>();
+        skillExperiences = new HashMap<>();
 
         for (String skill: possibleSkills) {
+            if (skill == null) continue;
+
             int initialLevel = (int) (Math.random() * 15);
             skillLevels.put(skill, initialLevel);
 
@@ -168,9 +171,13 @@ public class Person implements Serializable {
 
     }
 
+    public int[] getNumInjuries() {return body.getNumInjuries();}
+
     public boolean hasNoUntreatedInjuries() {
         return body.hasNoUntreatedInjuries();
     }
+
+    public void processBodyTick() {body.processBodyTick();}
 
     public int getHealth() {
         return body.getHealth();

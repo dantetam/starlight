@@ -1178,7 +1178,7 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                 TableLayout tableLayout = (TableLayout) findViewById(R.id.jobPrioritiesTable);
                 tableLayout.removeAllViews();
 
-                TODO: Debug this
+                //TODO: Debug this
 
                 for (Person person: currentSettlement.people) {
                     TableRow tableRow = new TableRow(this);
@@ -1979,14 +1979,14 @@ public class MapsActivityCurrentPlace extends AppCompatActivity
                     for (Settlement settlement: world.settlements) {
                         if (settlement.faction.name.equals("Colonists")) {
                             for (Person person: settlement.people) {
-                                person.nutrition--;
+                                person.nutrition = Math.max(0, person.nutrition - 1);
                                 if (person.isAsleep()) {
-                                    person.rest += 2;
-                                    person.rest = Math.min(person.rest, Person.MAX_REST);
+                                    person.rest = Math.min(person.rest + 2, Person.MAX_REST);
                                 }
                                 else {
-                                    person.rest--;
+                                    person.rest = Math.max(0, person.rest - 1);
                                 }
+                                person.processBodyTick();
                             }
                         }
                     }

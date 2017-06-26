@@ -82,7 +82,7 @@ public class BuildingXMLParser {
                     String jobType = xpp.getAttributeValue(null, "jobtype");
                     int buildTime = Integer.parseInt(xpp.getAttributeValue(null, "buildtime"));
 
-                    if (!tree.skills.contains(jobType)) {
+                    if (!tree.skills.contains(jobType) && jobType != null) {
                         tree.skills.add(jobType);
                     }
 
@@ -165,7 +165,7 @@ public class BuildingXMLParser {
 
         //Temporary until this code can be added programmatically
         tree.skills.add("Construction");
-        tree.skills.add("Deconstruction");
+        //tree.skills.add("Deconstruction");
         tree.skills.add("Transporting");
         tree.skills.add("Combat");
         tree.skills.add("Essential");

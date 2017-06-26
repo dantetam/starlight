@@ -18,6 +18,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.Map;
+
 import io.github.dantetam.R;
 
 import io.github.dantetam.android.BitmapHelper;
@@ -611,11 +613,13 @@ class StarlightSurfaceView extends SurfaceView {
         ((LinearLayout) context.findViewById(R.id.productionRecipesList)).setVisibility(GONE);
         ((LinearLayout) context.findViewById(R.id.buildingUpgradesList)).setVisibility(GONE);
         ((LinearLayout) context.findViewById(R.id.localTradeList)).setVisibility(GONE);
+        ((LinearLayout) context.findViewById(R.id.personDataList)).setVisibility(GONE);
 
         ((LinearLayout) context.findViewById(R.id.constructionBuildingList)).removeAllViews();
         ((LinearLayout) context.findViewById(R.id.productionRecipesList)).removeAllViews();
         ((LinearLayout) context.findViewById(R.id.buildingUpgradesList)).removeAllViews();
         ((LinearLayout) context.findViewById(R.id.localTradeList)).removeAllViews();
+        ((LinearLayout) context.findViewById(R.id.personDataList)).removeAllViews();
 
         ((Button) context.findViewById(R.id.btnUpgradesList)).setVisibility(GONE);
 
@@ -692,9 +696,32 @@ class StarlightSurfaceView extends SurfaceView {
         if (hoverPerson != null) {
             ((TextView) context.findViewById(R.id.personName)).setVisibility(VISIBLE);
             ((TextView) context.findViewById(R.id.personHealth)).setVisibility(VISIBLE);
+            ((LinearLayout) context.findViewById(R.id.personDataList)).setVisibility(VISIBLE);
 
             ((TextView) context.findViewById(R.id.personName)).setText(hoverPerson.name + " of " + hoverPerson.faction.name);
-            ((TextView) context.findViewById(R.id.personHealth)).setText("Health: " + hoverPerson.getHealth() + "/" + hoverPerson.getMaxHealth());
+            String healthString = "Health: " + hoverPerson.getHealth() + "/" + hoverPerson.getMaxHealth();
+            if (!hoverPerson.hasNoUntreatedInjuries()) {
+                int[] numInjuries = hoverPerson.getNumInjuries();
+                if (numInjuries[0] + numInjuries[1] > 1) {
+                    healthString += " (" + numInjuries[0] + "/" + (numInjuries[0] + numInjuries[1]) + " injuries treated)";
+                }
+                else {
+                    healthString += " (" + numInjuries[0] + "/" + (numInjuries[0] + numInjuries[1]) + " injury treated)";
+                }
+            }
+            ((TextView) context.findViewById(R.id.personHealth)).setText(healthString);
+            LinearLayout personDetails = ((LinearLayout) context.findViewById(R.id.personDataList));
+
+            for (Map.Entry<String, Integer> entry: hoverPerson.skillLevels.entrySet()) {
+                String skillName = entry.getKey();
+                int level = hoverPerson.skillLevels.get(skillName);
+                int[] expDisplay = hoverPerson.reportExpForSkill(skillName);
+
+                TextView skillTextView = new TextView(context);
+                skillTextView.setBackgroundColor(Color.WHITE);
+                skillTextView.setText(skillName + " | Level " + level + ", " + expDisplay[0] + "/" + expDisplay[1]);
+                personDetails.addView(skillTextView);
+            }
         }
         else {
             //Do nothing, the UI should have been cleared

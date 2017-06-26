@@ -14,10 +14,12 @@ public class Body implements Serializable {
     private Map<String, BodyPart> bodyPartsByName;
     private BodyPart root;
     private List<Injury> currentUntreatedInjuries;
+    private List<Injury> currentTreatedInjuries;
 
     public Body() {
         bodyPartsByName = new HashMap<>();
         currentUntreatedInjuries = new ArrayList<>();
+        currentTreatedInjuries = new ArrayList<>();
     }
 
     public Map<String, BodyPart> getBodyPartsByName() {
@@ -58,12 +60,38 @@ public class Body implements Serializable {
         else {
             int index = (int) (Math.random() * currentUntreatedInjuries.size());
             currentUntreatedInjuries.get(index).treated = true;
-            currentUntreatedInjuries.remove(index);
+            Injury injury = currentUntreatedInjuries.remove(index);
+            injury.treated = true;
+            injury.bloodLossPercentTick = 0;
+            currentTreatedInjuries.add(injury);
         }
     }
 
+    public void processBodyTick() {
+        for (int i = currentTreatedInjuries.size() - 1; i >= 0; i--) {
+            Injury injury = currentTreatedInjuries.get(i);
+            injury.bodyPart.setHealth(injury.bodyPart.getHealth() + 1);
+            if (injury.bodyPart.getHealth() == injury.bodyPart.maxHealth) {
+                injury.bodyPart.removeInjury(injury);
+                injury.bodyPart = null;
+                currentTreatedInjuries.remove(i);
+            }
+        }
+    }
+
+    //Get the number of [treated, untreated] injuries, which should add up to the total number of injuries
+    public int[] getNumInjuries() {return new int[]{currentTreatedInjuries.size(), currentUntreatedInjuries.size()};}
+
     public boolean hasNoUntreatedInjuries() {
         return currentUntreatedInjuries.size() == 0;
+    }
+
+    public float getBloodLoss() {
+        float total = 0;
+        for (Injury injury: currentUntreatedInjuries) {
+            total += injury.bloodLossPercentTick;
+        }
+        return total;
     }
 
     public int getHealth() {

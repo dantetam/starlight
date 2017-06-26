@@ -513,6 +513,18 @@
                 android:background="@android:color/white"
                 android:visibility="gone"
                 android:elevation="10dp"/>
+            <ScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/scrollPersonDataList">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/personDataList"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                </LinearLayout>
+            </ScrollView>
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"

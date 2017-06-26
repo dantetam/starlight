@@ -57,4 +57,8 @@ public class BodyPart implements Serializable {
         setHealth(health - injury.bodyPartDamage);
     }
 
+    public void removeInjury(Injury injury) {
+        injuries.remove(injury);
+    }
+
 }
