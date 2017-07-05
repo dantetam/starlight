@@ -38,6 +38,7 @@ public class Person implements Serializable {
     public static final int MAX_REST = 16;
     private boolean asleep = false;
 
+    public Inventory gear;
     public Item weapon;
     public boolean isDrafted = false;
 
@@ -65,6 +66,8 @@ public class Person implements Serializable {
             skillExperiences.put(skill, (skillLevelsExpTotal[initialLevel] + skillLevelsExpTotal[initialLevel + 1]) / 2);
         }
         sortSkillPriorities();
+
+        gear = new Inventory();
 
         this.faction = faction;
         faction.people.add(this);
@@ -160,8 +163,8 @@ public class Person implements Serializable {
         return asleep;
     }
 
-    public void giveRandomInjury(Injury injury) {
-        body.giveRandomInjury(injury);
+    public void giveRandomInjury(String injuryType, int damage, float bloodLoss, boolean fixable) {
+        body.giveRandomInjury(injuryType, damage, bloodLoss, fixable);
         if (body.getHealth() <= 0) {
             kill();
         }

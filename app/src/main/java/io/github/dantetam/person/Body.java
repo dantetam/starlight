@@ -45,8 +45,9 @@ public class Body implements Serializable {
         return current;
     }
 
-    public void giveRandomInjury(Injury injury) {
+    public void giveRandomInjury(String injuryType, int damage, float bloodLoss, boolean fixable) {
         BodyPart randBodyPart = this.randomBodyPart();
+        Injury injury = new Injury(randBodyPart, injuryType, damage, bloodLoss, fixable);
         if (randBodyPart.getHealth() > 0) {
             randBodyPart.injure(injury);
             currentUntreatedInjuries.add(injury);

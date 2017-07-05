@@ -32,8 +32,6 @@ import java.io.InputStream;
 public class ItemXmlParser {
     private static final String ns = null;
 
-    //TODO: Impl. this class.
-
     public static void parseResourceTree(ConstructionTree tree, Context context, int resourceId) {
         final InputStream inputStream = context.getResources().openRawResource(
                 resourceId);
